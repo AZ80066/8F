@@ -494,6 +494,12 @@ body{
 }
 .gcv2-row-value.muted{color:var(--muted);font-weight:500;}
 
+/* 趋势行: 不同颜色暗示状态 */
+.gcv2-trend.good > span:first-child{color:var(--accent);font-weight:600;}
+.gcv2-trend.warn > span:first-child{color:#ff8c5a;font-weight:600;}
+.gcv2-trend.neutral > span:first-child{color:var(--text);font-weight:500;}
+.gcv2-trend.muted > span:first-child{color:var(--muted2);font-style:italic;}
+
 /* 展开态: 完整折线图 */
 .goal-card-fullchart{
   margin-top:14px;
@@ -696,38 +702,64 @@ body{
   font-weight:700;
   margin-bottom:14px;
 }
-.wr-stat-block{
+/* 周复盘三段式: 行为 / 身体反馈 / 下周策略 */
+.wr-section{
+  margin-bottom:18px;
+  padding:14px 16px;
   background:var(--card);
   border-radius:12px;
-  padding:12px 16px;
-  margin-bottom:18px;
 }
-.wr-stat-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:6px 0;
-  font-size:13px;
+.wr-section.wr-strategy{
+  background:rgba(74,222,128,0.06);
+  border-left:2px solid var(--accent);
+  border-radius:6px 12px 12px 6px;
 }
-.wr-stat-row span{color:var(--muted);}
-.wr-stat-row b{color:var(--text);font-weight:600;}
-.wr-verdict{
-  font-size:15px;
+.wr-section-title{
+  font-size:11px;
+  letter-spacing:1.2px;
+  color:var(--muted);
+  text-transform:uppercase;
   font-weight:700;
-  color:var(--text);
-  line-height:1.5;
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
-.wr-suggestion{
-  font-size:13px;
+.wr-section.wr-strategy .wr-section-title{color:var(--accent);}
+.wr-section-body{
+  font-size:14px;
+  color:var(--text);
+  line-height:1.65;
+  font-weight:500;
+}
+.wr-section-body b{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:18px;
+  letter-spacing:0.3px;
+  color:var(--accent);
+  font-weight:400;
+  margin:0 2px;
+}
+.wr-section.wr-strategy .wr-section-body b{
+  font-family:inherit;
+  font-size:14px;
+  letter-spacing:0.3px;
+  color:var(--text);
+  font-weight:700;
+  margin:0;
+  display:inline-block;
+  margin-bottom:6px;
+}
+.wr-section-note{
+  margin-top:8px;
+  padding-top:8px;
+  border-top:1px solid rgba(255,255,255,0.05);
+  font-size:12px;
   color:var(--muted);
   line-height:1.7;
-  padding:14px 16px;
-  background:rgba(74,222,128,0.05);
-  border-left:2px solid var(--accent);
-  border-radius:8px;
-  margin-bottom:18px;
 }
+/* 体重数据行用不同颜色根据状态 */
+.wr-weight.normal{color:var(--accent);}
+.wr-weight.fast{color:#fbbf24;}
+.wr-weight.stalled{color:var(--text);}
+.wr-weight.wrong-direction{color:#ff8c5a;}
 .wr-close-btn{
   width:100%;
   height:44px;
@@ -1615,6 +1647,45 @@ body{
   font-size:13px;
   color:var(--muted);
   line-height:1.7;
+}
+
+/* 训练目的说明 (v0.2.1): routine 详情顶部 */
+.rd-purpose{
+  margin:4px 0 18px;
+  padding:14px 16px 12px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+.rd-purpose-row{
+  padding:8px 0;
+}
+.rd-purpose-row + .rd-purpose-row{
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.rd-purpose-label{
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:6px;
+}
+.rd-purpose-text{
+  font-size:13px;
+  color:var(--text);
+  line-height:1.7;
+}
+.rd-purpose-text.rd-purpose-goal{
+  font-weight:600;
+  color:var(--accent);
+  font-size:14px;
+}
+.rd-purpose-protect .rd-purpose-label{
+  color:#fbbf24;
+}
+.rd-purpose-protect .rd-purpose-text{
+  color:rgba(255,255,255,0.92);
 }
 
 /* sealed: 没契约时 */
@@ -4575,6 +4646,79 @@ body{
   border-top:1px solid rgba(255,255,255,0.05);
 }
 
+/* 现实预期确认卡 (v0.1.3): 让用户清醒签约 */
+.reality-check{
+  margin-top:14px;
+  padding:18px 20px 16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+}
+.rc-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:6px;
+}
+.rc-label{
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:0.5px;
+}
+.rc-value{
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:0.5px;
+}
+.rc-value.good{color:var(--accent);}
+.rc-value.warn{color:#ff8c5a;}
+.rc-detail{
+  font-size:12px;
+  color:var(--text);
+  line-height:1.6;
+  padding-bottom:14px;
+}
+.rc-divider{
+  height:1px;
+  background:var(--border);
+  margin:6px 0 14px;
+}
+.rc-fact{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:12px;
+}
+.rc-fact-num{
+  flex-shrink:0;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:24px;
+  letter-spacing:0.3px;
+  color:var(--accent);
+  line-height:1;
+  min-width:60px;
+}
+.rc-fact-num span{
+  font-size:13px;
+  letter-spacing:0;
+}
+.rc-fact-text{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.6;
+  padding-top:6px;
+}
+.rc-note{
+  margin-top:6px;
+  padding:12px 14px;
+  background:rgba(74,222,128,0.05);
+  border-left:2px solid var(--accent);
+  border-radius:6px;
+  font-size:12px;
+  color:var(--text);
+  line-height:1.7;
+}
+
 /* 步骤 5 训练方式 - 高一些的选项 */
 .setup-option-tall{padding:18px 16px !important;}
 
@@ -5241,6 +5385,19 @@ body{
   align-items:center;
   gap:8px;
 }
+/* 低压版标签 (v0.2.5): 训练时清楚显示自己在低压模式 */
+.wh-low-pressure{
+  display:inline-block;
+  padding:2px 8px;
+  margin-left:6px;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:1px;
+  color:#0a0a0a;
+  background:var(--accent);
+  border-radius:10px;
+  vertical-align:1px;
+}
 .wh-progress-row{
   display:flex;
   align-items:center;
@@ -5727,28 +5884,157 @@ body{
 }
 
 /* 一句话核心要点 (主页直接显示) */
-.ex-coaching-tip{
+/* PR Toast (v0.2.4): 训练中即时反馈, 不打断流程 */
+.pr-toast{
+  position:fixed;
+  top:max(64px, calc(env(safe-area-inset-top) + 12px));
+  left:50%;
+  transform:translateX(-50%) translateY(-20px);
+  z-index:9999;
   display:flex;
-  gap:8px;
+  align-items:center;
+  gap:12px;
+  padding:12px 18px;
+  min-width:220px;
+  max-width:88vw;
+  background:rgba(74,222,128,0.97);
+  color:#0a0a0a;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.18) inset;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.25s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.pr-toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+.pr-toast-icon{
+  font-size:24px;
+  line-height:1;
+}
+.pr-toast-content{
+  flex:1;
+  min-width:0;
+}
+.pr-toast-title{
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:0.5px;
+  color:#0a0a0a;
+  line-height:1.2;
+}
+.pr-toast-body{
+  font-size:11.5px;
+  font-weight:600;
+  color:rgba(10,10,10,0.78);
+  line-height:1.45;
+  margin-top:3px;
+}
+.pr-toast-exercise{
+  font-size:10.5px;
+  color:rgba(10,10,10,0.55);
+  margin-top:2px;
+  letter-spacing:0.2px;
+}
+
+/* 动作详情「你的进步」(v0.2.4) */
+.ex-progress-card{
+  margin-top:18px;
+  padding:14px 16px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+.epc-title{
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:var(--accent);
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.epc-row{
+  display:flex;
+  justify-content:space-between;
   align-items:flex-start;
-  background:rgba(200,241,53,0.06);
+  padding:8px 0;
+}
+.epc-row + .epc-row{
+  border-top:1px solid rgba(255,255,255,0.05);
+}
+.epc-label{
+  font-size:11px;
+  color:var(--muted);
+  flex-shrink:0;
+  padding-top:2px;
+  letter-spacing:0.3px;
+}
+.epc-value{
+  font-size:14px;
+  color:var(--text);
+  font-weight:600;
+  text-align:right;
+}
+.epc-value.highlight{
+  color:var(--accent);
+}
+.epc-value-meta{
+  font-size:10.5px;
+  color:var(--muted);
+  font-weight:400;
+  margin-top:2px;
+}
+.epc-delta{
+  margin-top:10px;
+  padding:10px 12px;
+  background:rgba(74,222,128,0.08);
+  border-radius:8px;
+  text-align:center;
+  font-size:13px;
+  font-weight:600;
+  color:var(--accent);
+}
+.epc-delta.muted{
+  background:rgba(255,255,255,0.03);
+  color:var(--muted);
+  font-weight:500;
+}
+.epc-empty{
+  font-size:12.5px;
+  color:var(--muted);
+  line-height:1.6;
+  padding:6px 0;
+}
+.epc-empty b{
+  color:var(--text);
+  font-weight:600;
+}
+
+/* 训练中关键提示 (v0.2.3): 用户当下必须记住的一句话 */
+.ex-primary-cue{
+  background:rgba(74,222,128,0.06);
   border-left:2px solid var(--accent);
   border-radius:0 8px 8px 0;
-  padding:10px 12px;
-  margin-top:10px;
-  margin-bottom:6px;
+  padding:10px 14px;
+  margin-top:12px;
+  margin-bottom:4px;
 }
-.ect-icon{
+.ex-primary-cue-label{
+  display:block;
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:var(--accent);
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:5px;
+}
+.ex-primary-cue-text{
   font-size:14px;
-  flex-shrink:0;
-  margin-top:1px;
-}
-.ect-text{
-  font-size:13px;
   color:var(--text);
-  line-height:1.6;
-  letter-spacing:0.3px;
-  font-weight:400;
+  line-height:1.55;
+  font-weight:500;
+  letter-spacing:0.2px;
 }
 
 /* ═══════════════════════════════════════════
@@ -6072,6 +6358,127 @@ body{
   color:var(--text);
   line-height:1.75;
   font-weight:400;
+}
+
+/* 肌群标签 (主要 + 辅助) - 详情顶部 */
+.ex-muscle-row{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  padding:10px 0 16px;
+  margin-bottom:14px;
+  border-bottom:1px solid var(--border);
+}
+.ex-muscle-label{
+  flex-shrink:0;
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-weight:700;
+  padding-top:4px;
+  min-width:60px;
+}
+.ex-muscle-chips{
+  flex:1;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+.ex-muscle-chip{
+  padding:4px 10px;
+  border-radius:6px;
+  font-size:12px;
+  font-weight:500;
+  color:var(--muted);
+  background:var(--card);
+  border:1px solid var(--border);
+}
+.ex-muscle-chip.primary{
+  color:var(--accent);
+  background:rgba(74,222,128,0.10);
+  border-color:rgba(74,222,128,0.30);
+  font-weight:600;
+}
+
+/* === 三层动作指导 (v0.2.0) === */
+.ex-guide-target{
+  padding:14px 16px;
+  margin-bottom:14px;
+  background:rgba(74,222,128,0.08);
+  border:1px solid rgba(74,222,128,0.20);
+  border-radius:10px;
+}
+.ex-guide-target-text{
+  font-size:14px;
+  color:var(--text);
+  line-height:1.65;
+  font-weight:600;
+  margin-top:4px;
+}
+.ex-guide-section{
+  margin-bottom:16px;
+}
+.ex-guide-section.caution{
+  padding:12px 14px;
+  background:rgba(255,140,90,0.06);
+  border-left:2px solid #ff8c5a;
+  border-radius:6px;
+}
+.ex-guide-label{
+  font-size:10px;
+  letter-spacing:1.5px;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:8px;
+}
+.ex-guide-section.caution .ex-guide-label{color:#ff8c5a;}
+.ex-guide-content{
+  font-size:13.5px;
+  color:var(--text);
+  line-height:1.75;
+}
+.ex-guide-content b{
+  color:var(--accent);
+  font-weight:700;
+}
+.ex-guide-tip{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  padding:7px 0;
+}
+.egt-num{
+  flex-shrink:0;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:rgba(74,222,128,0.13);
+  color:var(--accent);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:13px;
+  letter-spacing:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:1px;
+}
+.egt-text{
+  flex:1;
+  font-size:13.5px;
+  color:var(--text);
+  line-height:1.6;
+}
+.ex-guide-alt-item{
+  padding:8px 12px;
+  margin-top:6px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:8px;
+  font-size:13px;
+  color:var(--text);
+  line-height:1.5;
 }
 
 .btn-toggle-details{
@@ -7906,24 +8313,24 @@ body{
   </div>
 </div>
 
-<!-- 调整今天 overlay (B+: 受约束调整, 不允许自由切 routine) -->
+<!-- "我今天状态不好" overlay (B+: 受约束调整, 不允许自由切 routine) -->
 <div class="adjust-today-overlay" id="adjustTodayOverlay" onclick="closeAdjustTodayBg(event)">
   <div class="adjust-today-modal" onclick="event.stopPropagation()">
     <div class="wim-handle"></div>
-    <div class="adjust-title">今天不按原计划?</div>
-    <div class="adjust-sub">告诉系统今天的现实, 它会帮你接回契约。</div>
+    <div class="adjust-title">今天状态不好?</div>
+    <div class="adjust-sub">告诉它现在的样子, 它来想办法。</div>
 
     <button class="adjust-option" onclick="adjustToLight()">
-      <div class="adjust-option-name">做轻量版</div>
-      <div class="adjust-option-desc">10 分钟完成今天的最低版本, 训练进度继续。</div>
+      <div class="adjust-option-name">做低压版,也算完成</div>
+      <div class="adjust-option-desc">10 分钟最低版本, 进度继续推进。</div>
     </button>
 
     <button class="adjust-option" onclick="adjustToRest()">
-      <div class="adjust-option-name">今天改休息, 明天继续</div>
-      <div class="adjust-option-desc">今天不会算失败, 当前训练顺延到明天。</div>
+      <div class="adjust-option-name">今天主动休息,明天接上</div>
+      <div class="adjust-option-desc">今天不算缺席, 训练顺延到明天。</div>
     </button>
 
-    <button class="adjust-cancel" onclick="closeAdjustToday()">取消</button>
+    <button class="adjust-cancel" onclick="closeAdjustToday()">先不调整</button>
   </div>
 </div>
 
@@ -8299,11 +8706,11 @@ const EXERCISE_LIBRARY = {
   "warmup_弹力带肩胛后缩": { name:"弹力带肩胛后缩", category:'warmup', subcategory:'activation', spec:"1 组 × 15", sets:1, equipment:["band"], desc:"双臂前伸握带，肩胛向中间夹紧。", tips:"", cautions:"" },
   "warmup_ytw": { name:"YTW", category:'warmup', subcategory:'activation', spec:"2 组 × 12", sets:1, equipment:["dumbbell"], desc:"Y T W 三个字母形态依次完成。", tips:"", cautions:"" },
   // -- main --
-  "main_上斜哑铃卧推": { name:"上斜哑铃卧推", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"3 组 × 8-10 次", sets:3, equipment:["bench", "dumbbell"], desc:"卧推椅调 30-45 度，哑铃从胸部上方推起。", tips:"圆肩期间不上大重量，8-10次能完成就是合适重量", cautions:"", role:'primary', priority:1, muscles:["胸大肌上束", "三角肌前束", "三头肌"] },
-  "main_上斜哑铃飞鸟": { name:"上斜哑铃飞鸟", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 10-12 次", sets:3, equipment:["bench", "dumbbell"], desc:"抱树姿势打开到感受上胸拉伸，再合拢。", tips:"下放用 3-4 秒，感受上胸充分拉伸", cautions:"", role:'secondary', priority:2, muscles:["胸大肌上束"] },
-  "main_前锯肌俯卧撑": { name:"前锯肌俯卧撑", category:'main', trainingType:'hypertrophy', loadHint:'light', spec:"2 组力竭", sets:2, equipment:[], desc:"标准俯卧撑推到顶后继续上推让肩胛前伸，停 1 秒。", tips:"激活前锯肌，改善肩胛稳定性和圆肩", cautions:"", role:'corrective', priority:3, muscles:["前锯肌", "胸大肌"] },
-  "main_悬挂下沉": { name:"悬挂下沉", category:'main', trainingType:'stability', loadHint:'light', spec:"2 组力竭", sets:2, equipment:["pullup"], desc:"双手握单杠悬挂，主动将肩胛骨向下压，不弯手肘。", tips:"对抗肩胛骨上提，改善肩膀高耸", cautions:"", role:'corrective', priority:4, muscles:["背阔肌下束", "下斜方肌"] },
-  "main_墙天使": { name:"墙天使", category:'main', trainingType:'stability', loadHint:'light', spec:"2 组 × 10 次", sets:2, equipment:[], desc:"背靠墙，手背贴墙从 W 形缓慢滑到 Y 形。", tips:"对圆肩+头前伸非常有效，比 10 次侧平举还重要", cautions:"", role:'corrective', priority:5, muscles:["中下斜方肌", "菱形肌", "肩袖"] },
+  "main_上斜哑铃卧推": { name:"上斜哑铃卧推", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"3 组 × 8-10 次", sets:3, equipment:["bench", "dumbbell"], desc:"卧推椅调 30-45 度,哑铃从胸部上方推起。", targetMuscle:"练上胸,不是练肩。下降时胸打开,推起时肩胛保持收紧。", tips:["肩胛微收下沉,不要耸肩","哑铃下降到胸两侧,不要超过身体平面","最后一组 8-10 次明显吃力,但动作不变形"], weightHint:"选一个能完成 8-10 次, 但第 9-10 次明显吃力的重量。第二组保持同重量, 如果还能多做 3 次以上 — 下次加 1-2 kg。", cautions:"圆肩期间不上大重量;8-10 次能完成就是合适重量。如果觉得只有肩痛、胸没感觉 — 椅背角度从 30 度起步,不要 45 度。", alternatives:["卧推椅被占: 用普通哑铃卧推 (平板) 或地面哑铃卧推","哑铃太重: 用瓶装水代替, 8-10 次力竭仍然有效","肩痛: 改 上斜俯卧撑 (脚抬高 / 脚平地) 同样刺激上胸"], role:'primary', priority:1, muscles:["胸大肌上束", "三角肌前束", "三头肌"] },
+  "main_上斜哑铃飞鸟": { name:"上斜哑铃飞鸟", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 10-12 次", sets:3, equipment:["bench", "dumbbell"], desc:"抱树姿势打开到感受上胸拉伸,再合拢。", targetMuscle:"练上胸的延展感和挤压感, 不是练肩。重量比卧推轻,重在感受。", tips:["手肘保持微弯锁定, 不是直臂打开","下放慢 (3-4 秒) 感受上胸拉伸","顶端不要碰哑铃, 留 10cm 保持张力"], weightHint:"选比卧推轻一半的重量。能完成 12 次还很轻松 = 重量太小, 6 次都做不了 = 太重。", cautions:"肩前侧痛 = 打开过深, 收一点。下放过快容易让重量靠惯性, 失去刺激。", alternatives:["哑铃太重: 改弹力带飞鸟 (绑门把手, 同样轨迹)","没有上斜椅: 平板飞鸟 + 椅背垫枕头垫高 30 度"], role:'secondary', priority:2, muscles:["胸大肌上束"] },
+  "main_前锯肌俯卧撑": { name:"前锯肌俯卧撑", category:'main', trainingType:'hypertrophy', loadHint:'light', spec:"2 组力竭", sets:2, equipment:[], desc:"标准俯卧撑推到顶后继续上推让肩胛前伸,停 1 秒。", targetMuscle:"练前锯肌 (肩胛骨稳定的核心肌群), 改善圆肩和翼状肩胛。这不是练胸,是肩胛激活。", tips:["推到顶后再多推 5cm, 用肩胛前伸的力","顶端肩胛骨完全打开 (背部摸不到肩胛凸起)","下放回到正常俯卧撑位置即可"], weightHint:"自重动作, 力竭即可。如果标准俯卧撑做不了 8 次, 用跪姿或墙俯卧撑替代。", cautions:"圆肩严重的人这个动作很难做对, 第一次最好对镜子练。", alternatives:["俯卧撑做不到: 跪姿俯卧撑 (膝盖着地)","还做不到: 站姿墙俯卧撑 (面对墙, 离墙 1 步)","进阶: 脚抬高做 (沙发/凳子)"], role:'corrective', priority:3, muscles:["前锯肌", "胸大肌"] },
+  "main_悬挂下沉": { name:"悬挂下沉", category:'main', trainingType:'stability', loadHint:'light', spec:"2 组力竭", sets:2, equipment:["pullup"], desc:"双手握单杠悬挂,主动将肩胛骨向下压,不弯手肘。", targetMuscle:"练背阔肌下束和下斜方, 对抗高耸肩 / 圆肩。手是支点, 真正发力的是肩胛骨。", tips:["手肘锁定不弯, 全程靠肩胛下沉发力","下沉到耳朵远离肩膀, 停 2 秒","腹部收紧, 不要靠晃身体借力"], weightHint:"自重动作, 力竭即可。第一次能做 8 秒就算合格, 逐步增加到 30 秒。", cautions:"如果握力不够先掉下来 = 这个动作不适合你, 改用反向划船。", alternatives:["没有单杠: TRX 反向划船 (脚撑地, 拉自重)","握力不够: 单杠加助力带 (绑手腕)","完全做不了: 直臂下压 (拉力器, 重量很轻)"], role:'corrective', priority:4, muscles:["背阔肌下束", "下斜方肌"] },
+  "main_墙天使": { name:"墙天使", category:'main', trainingType:'stability', loadHint:'light', spec:"2 组 × 10 次", sets:2, equipment:[], desc:"背靠墙,手背贴墙从 W 形缓慢滑到 Y 形。", targetMuscle:"练菱形肌、中下斜方、肩袖, 直接对抗圆肩 + 头前伸。看起来简单, 但效果碾压侧平举。", tips:["后脑、肩、背、臀、手背都要贴墙 (这是难点)","上滑时手背一直贴墙, 离开就降低高度","慢, 慢, 慢 — 一次 5 秒"], weightHint:"自重动作。如果手背做不到全程贴墙, 缩小活动范围 (从 W 到肩高即可)。", cautions:"做完肩膀不痛但有酸感是对的。第一次会发现 \"原来我离不开墙\" — 这正是问题。", alternatives:["墙太脏 / 没空墙: 趴在床上做 (面朝下, 同样轨迹)","完全做不到: 躺地上做 (难度最低, 重力辅助)"], role:'corrective', priority:5, muscles:["中下斜方肌", "菱形肌", "肩袖"] },
   "finisher_zone2_力量后燃脂": { name:"Zone 2 心率收尾", category:'finisher', loadHint:'light', spec:"20 分钟", sets:1, equipment:[], desc:"心率维持 108-127 (最大心率 60-70%)。可选: 单车 / 跑步机 / 跳绳 / 户外快走。", tips:"糖原已消耗，这 20 分钟燃脂效率最高", cautions:"" },
   // -- cooldown --
   "cooldown_胸大肌松解": { name:"胸大肌松解", category:'cooldown', subcategory:'release', spec:"每侧 1min", sets:1, equipment:["ball"], desc:"训练后胸肌充血，此时松解效果最好。", tips:"", cautions:"" },
@@ -8317,11 +8724,11 @@ const EXERCISE_LIBRARY = {
   "warmup_躯干旋转": { name:"躯干旋转", category:'warmup', subcategory:'dynamic', spec:"各 10 次", sets:1, equipment:[], desc:"双脚与肩同宽站立，手臂平举，以脊柱为轴左右转体。", tips:"", cautions:"" },
   "warmup_死虫": { name:"死虫", category:'warmup', subcategory:'activation', spec:"2 组 × 15", sets:1, equipment:[], desc:"仰卧对侧手脚同时向地板延伸，腰部贴地。", tips:"激活深层核心，防止划船时腰部代偿", cautions:"" },
   // -- main --
-  "main_对握高位下拉": { name:"对握高位下拉", category:'main', trainingType:'strength', loadHint:'light', spec:"3 组 × 6-8 次", sets:3, equipment:[], desc:"对握略宽于肩，拉向锁骨，肩胛后缩下沉。", tips:"想象用肘关节向下插地板", cautions:"", role:'primary', priority:1, muscles:["背阔肌", "二头肌"] },
-  "main_坐姿划船": { name:"坐姿划船", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"3 组 × 10-12 次", sets:3, equipment:[], desc:"拉把手到腹部，肩胛后缩夹紧。", tips:"3 秒拉到位，停 2 秒，慢慢放回", cautions:"", role:'primary', priority:2, muscles:["背阔肌", "中斜方肌", "菱形肌"] },
-  "main_单臂_trx_划船_+_躯干旋转": { name:"单臂 TRX 划船 + 躯干旋转", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"2 组 × 8-10 次", sets:2, equipment:["trx"], desc:"面对 TRX 单手握带，划船同时躯干向划动侧旋转。", tips:"自由泳 body rotation 的陆上黄金动作，一箭双雕", cautions:"", role:'secondary', priority:3, muscles:["背阔肌", "腹斜肌", "菱形肌"] },
-  "main_trx_面拉": { name:"TRX 面拉", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 12-15 次", sets:3, equipment:["trx"], desc:"拉向脸部两侧，手肘外展，拇指向后旋转。", tips:"不要用斜方肌上束代偿，保持肩膀下沉", cautions:"", role:'corrective', priority:4, muscles:["后三角肌", "中斜方肌", "肩袖"] },
-  "main_哑铃_y_字上抬": { name:"哑铃 Y 字上抬", category:'main', trainingType:'hypertrophy', loadHint:'light', spec:"2 组 × 15 次", sets:2, equipment:["dumbbell"], desc:"俯身手臂向斜上 45 度举起成 Y 形。", tips:"直接强化中下斜方，改善圆肩和头前伸", cautions:"", role:'corrective', priority:5, muscles:["中下斜方肌", "后三角肌"] },
+  "main_对握高位下拉": { name:"对握高位下拉", category:'main', trainingType:'strength', loadHint:'light', spec:"3 组 × 6-8 次", sets:3, equipment:[], desc:"对握略宽于肩,拉向锁骨,肩胛后缩下沉。", targetMuscle:"练背阔肌中束 + 二头, 对抗久坐圆肩。重点是用背拉, 不是用胳膊。", tips:["拉之前先肩胛下沉 (耸肩 = 错)","想象用肘关节向下插地板, 而不是用手拉杆","顶端不要完全伸直手臂, 留一点弯保持张力"], weightHint:"选一个能完成 6-8 次, 但第 7-8 次明显吃力的重量。如果能做 12 次以上 = 太轻, 4 次都做不了 = 太重。", cautions:"耸肩、用腰借力、身体后仰过度都是常见错误。如果做完肩痛 = 多半是耸肩。", alternatives:["没有高位下拉器: 引体向上 (能做几个做几个) 或 弹力带绑高处下拉","握力不够: 戴助力带","完全做不了引体: 用 TRX 反向划船"], role:'primary', priority:1, muscles:["背阔肌", "二头肌"] },
+  "main_坐姿划船": { name:"坐姿划船", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"3 组 × 10-12 次", sets:3, equipment:[], desc:"拉把手到腹部,肩胛后缩夹紧。", targetMuscle:"练背阔肌中部 + 中斜方 + 菱形肌, 是改善驼背的核心动作。", tips:["拉到位后肩胛骨用力夹紧 (像背后夹一支铅笔), 停 2 秒","3 秒拉, 2 秒停, 慢慢放回","身体不要前后晃动借力"], weightHint:"选一个能完成 10-12 次, 最后 1-2 次明显吃力的重量。重量不是越大越好 — 大重量容易丢掉肩胛收缩感。", cautions:"如果只感受到二头肌酸 = 没找到背的发力, 减重量重新练习肩胛后缩。", alternatives:["没有划船器: 哑铃单臂划船 (一手撑椅子, 另一手划)","也没有哑铃: 弹力带划船 (绑门把手或脚踩)","完全无器械: 俯卧 Y 字 / T 字 / W 字 上抬"], role:'primary', priority:2, muscles:["背阔肌", "中斜方肌", "菱形肌"] },
+  "main_单臂_trx_划船_+_躯干旋转": { name:"单臂 TRX 划船 + 躯干旋转", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"2 组 × 8-10 次", sets:2, equipment:["trx"], desc:"面对 TRX 单手握带,划船同时躯干向划动侧旋转。", targetMuscle:"练背阔肌 + 腹斜肌, 是自由泳 body rotation 的陆上对应训练。一箭双雕。", tips:["躯干旋转幅度大于 30 度才有效","划到顶后非划手臂自然向后摆 (像爬泳划水后的姿态)","下回程慢, 不要利用反弹"], weightHint:"通过调整 TRX 角度控制难度: 身体越平 = 越重。第一次试时身体跟地面 60 度, 之后逐步降到 45 度。", cautions:"腰痛者不做这个, 改普通单臂划船 (不带旋转)。", alternatives:["没有 TRX: 用毛巾绑门 (高质量门, 安全检查) 或固定栏杆","完全没条件: 哑铃单臂划船 + 自主躯干旋转"], role:'secondary', priority:3, muscles:["背阔肌", "腹斜肌", "菱形肌"] },
+  "main_trx_面拉": { name:"TRX 面拉", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 12-15 次", sets:3, equipment:["trx"], desc:"拉向脸部两侧,手肘外展,拇指向后旋转。", targetMuscle:"练后三角 + 中斜方 + 肩袖, 是修复圆肩 / 改善体态的王牌动作。每个有久坐工作的人都该做。", tips:["拉到位时手肘高于肩膀, 大拇指指向后方","肩膀全程下沉, 不能耸肩 (耸肩 = 错误代偿)","重量轻一点, 重在感受不在重量"], weightHint:"通过调整身体角度调难度。这个动作只该轻量做, 否则代偿严重。能做 15 次 = 找到正确角度了。", cautions:"如果脖子酸 = 在用斜方肌上束代偿, 重量减轻。", alternatives:["没 TRX: 弹力带面拉 (绑门把高处)","完全无器械: 俯卧 W 字 (趴垫上 W 形手臂上抬)","健身房有: 绳索面拉 (拉力器)"], role:'corrective', priority:4, muscles:["后三角肌", "中斜方肌", "肩袖"] },
+  "main_哑铃_y_字上抬": { name:"哑铃 Y 字上抬", category:'main', trainingType:'hypertrophy', loadHint:'light', spec:"2 组 × 15 次", sets:2, equipment:["dumbbell"], desc:"俯身手臂向斜上 45 度举起成 Y 形。", targetMuscle:"练中下斜方 + 后三角, 这是矫正圆肩 / 头前伸的低估动作。看起来简单, 但效果直接。", tips:["拇指向上指 (不是手心向下)","上抬到耳朵两侧, 肩胛后缩 + 下沉","重量超轻 — 1-2 kg 的哑铃就够"], weightHint:"重量极轻 — 男性 1-2 kg, 女性 0.5-1 kg。能做 15 次以上还轻松 = 你在用三角肌前束代偿, 减小幅度而不是加重量。", cautions:"重量越大越没效果。这个动作的本质是激活下斜方, 重量大就会被斜方肌上束抢戏。", alternatives:["没哑铃: 矿泉水瓶 (500ml = 0.5kg) 或 弹力带 Y 字","进阶: 趴在斜板凳上做 (角度 30 度), 减少腰部代偿"], role:'corrective', priority:5, muscles:["中下斜方肌", "后三角肌"] },
   // -- cooldown --
   "cooldown_菱形肌松解": { name:"菱形肌松解", category:'cooldown', subcategory:'release', spec:"每侧 30s", sets:1, equipment:["roller"], desc:"", tips:"胸小肌和斜方肌已在晨间清单完成", cautions:"" },
   "cooldown_菱形肌拉伸": { name:"菱形肌拉伸", category:'cooldown', subcategory:'static', spec:"30s × 2 组", sets:1, equipment:[], desc:"双臂交叉抱肩，低头含胸。", tips:"", cautions:"" },
@@ -8337,13 +8744,13 @@ const EXERCISE_LIBRARY = {
   "warmup_臀桥激活": { name:"臀桥激活", category:'warmup', subcategory:'activation', spec:"2 组 × 15", sets:1, equipment:[], desc:"仰卧屈膝，臀部上推顶峰停 1 秒。腿日做 2 组作为训练前激活（比晨间维护的 1 组更深度，为后续保加利亚分腿蹲和深蹲做铺垫）。", tips:"晨间 1 组是唤醒激活，腿日 2 组是训练前深度激活", cautions:"" },
   "warmup_90/90_髋关节转换": { name:"90/90 髋关节转换", category:'warmup', subcategory:'activation', spec:"每侧 5 次缓慢", sets:1, equipment:[], desc:"坐地一腿前屈90一腿侧屈90，缓慢切换位置，膝盖贴地。", tips:"打开髋内外旋活动度，对自由泳打腿很有帮助", cautions:"" },
   // -- main --
-  "main_保加利亚分腿蹲": { name:"保加利亚分腿蹲", category:'main', trainingType:'strength', loadHint:'heavy', spec:"3 组 × 8 次", sets:3, equipment:["dumbbell"], desc:"后脚放凳上，前脚蹲下，前膝沿脚尖方向。", tips:"直接改善骨盆前倾", cautions:"", role:'primary', priority:1, muscles:["臀大肌", "股四头肌"] },
-  "main_高脚杯深蹲": { name:"高脚杯深蹲", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"3 组 × 10-12 次", sets:3, equipment:["dumbbell"], desc:"双手抱哑铃于胸前，蹲到最低点停 1 秒再起。", tips:"重量在前训练躯干挺直，改善骨盆前倾", cautions:"", role:'primary', priority:2, muscles:["股四头肌", "臀大肌"] },
-  "main_罗马尼亚硬拉": { name:"罗马尼亚硬拉", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"3 组 × 10 次", sets:3, equipment:[], desc:"髋关节向后推，上身前倾，感受腘绳肌拉伸。", tips:"想象用屁股向后推墙而不是弯腰", cautions:"", role:'primary', priority:3, muscles:["腘绳肌", "臀大肌", "竖脊肌"] },
-  "main_负重臀桥": { name:"负重臀桥", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"3 组 × 12 次", sets:3, equipment:[], desc:"仰卧屈膝髋上放重量，臀部上推顶峰停 2 秒。", tips:"顶峰停 2s", cautions:"", role:'secondary', priority:4, muscles:["臀大肌"] },
-  "main_死虫": { name:"死虫", category:'main', trainingType:'hypertrophy', loadHint:'light', spec:"3 组 × 15 次", sets:3, equipment:[], desc:"对侧手脚缓慢向地板延伸，腰部贴地。", tips:"改善骨盆前倾必做", cautions:"", role:'corrective', priority:5, muscles:["腹横肌", "腹直肌"] },
-  "main_平板支撑": { name:"平板支撑", category:'main', trainingType:'hypertrophy', loadHint:'light', spec:"3 组 × 45s", sets:3, equipment:[], desc:"前臂撑地，身体一直线。", tips:"从 45s 开始，逐步加到 60s", cautions:"", role:'corrective', priority:6, muscles:["腹横肌", "腹直肌", "竖脊肌"] },
-  "main_靠墙站姿": { name:"靠墙站姿", category:'main', trainingType:'stability', loadHint:'light', spec:"90s", sets:1, equipment:[], desc:"背靠墙三点贴墙，下巴微收。", tips:"后脑 背 臀三点贴墙", cautions:"", role:'corrective', priority:7, muscles:["体态稳定"] },
+  "main_保加利亚分腿蹲": { name:"保加利亚分腿蹲", category:'main', trainingType:'strength', loadHint:'heavy', spec:"3 组 × 8 次", sets:3, equipment:["dumbbell"], desc:"后脚放凳上,前脚蹲下,前膝沿脚尖方向。", targetMuscle:"练单侧臀大肌 + 股四头肌, 直接改善骨盆前倾, 是练腿的王牌动作。", tips:["前脚距凳子 60-80cm (距离对了膝盖才不会超脚尖)","下蹲时核心收紧 + 上身保持直立, 不要弯腰","起身时用前脚后跟发力推地"], weightHint:"先空手做 8 次找到平衡感, 再加重量。男性 8-12 kg / 边, 女性 4-6 kg / 边起步。", cautions:"前膝痛 = 前脚距离不够远; 失去平衡 = 后腿绷太紧, 让后腿放松。", alternatives:["平衡很差: 改成箭步蹲 (前后脚都在地面)","没哑铃 / 没凳: 自重保加利亚 (后脚搭沙发)","膝盖伤: 改成髋桥单腿 (仰卧)"], role:'primary', priority:1, muscles:["臀大肌", "股四头肌"] },
+  "main_高脚杯深蹲": { name:"高脚杯深蹲", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"3 组 × 10-12 次", sets:3, equipment:["dumbbell"], desc:"双手抱哑铃于胸前,蹲到最低点停 1 秒再起。", targetMuscle:"练股四头肌 + 臀大肌, 重量在前迫使躯干挺直, 顺带改善骨盆前倾。", tips:["哑铃贴住胸前不离开","蹲到大腿低于水平 (能蹲多深蹲多深)","起身用脚后跟和脚掌发力, 不是脚尖"], weightHint:"男性 12-20 kg, 女性 6-10 kg 起步。能做 12 次还很轻松 = 加重; 8 次都做不了 = 减重。", cautions:"膝盖往内夹 = 错误代偿, 想象膝盖向脚尖第二趾方向。腰塌了 = 重量太大或核心没收紧。", alternatives:["没哑铃: 抱重背包 / 抱猫狗 (开玩笑) / 双手抱住门框做自重深蹲","进阶: 改杠铃前蹲 (难度最大)","膝盖伤: 改髋桥 + 罗马尼亚硬拉组合"], role:'primary', priority:2, muscles:["股四头肌", "臀大肌"] },
+  "main_罗马尼亚硬拉": { name:"罗马尼亚硬拉", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"3 组 × 10 次", sets:3, equipment:[], desc:"髋关节向后推,上身前倾,感受腘绳肌拉伸。", targetMuscle:"练腘绳肌 + 臀大肌 + 竖脊肌, 也是改善骨盆前倾的核心动作。这不是弯腰, 是髋关节铰链。", tips:["想象屁股向后顶墙, 而不是弯腰","下放到大腿后侧明显拉伸即可 (不必碰地)","背部全程挺直, 哑铃贴近大腿下滑"], weightHint:"重量比深蹲略轻。男性 10-15 kg / 边, 女性 5-8 kg / 边起步。重在感受腘绳肌拉伸。", cautions:"如果腰酸而不是腿酸 = 在用腰发力 (错), 减重量重新练习髋关节铰链。背圆 = 立刻停止, 否则会伤腰。", alternatives:["没哑铃: 用单腿罗马尼亚 (自重也有效)","壶铃版: 双手握壶铃做摆荡 (kettlebell swing)","进阶: 杠铃硬拉 (但需更专业指导)"], role:'primary', priority:3, muscles:["腘绳肌", "臀大肌", "竖脊肌"] },
+  "main_负重臀桥": { name:"负重臀桥", category:'main', trainingType:'hypertrophy', loadHint:'heavy', spec:"3 组 × 12 次", sets:3, equipment:[], desc:"仰卧屈膝髋上放重量,臀部上推顶峰停 2 秒。", targetMuscle:"练臀大肌的孤立刺激, 是塑形 + 矫正骨盆前倾的关键。久坐人群必做。", tips:["顶峰用力夹紧屁股 (像捏一颗硬糖), 停 2 秒","脚后跟发力, 不是脚尖","下放时屁股不完全落地, 留 5cm 保持张力"], weightHint:"重量放在髋骨位置 (不是腹部)。男性 15-25 kg, 女性 8-15 kg。臀感最重要, 重量第二。", cautions:"腰拱起 = 没夹紧屁股, 是腰在代偿。想象用核心 \"裹住\" 上推动作。", alternatives:["没哑铃: 自重单腿臀桥 (一只脚不着地, 难度上升)","进阶: 杠铃臀推 (背靠凳子, 杠铃放髋上)","膝盖伤: 改成俯卧腿后摆 (lie on stomach + 抬腿)"], role:'secondary', priority:4, muscles:["臀大肌"] },
+  "main_死虫": { name:"死虫", category:'main', trainingType:'hypertrophy', loadHint:'light', spec:"3 组 × 15 次", sets:3, equipment:[], desc:"对侧手脚缓慢向地板延伸,腰部贴地。", targetMuscle:"练腹横肌 (深层核心), 改善骨盆前倾必做。这不是腹肌训练, 是核心稳定。", tips:["腰部全程紧贴地板 — 这是核心要点","对侧手脚同时延伸到接近地板, 不碰地","呼气延伸, 吸气收回; 节奏慢"], weightHint:"自重动作。如果腰离开地板 = 缩小幅度, 把『延伸到接近地』改成『延伸 30 度』。", cautions:"如果做完只腹直肌酸而腰不累 = 没找对动作。死虫的核心是『在动的同时保持腰贴地』。", alternatives:["完全做不到: 改『鸟狗式』(四肢着地, 对侧手脚伸出)","进阶: 死虫 + 弹力带 (脚踩弹力带, 手拉)","腰痛: 改静态死虫 (不动, 只保持姿势 30 秒)"], role:'corrective', priority:5, muscles:["腹横肌", "腹直肌"] },
+  "main_平板支撑": { name:"平板支撑", category:'main', trainingType:'hypertrophy', loadHint:'light', spec:"3 组 × 45s", sets:3, equipment:[], desc:"前臂撑地,身体一直线。", targetMuscle:"练腹横肌 + 竖脊肌 + 肩稳定, 是核心耐力训练的基础。", tips:["从头到脚一条直线 — 屁股不能塌也不能抬","核心收紧 (像被人要打肚子时的状态)","呼吸不要憋, 正常呼吸"], weightHint:"自重动作。从 30 秒开始, 形态保持好的前提下逐周增加 10 秒, 直到 60 秒就够了。", cautions:"做超过 1 分钟意义不大 — 时间太长容易塌腰。质量比时长重要。", alternatives:["完全做不到: 跪姿平板 (膝盖着地)","进阶: 单腿平板 (一只脚抬起 10 秒)","进阶 II: 侧平板 (锻炼腹斜肌)"], role:'corrective', priority:6, muscles:["腹横肌", "腹直肌", "竖脊肌"] },
+  "main_靠墙站姿": { name:"靠墙站姿", category:'main', trainingType:'stability', loadHint:'light', spec:"90s", sets:1, equipment:[], desc:"背靠墙三点贴墙,下巴微收。", targetMuscle:"重置体态意识, 让身体记住 \"中立位\" 是什么感觉。这不是练肌肉, 是练大脑。", tips:["后脑、背、臀三点贴墙 (这才是中立位)","下巴微收 (双下巴的姿势), 头不前伸","呼吸正常, 90 秒别走神"], weightHint:"自重动作。如果后脑很难贴墙 = 头前伸严重, 这正是要练的; 越难做越要做。", cautions:"做完会发现 \"原来我离开墙就站不直\" — 这正是问题, 也是这个动作的价值。", alternatives:["腰痛: 双脚离墙 30cm 站, 减小腰部弯曲","进阶: 靠墙站 + 手做墙天使 (升级版)","职场: 工作间歇靠墙站 1 分钟, 比刻意训练效率更高"], role:'corrective', priority:7, muscles:["体态稳定"] },
   // -- cooldown --
   "cooldown_臀大肌松解": { name:"臀大肌松解", category:'cooldown', subcategory:'release', spec:"每侧 1min", sets:1, equipment:["ball"], desc:"", tips:"", cautions:"" },
   "cooldown_股四头肌松解": { name:"股四头肌松解", category:'cooldown', subcategory:'release', spec:"每侧 1min", sets:1, equipment:["roller"], desc:"", tips:"深蹲后股四头肌非常紧，重点松解", cautions:"" },
@@ -8360,12 +8767,12 @@ const EXERCISE_LIBRARY = {
   "warmup_墙天使": { name:"墙天使", category:'warmup', subcategory:'activation', spec:"2 组 × 10", sets:1, equipment:[], desc:"背贴墙手背贴墙 W→Y 滑动。", tips:"", cautions:"" },
   "warmup_肩胛俯卧撑": { name:"肩胛俯卧撑", category:'warmup', subcategory:'activation', spec:"2 组 × 12", sets:1, equipment:[], desc:"平板支撑位只移动肩胛：前伸+后缩。", tips:"", cautions:"" },
   // -- main --
-  "main_轻重量肩推": { name:"轻重量肩推", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 8 次", sets:3, equipment:["dumbbell"], desc:"坐站均可，耳侧推起至头顶。", tips:"不要耸肩代偿，肩膀全程下沉", cautions:"", role:'primary', priority:1, muscles:["三角肌", "三头肌"] },
-  "main_哑铃侧平举": { name:"哑铃侧平举", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 12-15 次", sets:3, equipment:["dumbbell"], desc:"两侧平举到肩膀高度，小指略高于拇指。", tips:"肩膀耸起就是重量太大", cautions:"", role:'secondary', priority:2, muscles:["三角肌中束"] },
-  "main_俯身后束飞鸟": { name:"俯身后束飞鸟", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 12-15 次", sets:3, equipment:["dumbbell"], desc:"俯身两侧打开到肩平齐。", tips:"直接对抗肱骨前移", cautions:"", role:'secondary', priority:3, muscles:["后三角肌", "中斜方肌"] },
-  "main_v_把肩胛推举": { name:"V 把肩胛推举", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 8-10 次", sets:3, equipment:[], desc:"推到底时额外肩胛前伸。", tips:"", cautions:"", role:'corrective', priority:4, muscles:["三角肌", "前锯肌"] },
-  "main_三头下压": { name:"三头下压", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 12 次", sets:3, equipment:[], desc:"上臂固定，只有前臂在动。", tips:"", cautions:"", role:'secondary', priority:5, muscles:["三头肌"] },
-  "main_二头弯举": { name:"二头弯举", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 12 次", sets:3, equipment:["dumbbell"], desc:"上臂固定，不借力。", tips:"", cautions:"", role:'secondary', priority:6, muscles:["二头肌"] },
+  "main_轻重量肩推": { name:"轻重量肩推", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 8 次", sets:3, equipment:["dumbbell"], desc:"坐站均可,耳侧推起至头顶。", targetMuscle:"练三角肌前束 + 中束 + 三头肌, 圆肩用户的肩推用 \"轻重量\" 才安全 — 重量第二, 形态第一。", tips:["哑铃从耳侧起 (不是从肩前), 推过头顶","肩膀全程下沉, 不耸肩","顶端不锁死手肘, 留一点弯曲"], weightHint:"圆肩期间男性 6-10 kg, 女性 3-5 kg。能做 8 次还轻松 = 加 1-2 kg, 5 次都做不了 = 减重并先做更多墙天使。", cautions:"如果只感受到斜方肌上束 (脖子后面) 酸 = 在耸肩, 重量减半。", alternatives:["没哑铃: 阿诺德推举 (用瓶装水)","肩膀痛: 改 V 把肩胛推举 (本计划已有)","进阶: 站姿肩推 (核心更难稳定)"], role:'primary', priority:1, muscles:["三角肌", "三头肌"] },
+  "main_哑铃侧平举": { name:"哑铃侧平举", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 12-15 次", sets:3, equipment:["dumbbell"], desc:"两侧平举到肩膀高度,小指略高于拇指。", targetMuscle:"练三角肌中束 (肩膀宽度的关键), 这是 \"虎背蜂腰\" 的视觉感来源。", tips:["小指略高于拇指 (像倒水的姿势)","举到肩膀水平就停 — 高过头会换三角肌前束发力","下放慢 (3 秒), 不要让重量自由落下"], weightHint:"重量小! 男性 3-5 kg, 女性 1-3 kg。如果肩膀耸起来 = 立刻减重一半。能做 15 次还轻松 = 加 1 kg, 不是加 2 kg。", cautions:"耸肩、用反弹力借力、上抬过头都会让效果归零。", alternatives:["没哑铃: 矿泉水瓶","坐姿版 (减少身体晃动): 坐姿哑铃侧平举","进阶: 单边交替 + 顶端停顿 2 秒"], role:'secondary', priority:2, muscles:["三角肌中束"] },
+  "main_俯身后束飞鸟": { name:"俯身后束飞鸟", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 12-15 次", sets:3, equipment:["dumbbell"], desc:"俯身两侧打开到肩平齐。", targetMuscle:"练三角肌后束 + 中斜方, 直接对抗肱骨前移 (圆肩的核心问题)。", tips:["上身俯身到 70-80 度 (近水平)","哑铃打开到肩水平, 拇指略低于小指","顶端用力夹紧两个肩胛骨, 停 1 秒"], weightHint:"轻一些 — 男性 3-5 kg, 女性 1-2 kg。这个动作小心翼翼做才有效, 重量大就让斜方肌上束抢戏。", cautions:"肩耸起来 = 错; 不到肩水平就停 = 没刺激到位。", alternatives:["没哑铃: 弹力带版 (绑门把, 双手交叉拉)","俯身腰累: 趴在斜板上做 (incline bench)","健身房: 反向飞鸟器 (固定轨迹更安全)"], role:'secondary', priority:3, muscles:["后三角肌", "中斜方肌"] },
+  "main_v_把肩胛推举": { name:"V 把肩胛推举", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 8-10 次", sets:3, equipment:[], desc:"推到底时额外肩胛前伸。", targetMuscle:"练三角肌 + 前锯肌, 把肩胛稳定整合到肩推动作中。比普通肩推更适合圆肩用户。", tips:["推到顶后再多推 5cm 让肩胛前伸","下放回到 V 把贴近耳朵","核心收紧, 不让腰拱起代偿"], weightHint:"比普通肩推减 20% 重量。重在感受肩胛前伸的额外幅度, 不是大重量。", cautions:"如果肩胛前伸感觉不到 = 先回去做 5 次墙天使再来。", alternatives:["没 V 把: 用两只哑铃做 (内旋握法)","完全无器械: 跪姿俯卧撑 + 顶部肩胛前伸 (本计划已有 main_前锯肌俯卧撑)","健身房: 史密斯机肩推"], role:'corrective', priority:4, muscles:["三角肌", "前锯肌"] },
+  "main_三头下压": { name:"三头下压", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 12 次", sets:3, equipment:[], desc:"上臂固定,只有前臂在动。", targetMuscle:"练三头肌 (手臂围度的 70%), 是塑造手臂线条的核心。这不是练胸, 是孤立刺激三头。", tips:["上臂始终贴住身体两侧 (不能晃动)","下压到肩、肘、腕成一直线, 顶峰停 1 秒","上回程慢, 不要让重量反弹"], weightHint:"中等重量 — 能做 12 次, 第 11-12 次明显吃力。如果能做 15 次以上, 加重 2 kg。", cautions:"如果上臂前后晃 = 在用胸肌借力, 上臂夹紧。", alternatives:["没拉力器: 用 TRX 做反向下压 (面对 TRX, 双手前推)","哑铃版: 仰卧三头臂屈伸 (skull crusher)","完全无器械: 双杠臂屈伸 (用两把椅子)"], role:'secondary', priority:5, muscles:["三头肌"] },
+  "main_二头弯举": { name:"二头弯举", category:'main', trainingType:'hypertrophy', loadHint:'medium', spec:"3 组 × 12 次", sets:3, equipment:["dumbbell"], desc:"上臂固定,不借力。", targetMuscle:"练二头肌, 直接塑造上臂前侧线条。这是练手臂前侧的最经典动作。", tips:["上臂全程贴身, 肘关节固定不动","哑铃举到肩前停 1 秒, 感受顶峰收缩","下放慢 (3 秒), 不要自由落下"], weightHint:"男性 6-10 kg / 边, 女性 3-5 kg / 边。能做 12 次还轻松 = 加 1-2 kg, 但加重后形态变差就退回去。", cautions:"借力 (用腰晃动) = 这一组废了, 减重重做。手腕过度反折会受伤, 保持中立。", alternatives:["没哑铃: 矿泉水瓶 / 弹力带","进阶: 锤式弯举 (掌心相对, 练肱肌)","进阶 II: 集中弯举 (坐姿, 单手, 肘抵大腿)"], role:'secondary', priority:6, muscles:["二头肌"] },
   // -- cooldown --
   "cooldown_三角肌前束松解": { name:"三角肌前束松解", category:'cooldown', subcategory:'release', spec:"每侧 1min", sets:1, equipment:["ball"], desc:"训练后前束充血松解。", tips:"", cautions:"" },
   "cooldown_肱二头肌腱松解": { name:"肱二头肌腱松解", category:'cooldown', subcategory:'release', spec:"每侧 30s", sets:1, equipment:["ball"], desc:"", tips:"", cautions:"" },
@@ -8379,36 +8786,36 @@ const EXERCISE_LIBRARY = {
   "warmup_侧向屈膝摆腿": { name:"侧向屈膝摆腿", category:'warmup', subcategory:'activation', spec:"每侧 10 次", sets:1, equipment:[], desc:"激活核心旋转。", tips:"", cautions:"" },
   "warmup_深呼吸+憋气练习": { name:"深呼吸+憋气练习", category:'warmup', subcategory:'activation', spec:"30 秒", sets:1, equipment:[], desc:"打开肋间肌活动度。", tips:"", cautions:"" },
   // -- main --
-  "main_自由泳": { name:"自由泳", category:'main', loadHint:'medium', spec:"30-40 分钟", sets:1, equipment:["pool"], desc:"前期重点做单项 drill（打腿、滑行、single arm 等），游 25 米停下思考纠正再游。后期可以做连续游 20-30 分钟（Zone 2 节奏）。学习期累了就扶池边休息，不追求距离和速度。", tips:"周二/周日都可以游泳，每次按当天状态决定做技术 drill 还是连续游", cautions:"" },
+  "main_自由泳": { name:"自由泳", category:'main', loadHint:'medium', spec:"30-40 分钟", sets:1, equipment:["pool"], desc:"前期重点做单项 drill (打腿、滑行、single arm 等),游 25 米停下思考纠正再游。后期可以做连续游 20-30 分钟 (Zone 2 节奏)。学习期累了就扶池边休息,不追求距离和速度。", targetMuscle:"心肺 + 全身协调 + 背阔肌 + 核心。游泳是关节最友好的有氧, 体重大的人首选。", tips:["心率维持 Zone 2 (108-127 bpm)","换气节奏 \"3 划一换\" 比 \"2 划一换\" 更省力","累了就扶池边休息, 比硬游受伤强"], weightHint:"", cautions:"耳朵进水后用单脚跳出水。心率超 130 = 强度太大, 减慢。", alternatives:["游泳池没开: 改 Zone 2 户外快走 (本计划已有)","技术不好: 先做 25 米 drill (打腿板) + 25 米慢游, 重在练姿势","累了: 蛙泳替代 (强度低, 但仍是 Zone 2)"] },
   // -- cooldown --
   "cooldown_水中漂浮": { name:"水中漂浮", category:'cooldown', subcategory:'static', spec:"2-3 分钟", sets:1, equipment:[], desc:"游完后扶池边做俯卧漂浮，感受身体水平的肌肉状态。", tips:"", cautions:"" },
   // ══════════════ 室内单车 (node 12) ══════════════
   // -- warmup --
   "warmup_低阻力踩踏": { name:"低阻力踩踏", category:'warmup', subcategory:'activation', spec:"5 分钟", sets:1, equipment:[], desc:"从低阻力开始，逐步升到 Zone 2 心率。", tips:"热身算在总时长内，不用额外", cautions:"" },
   // -- main --
-  "main_zone_2_单车": { name:"Zone 2 单车", category:'main', loadHint:'light', spec:"30-40 分钟", sets:1, equipment:["bike"], desc:"保持心率 108-127 bpm，转速 60-80 rpm。力量训练日作为\"训练后 Zone 2\"时只需 15-25 分钟；独立有氧日可做 30-40 分钟。", tips:"可以边骑边看视频/听播客分散注意力", cautions:"" },
+  "main_zone_2_单车": { name:"Zone 2 单车", category:'main', loadHint:'light', spec:"30-40 分钟", sets:1, equipment:["bike"], desc:"保持心率 108-127 bpm,转速 60-80 rpm。力量训练日作为\"训练后 Zone 2\"时只需 15-25 分钟;独立有氧日可做 30-40 分钟。", targetMuscle:"心肺 + 下肢耐力。膝盖友好, 适合体重大或膝伤的人作为有氧首选。", tips:["阻力调到能维持 60-80 rpm 的水平","保持心率 Zone 2, 喘但能说话的程度","可以边骑边看视频 / 听播客分散注意力"], weightHint:"", cautions:"屁股痛 = 调高坐垫或调整角度。膝盖痛 = 阻力太大, 调低。", alternatives:["没单车: Zone 2 户外快走 (本计划已有)","懒得动: 改椭圆机 (更全身性)","进阶: 间歇骑 (1 分钟全速 + 2 分钟慢骑, 但这不是 Zone 2)"] },
   // -- cooldown --
   "cooldown_降阻力踩踏_+_下肢拉伸": { name:"降阻力踩踏 + 下肢拉伸", category:'cooldown', subcategory:'static', spec:"5 分钟", sets:1, equipment:[], desc:"最后 3 分钟逐步降阻力到热身水平，下车后拉伸股四头肌和髋屈肌。", tips:"", cautions:"" },
   // ══════════════ 跑步机爬坡 (node 13) ══════════════
   // -- warmup --
   "warmup_快走预热": { name:"快走预热", category:'warmup', subcategory:'activation', spec:"3-5 分钟", sets:1, equipment:[], desc:"速度 4 km/h 坡度 0% 开始，逐步升到目标坡度和速度。", tips:"", cautions:"" },
   // -- main --
-  "main_zone_2_跑步机爬坡": { name:"Zone 2 跑步机爬坡", category:'main', loadHint:'light', spec:"25-40 分钟", sets:1, equipment:["treadmill"], desc:"首选\"爬坡快走\"模式：坡度 8-10%，速度 5-6 km/h。体力好可切换\"慢跑\"模式：坡度 0-2%，速度 7-9 km/h。作为力量训练日的\"训练后 Zone 2\"只需 15-25 分钟。", tips:"腿日后不要用跑步机，选单车", cautions:"" },
+  "main_zone_2_跑步机爬坡": { name:"Zone 2 跑步机爬坡", category:'main', loadHint:'light', spec:"25-40 分钟", sets:1, equipment:["treadmill"], desc:"首选\"爬坡快走\"模式: 坡度 8-10%,速度 5-6 km/h。体力好可切换\"慢跑\"模式: 坡度 0-2%,速度 7-9 km/h。作为力量训练日的\"训练后 Zone 2\"只需 15-25 分钟。", targetMuscle:"心肺 + 下肢肌耐力。爬坡快走的减脂效率比平地慢跑高很多, 对膝盖也更友好。", tips:["首选爬坡快走, 不是慢跑","心率维持 Zone 2 (108-127 bpm)","头不要前伸看屏幕, 看远处或前方"], weightHint:"", cautions:"腿日刚训完不要用跑步机 (改单车)。坡度 10% 以上腰会代偿, 不要追求高坡。", alternatives:["腿太累: 改 Zone 2 单车","没跑步机: 户外找带坡的路段快走","懒得爬坡: 椭圆机 (但减脂效率略低)"] },
   // -- cooldown --
   "cooldown_降速_+_小腿腘绳肌拉伸": { name:"降速 + 小腿腘绳肌拉伸", category:'cooldown', subcategory:'static', spec:"5 分钟", sets:1, equipment:[], desc:"最后 3 分钟逐步降速降坡度，下机后拉伸小腿、腘绳肌。", tips:"", cautions:"" },
   // ══════════════ 户外快走 (node 14) ══════════════
   // -- warmup --
   "warmup_普通速度起步": { name:"普通速度起步", category:'warmup', subcategory:'activation', spec:"3 分钟", sets:1, equipment:[], desc:"从普通走路速度开始，逐步加快到目标强度。", tips:"", cautions:"" },
   // -- main --
-  "main_zone_2_户外快走": { name:"Zone 2 户外快走", category:'main', loadHint:'light', spec:"30-40 分钟", sets:1, equipment:[], desc:"找带坡度的路段快走，心率维持 Zone 2。可以穿负重背心增加强度（5kg 以内）。", tips:"如果只有平路，可以小幅加快速度（6-7 km/h）", cautions:"" },
+  "main_zone_2_户外快走": { name:"Zone 2 户外快走", category:'main', loadHint:'light', spec:"30-40 分钟", sets:1, equipment:[], desc:"找带坡度的路段快走,心率维持 Zone 2。可以穿负重背心增加强度 (5kg 以内)。", targetMuscle:"心肺 + 下肢肌耐力。零成本零设备, 户外 + 阳光对心理状态也有帮助。", tips:["找带坡度的路段, 公园 / 郊野 / 楼梯都可以","只有平路时小幅加快 (6-7 km/h)","可以听播客或音乐, 时间过得快"], weightHint:"", cautions:"夏天高温 / 冬天极冷不要硬走, 改室内有氧。负重背心超 5kg 容易伤膝。", alternatives:["天气糟: 改跑步机爬坡","完全无时间: 通勤路上快走 30 分钟 (累计也算)","进阶: 加负重背心 5 kg / 走更陡的坡"] },
   // -- cooldown --
   "cooldown_普通速度_+_下肢拉伸": { name:"普通速度 + 下肢拉伸", category:'cooldown', subcategory:'static', spec:"5 分钟", sets:1, equipment:[], desc:"最后 3 分钟降到普通走路速度，回家后简单拉伸小腿和髋屈肌。", tips:"", cautions:"" },
   // ══════════════ 主动恢复 (node 21) ══════════════
   // -- main --
-  "main_主动恢复_任选": { name:"主动恢复（任选）", category:'main', loadHint:'light', spec:"20-40 分钟", sets:1, equipment:[], desc:"任选一种：\\n• 散步 30 分钟（最推荐）\\n• 低阻力单车 20 分钟\\n• 舒缓游泳 20 分钟（非自由泳，轻松蛙泳即可）\\n• 瑜伽拉伸 30 分钟\\n\\n强度要求：能轻松说话，不出汗或只微微出汗。", tips:"恢复日是训练周期的一部分，加速血液循环帮助肌肉恢复", cautions:"" },
+  "main_主动恢复_任选": { name:"主动恢复(任选)", category:'main', loadHint:'light', spec:"20-40 分钟", sets:1, equipment:[], desc:"任选一种:\\n• 散步 30 分钟 (最推荐)\\n• 低阻力单车 20 分钟\\n• 舒缓游泳 20 分钟 (非自由泳, 轻松蛙泳即可)\\n• 瑜伽拉伸 30 分钟\\n\\n强度要求: 能轻松说话, 不出汗或只微微出汗。", targetMuscle:"促进血液循环、加速恢复。这不是训练日, 是 \"训练计划的一部分\" — 让身体修复, 同时保持活动节奏。", tips:["强度极低: 能轻松说话, 不出汗或微微出汗就够","散步 30 分钟是最简单选项, 也是最有效的","不要把恢复日做成训练日, 否则后续训练质量会下降"], weightHint:"", cautions:"如果做完累了 = 强度太高, 这不叫主动恢复, 叫 \"轻量训练\"。", alternatives:["想动: 散步 30 分钟 (首推)","下雨: 室内瑜伽拉伸 / 低阻单车","完全不想动: 换 \"完全休息\" 也行, 不必硬做"] },
   // ══════════════ 完全休息 (node 22) ══════════════
   // -- main --
-  "main_完全休息": { name:"完全休息", category:'main', loadHint:'light', spec:"一整天", sets:1, equipment:[], desc:"只做晨间 6min 体态维护，其他时间正常生活作息。完全休息不是浪费时间，是为后续训练充电的关键日。", tips:"完全休息是保证后续训练质量的关键", cautions:"" },
+  "main_完全休息": { name:"完全休息", category:'main', loadHint:'light', spec:"一整天", sets:1, equipment:[], desc:"只做晨间 6min 体态维护,其他时间正常生活作息。完全休息不是浪费时间,是为后续训练充电的关键日。", targetMuscle:"睡眠 + 进食 + 心理调整。肌肉的成长发生在休息时, 不是训练时。", tips:["睡满 7-8 小时是最重要的","蛋白质摄入要够 (体重 × 1.6-2 g)","可以用泡沫轴做轻松松解, 但不要做训练动作"], weightHint:"", cautions:"完全休息不是 \"懒\", 是计划的一部分。如果训练日次数都达标, 不要在休息日多练 — 那会让下周训练质量崩盘。", alternatives:["精神好想动: 改 \"主动恢复\" (散步 30 分钟)","状态差: 完全休息就是最好的选择","压力大: 加 10 分钟冥想 / 深呼吸"] },
 };
 
 const NODE_EXERCISES = {
@@ -8792,6 +9199,56 @@ const NODES = {
 //   D7 完全休息 (CNS / 关节 / 心理 三方面 reset)
 const SEQUENCE = [1, 3, 'cardio', 5, 6, 'cardio', 22];
 
+// ROUTINE_PURPOSE: 每个 routine 的"为什么这样练" - 训练库详情顶部展示
+//   goal      = 今天目标 (一句话, 用户能记住)
+//   sequence  = 为什么动作这样排
+//   protect   = 不要跳过 (热身 / 拉伸 / 燃脂 的科学原因)
+//   priority  = 这个 routine 在 4 周契约里的优先级提示 (可选)
+const ROUTINE_PURPOSE = {
+  // 胸日
+  1: {
+    goal: '上胸激活 + 肩胛稳定',
+    sequence: '先做松解和肩胛激活打开胸椎活动度,主训练才能真正练到胸而不是肩。卧推先于飞鸟 — 大重量动作神经系统状态更佳时效果最好。',
+    protect: '矫正动作 (前锯肌俯卧撑 / 墙天使) 不是配菜 — 圆肩用户跳过它们,练再多胸也只是加重肩前侧代偿。'
+  },
+  // 背日
+  3: {
+    goal: '背阔激活 + 抗驼背',
+    sequence: '先松解胸椎和肩袖,再做下拉/划船类大重量。最后用 TRX 面拉和 Y 字上抬强化中下斜方 — 这些"小动作"才是真正改善体态的关键。',
+    protect: '划船是练背的发力起点,但很多人做成了"用胳膊拉" — 全程感受肩胛后缩,做不到就把重量减半。'
+  },
+  // 腿核
+  5: {
+    goal: '臀腿后链 + 核心稳定',
+    sequence: '从单侧蹲 (保加利亚) 开始,补单侧弱点;再用高脚杯深蹲和罗马尼亚硬拉建立基础力量。死虫 / 平板支撑放最后 — 它们让你"在累的时候保持核心稳定",这才是核心训练的真意。',
+    protect: '骨盆前倾的人,死虫 + 靠墙站姿比深蹲更重要。深蹲是塑形,死虫是改命。'
+  },
+  // 肩臂
+  6: {
+    goal: '肩稳定 + 手臂线条',
+    sequence: '轻重量肩推先做 — 上一次胸日已经累了三角肌前束,今天的重点是中束 + 后束 + 肩稳定。三头先于二头是因为大肌群比小肌群优先。',
+    protect: '侧平举重量大不是好事 — 一旦耸肩,练的就是斜方肌而不是中三角。宁可 2 kg 做 15 次标准,也别 5 kg 做 8 次代偿。'
+  },
+  // 有氧 (4 选 1)
+  99: {
+    goal: 'Zone 2 心率 + 主动减脂',
+    sequence: '心率维持 108-127 bpm — 喘但能说话。强度太高反而进不到脂肪燃烧区间。30-40 分钟是甜蜜点。',
+    protect: '腿日刚训完不要选跑步机 — 改单车 / 户外快走 / 游泳, 给膝盖留余量。'
+  },
+  // 主动恢复
+  21: {
+    goal: '促进恢复, 不是训练',
+    sequence: '强度极低 — 能轻松说话, 微微出汗就够。散步 30 分钟是最简单也最有效的选项。',
+    protect: '把恢复日做成训练日, 下周训练质量会崩盘。这是计划的一部分, 不是偷懒。'
+  },
+  // 完全休息
+  22: {
+    goal: '修复 + 充电',
+    sequence: '肌肉的成长发生在休息时, 不是训练时。睡满 7-8 小时, 蛋白质摄入达到体重 × 1.6-2 g。',
+    protect: '完全休息不是浪费时间。如果训练日次数已经达标, 不要在休息日多练 — 那只会让累积疲劳爆发。'
+  }
+};
+
 // 'cardio' 通配符 → 用户选具体节点的列表
 const CARDIO_NODE_IDS = [11, 12, 13, 14];  // 自由泳 / 单车 / 跑步 / 快走
 
@@ -8817,6 +9274,33 @@ function _restAdjustOffsetBefore(absDay) {
 function getSequenceRaw(absDay) {
   const offset = _restAdjustOffsetBefore(absDay);
   return SEQUENCE[(absDay - 1 - offset) % 7];
+}
+
+// ════════════════════════════════════════════════════════════
+// getPlannedNodeForDay (v0.2.2 关键架构):
+// 这是回答"D{absDay} 应该做什么节点"的唯一权威函数。
+// 规则:
+//   1. 如果该天 record 已经写了 nodeId (用户已开始或已完成), 直接读 record (尊重历史)
+//   2. 否则按 SEQUENCE 推算, 自动应用主动休息顺延 (getSequenceRaw 已含)
+//
+// 替代了之前满地的 SEQUENCE[dayIdx] / SEQUENCE[(d-1)%7] / record.nodeId || SEQUENCE 等乱写法。
+// 所有判断"今天该做什么"的入口都必须用这个函数:
+//   - 首页 today card / homeDayStatus
+//   - startTraining / enterWorkoutPage
+//   - openChangeDrawer 推荐标签
+//   - 日历 / 周复盘 / 契约复盘
+//
+// 数据约定:
+//   record.nodeId 一旦写入 = 这一天的"实际"计划 (包括用户改的)
+//   未写 nodeId = 按 sequence 推算 (尊重顺延)
+// ════════════════════════════════════════════════════════════
+function getPlannedNodeForDay(absDay, record) {
+  if (!record) {
+    const dateStr = addDays(state.config.startDate, absDay - 1);
+    record = state.records[dateStr] || {};
+  }
+  if (record.nodeId) return record.nodeId;
+  return getSequenceRaw(absDay);
 }
 
 // 取某天的实际 nodeId, 处理 cardio 通配符
@@ -9305,11 +9789,13 @@ function homeDayStatus(absDay) {
   const dateStr = addDays(state.config.startDate, absDay - 1);
   const today = todayStr();
   const record = state.records[dateStr] || {};
-  const rawNode = record.nodeId || getSequenceRaw(absDay);
+  const rawNode = getPlannedNodeForDay(absDay, record);
   const isRest = rawNode === 22;
 
   if (dateStr < today) {
     if (record.completed) return isRest ? 'done-rest' : 'done';
+    if (record.adjusted === 'rest') return 'done-rest';  // 主动改休息 = 履约
+    if (isRest) return 'done-rest';  // 计划休息日: 默认完成 (不要求用户额外打卡)
     return 'missed';
   }
   if (dateStr === today) return 'today';
@@ -9318,9 +9804,8 @@ function homeDayStatus(absDay) {
 }
 
 function homeNodeIdForDay(absDay) {
-  const dateStr = addDays(state.config.startDate, absDay - 1);
-  const record = state.records[dateStr] || {};
-  return record.nodeId || getSequenceRaw(absDay);  // 可能是数字, 也可能是 'cardio'
+  // 委托到唯一权威函数 getPlannedNodeForDay
+  return getPlannedNodeForDay(absDay);
 }
 
 // 用于地图渲染的"展示节点 ID"
@@ -9573,69 +10058,169 @@ function _renderWeekReviewCard() {
 }
 
 function _openWeekReview(weekNum) {
-  // 轻量版: 直接打开一个 alert 风格的简单 sheet (可读 / 可关), 标记已读
   const cfg = state.config;
   if (!cfg.startDate) return;
   const weekStartAbsDay = (weekNum - 1) * 7 + 1;
   const weekEndAbsDay = weekNum * 7;
-  let doneCount = 0;
+
+  // ─── 数据采集 ───
+  // 训练计数 + 类型分布 (力量 / 有氧 / 主动休息 / 缺席)
+  let strengthCount = 0;
+  let cardioCount = 0;
+  let restDoneCount = 0;       // 计划休息日打卡
+  let restAdjustedCount = 0;   // 主动改休息
   let lightCount = 0;
-  let restAdjustedCount = 0;
+  let missedCount = 0;
   for (let d = weekStartAbsDay; d <= weekEndAbsDay; d++) {
     const dateStr = addDays(cfg.startDate, d - 1);
-    const rec = state.records[dateStr];
-    if (rec && rec.completed) {
-      doneCount++;
+    const rec = state.records[dateStr] || {};
+    const seqRaw = getSequenceRaw(d);
+    const isRestDay = seqRaw === 22;
+    if (rec.completed) {
+      const nid = rec.nodeId;
+      if (nid === 22) {
+        restDoneCount++;
+      } else if (CARDIO_NODE_IDS.includes(nid)) {
+        cardioCount++;
+      } else {
+        strengthCount++;
+      }
       if (rec.level === 'light') lightCount++;
-    } else if (rec && rec.adjusted === 'rest') {
+    } else if (rec.adjusted === 'rest') {
       restAdjustedCount++;
+    } else if (dateStr < todayStr()) {
+      // 训练日空白 = missed; 休息日空白 = 不计
+      if (!isRestDay) missedCount++;
     }
   }
+  const totalTrainingDone = strengthCount + cardioCount;
 
-  // 体重
+  // 体重: 7 日均重 比较
   const weights = state.weights || {};
   const wkStart = addDays(cfg.startDate, weekStartAbsDay - 1);
   const wkEnd = addDays(cfg.startDate, weekEndAbsDay - 1);
-  let weightLine = '尚无数据';
-  const wStartList = Object.keys(weights).filter(d => d <= wkStart).sort();
-  const wEndList = Object.keys(weights).filter(d => d <= wkEnd).sort();
-  if (wStartList.length > 0 && wEndList.length > 0) {
-    const wkStartW = weights[wStartList[wStartList.length - 1]];
-    const wkEndW = weights[wEndList[wEndList.length - 1]];
-    const delta = wkEndW - wkStartW;
-    const sign = delta > 0 ? '+' : '';
-    weightLine = `${wkStartW.toFixed(1)} → ${wkEndW.toFixed(1)} kg (${sign}${delta.toFixed(1)})`;
+  // 本周末和本周初都用 7 日均 (扁平化波动)
+  function avg7Around(targetDate) {
+    let sum = 0, n = 0;
+    for (let i = 0; i < 7; i++) {
+      const d = addDays(targetDate, -i);
+      if (weights[d] != null) { sum += weights[d]; n++; }
+    }
+    return n > 0 ? sum / n : null;
+  }
+  const startAvg = avg7Around(wkStart);
+  const endAvg = avg7Around(wkEnd);
+  let weightDelta = null;
+  let weightStatus = 'no-data';   // no-data / normal / fast / stalled / wrong-direction
+  if (startAvg != null && endAvg != null) {
+    weightDelta = endAvg - startAvg;
+    const direction = (cfg.targetWeight - cfg.startWeight) < 0 ? 'lose' : 'gain';
+    if (Math.abs(weightDelta) < 0.15) {
+      weightStatus = 'stalled';
+    } else if (direction === 'lose') {
+      if (weightDelta < -1.0) weightStatus = 'fast';
+      else if (weightDelta < 0) weightStatus = 'normal';
+      else weightStatus = 'wrong-direction';
+    } else {
+      if (weightDelta > 0.5) weightStatus = 'fast';
+      else if (weightDelta > 0) weightStatus = 'normal';
+      else weightStatus = 'wrong-direction';
+    }
   }
 
-  // 简短判断
-  let verdict = '';
-  let suggestion = '';
-  if (doneCount >= 5) {
-    verdict = '本周节奏很稳。';
-    suggestion = '下周保持当前频率即可,不用加量。';
-  } else if (doneCount >= 3) {
-    verdict = '本周节奏基本成立,有 ' + (7 - doneCount) + ' 天空白。';
-    suggestion = '下周不要加量,先把空白日中的至少 1 天做成 10 分钟轻量版。';
-  } else if (doneCount >= 1) {
-    verdict = '本周节奏偏少,只有 ' + doneCount + ' 天有训练。';
-    suggestion = '下周不必追求完美,目标先是 3 天。空白日累积时,提前用"今天改休息"声明,而不是直接断线。';
+  // ─── 1. 行为结论 ───
+  const behaviorParts = [];
+  if (totalTrainingDone > 0) {
+    behaviorParts.push(`<b>${totalTrainingDone}</b> 天有训练`);
+    const detail = [];
+    if (strengthCount > 0) detail.push(`力量 ${strengthCount}`);
+    if (cardioCount > 0) detail.push(`有氧 ${cardioCount}`);
+    if (detail.length > 0) behaviorParts.push(`(${detail.join(' · ')})`);
+  }
+  if (lightCount > 0) behaviorParts.push(`其中 <b>${lightCount}</b> 次低压版`);
+  if (restAdjustedCount > 0) behaviorParts.push(`<b>${restAdjustedCount}</b> 天主动休息`);
+  if (missedCount > 0) behaviorParts.push(`<b>${missedCount}</b> 天空白`);
+  const behaviorLine = behaviorParts.length > 0 ? behaviorParts.join(' · ') : '本周没有任何记录';
+
+  // 训练结构判断
+  let structureNote = '';
+  if (totalTrainingDone === 0) {
+    // 无任何训练 - 不评价结构
+  } else if (cardioCount === 0 && strengthCount > 0) {
+    structureNote = '本周只有力量训练。Zone 2 有氧能加速恢复并直接燃脂,下周加 1-2 次。';
+  } else if (strengthCount === 0 && cardioCount > 0) {
+    structureNote = '本周全是有氧。力量训练能保住肌肉、抬高基础代谢,下周加 1-2 次。';
+  } else if (strengthCount >= 4) {
+    structureNote = '力量训练偏多,小心累积疲劳。下周如果觉得吃力,做 1 次低压版而不是停下来。';
   } else {
-    verdict = '本周几乎没动,但你还在这里就还没结束。';
-    suggestion = '下周从最小单位开始: 1 天 10 分钟轻量版,把节奏接回来。';
+    structureNote = '训练结构合理 — 力量和有氧都有覆盖。';
   }
 
-  // 显示在一个 alert overlay (复用 stage-overview 风格)
+  // ─── 2. 身体反馈结论 ───
+  let weightLine, bodyVerdict;
+  if (weightStatus === 'no-data') {
+    weightLine = '本周体重数据不足';
+    bodyVerdict = '需要至少每周 2-3 次记录,才能看到真实趋势。';
+  } else {
+    const sign = weightDelta > 0 ? '+' : '';
+    weightLine = `7 日均重 ${sign}${weightDelta.toFixed(1)} kg`;
+    if (weightStatus === 'normal') {
+      bodyVerdict = '趋势正常 — 更像是有效下降, 不要被单日波动干扰。';
+    } else if (weightStatus === 'fast') {
+      bodyVerdict = '变化偏快。可能含水分。下周不必再加码,稳住就好。';
+    } else if (weightStatus === 'stalled') {
+      bodyVerdict = '本周持平。原因可能是水分滞留 / 经期 / 训练太累 / 饮食偏多 — 单周持平不代表失败,看下周再说。';
+    } else {
+      bodyVerdict = '方向反了。检查饮食是否实际控制、睡眠是否够、是否摄入过量盐分。';
+    }
+  }
+
+  // ─── 3. 下周策略 (按当前完成情况 + 体重状态) ───
+  let strategy;
+  if (totalTrainingDone === 0) {
+    strategy = '<b>下周从最小单位开始</b><br>不要追求完美 — 1 天 10 分钟低压版就够。先把节奏接回来,再谈强度。';
+  } else if (totalTrainingDone <= 2) {
+    strategy = `<b>下周目标:先稳住 3 天</b><br>不要加量。状态不好的日子选择 "今天主动休息" 提前声明,比直接消失好得多 — 至少不会断线。`;
+  } else if (totalTrainingDone <= 4) {
+    if (weightStatus === 'wrong-direction') {
+      strategy = '<b>下周保持训练频率,重点改饮食</b><br>训练已经够了,体重反弹大概率是吃的问题。检查 — 你这周有没有"练完就放纵"?';
+    } else if (weightStatus === 'stalled') {
+      strategy = '<b>下周保持当前节奏</b><br>不用加量。持平是减脂常态,身体在调整水分和适应训练 — 给它时间。';
+    } else {
+      strategy = '<b>下周保持当前频率即可</b><br>不要加量。把空白日中的至少 1 天做成低压版,提高底盘连续性。';
+    }
+  } else {
+    // 5+ 天
+    if (weightStatus === 'fast') {
+      strategy = '<b>下周不要加码 — 稳住就是赢</b><br>体重下降太快多半含水分。把训练保持在当前水平,饮食不要继续往下压,容易反弹。';
+    } else if (weightStatus === 'wrong-direction' || weightStatus === 'stalled') {
+      strategy = '<b>训练量已经够了,问题不在练</b><br>下周保持训练频率,重点检查饮食(尤其是看不见的零食/饮料/酱料)和睡眠时长。';
+    } else {
+      strategy = '<b>下周保持当前节奏</b><br>训练量和效果都对得上 — 不要急着加码,稳定推进比短期快冲更重要。';
+    }
+  }
+
+  // ─── 渲染 ───
   const html = `
     <div class="wr-modal-content">
-      <div class="wr-tag">第 ${weekNum} 周复盘 · 轻量版</div>
-      <div class="wr-stat-block">
-        <div class="wr-stat-row"><span>训练完成</span><b>${doneCount} / 7</b></div>
-        ${lightCount > 0 ? `<div class="wr-stat-row"><span>其中轻量版</span><b>${lightCount} 天</b></div>` : ''}
-        ${restAdjustedCount > 0 ? `<div class="wr-stat-row"><span>主动改休息</span><b>${restAdjustedCount} 天</b></div>` : ''}
-        <div class="wr-stat-row"><span>体重变化</span><b>${weightLine}</b></div>
+      <div class="wr-tag">第 ${weekNum} 周复盘</div>
+
+      <div class="wr-section">
+        <div class="wr-section-title">这周做了什么</div>
+        <div class="wr-section-body">${behaviorLine}</div>
+        ${structureNote ? `<div class="wr-section-note">${structureNote}</div>` : ''}
       </div>
-      <div class="wr-verdict">${verdict}</div>
-      <div class="wr-suggestion">${suggestion}</div>
+
+      <div class="wr-section">
+        <div class="wr-section-title">身体的反馈</div>
+        <div class="wr-section-body wr-weight ${weightStatus}">${weightLine}</div>
+        <div class="wr-section-note">${bodyVerdict}</div>
+      </div>
+
+      <div class="wr-section wr-strategy">
+        <div class="wr-section-title">下周策略</div>
+        <div class="wr-section-body">${strategy}</div>
+      </div>
     </div>
   `;
   document.getElementById('wrModalContent').innerHTML = html;
@@ -9764,6 +10349,76 @@ function _renderGoalCard() {
     ? (remainingKg < 0 ? `已超出目标 ${remainingAbs} kg` : `还差 ${remainingAbs} kg`)
     : (remainingKg > 0 ? `还差 ${remainingAbs} kg` : `已超出目标 ${remainingAbs} kg`);
 
+  // ─── 趋势分析 (减脂科学: 单日体重不靠谱, 7 日均重才稳定) ───
+  // 1. 7 日均重: 取过去 7 天内的所有记录
+  const today_ = todayStr();
+  let avg7 = null;
+  let avg7Count = 0;
+  let avg7Sum = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(today_, -i);
+    if (weights[d] != null) {
+      avg7Sum += weights[d];
+      avg7Count++;
+    }
+  }
+  if (avg7Count > 0) avg7 = avg7Sum / avg7Count;
+
+  // 2. 较起点变化 (用 7 日均重 vs 起点, 比 currentWeight - startWeight 稳定)
+  const baselineForTrend = avg7 != null ? avg7 : currentWeight;
+  const deltaFromStart = baselineForTrend - startWeight;
+
+  // 3. 趋势方向: 看最近 7 天均重 vs 上 7 天均重
+  let prevAvg = null;
+  let prevCount = 0;
+  let prevSum = 0;
+  for (let i = 7; i < 14; i++) {
+    const d = addDays(today_, -i);
+    if (weights[d] != null) {
+      prevSum += weights[d];
+      prevCount++;
+    }
+  }
+  if (prevCount > 0) prevAvg = prevSum / prevCount;
+
+  let trendLabel = '';
+  let trendCls = '';
+  if (avg7 == null) {
+    trendLabel = '需要更多记录才能看趋势';
+    trendCls = 'muted';
+  } else if (prevAvg == null) {
+    trendLabel = direction === 'lose' ? '坚持记录,下周看趋势' : '坚持记录,下周看趋势';
+    trendCls = 'muted';
+  } else {
+    const trendDelta = avg7 - prevAvg;
+    const trendAbs = Math.abs(trendDelta);
+    if (trendAbs < 0.15) {
+      trendLabel = '稳定中 — 体重相对持平';
+      trendCls = 'neutral';
+    } else if (direction === 'lose') {
+      if (trendDelta < 0) {
+        trendLabel = `下降中 · 周均 -${trendAbs.toFixed(1)} kg`;
+        trendCls = 'good';
+      } else {
+        trendLabel = `略有上浮 · 周均 +${trendAbs.toFixed(1)} kg`;
+        trendCls = 'warn';
+      }
+    } else {
+      // gain
+      if (trendDelta > 0) {
+        trendLabel = `上升中 · 周均 +${trendAbs.toFixed(1)} kg`;
+        trendCls = 'good';
+      } else {
+        trendLabel = `略有回落 · 周均 ${trendDelta.toFixed(1)} kg`;
+        trendCls = 'warn';
+      }
+    }
+  }
+
+  const startSign = deltaFromStart > 0 ? '+' : '';
+  const deltaFromStartLabel = `较起点 ${startSign}${deltaFromStart.toFixed(1)} kg`;
+  const avg7Display = avg7 != null ? `${_fmtWeight(avg7)} kg` : '—';
+
   // 展开态: 完整折线图 + 历史记录
   // 折叠态: 不显示任何曲线 (纯文字数据), 让卡片更紧凑
   const fullChart = _goalCardExpanded
@@ -9805,11 +10460,15 @@ function _renderGoalCard() {
 
       <div class="gcv2-summary">
         <div class="gcv2-row">
-          <span>目标</span>
-          <span class="gcv2-row-value">${_fmtWeight(targetWeight)} kg</span>
+          <span>7 日均重</span>
+          <span class="gcv2-row-value">${avg7Display}</span>
         </div>
         <div class="gcv2-row">
-          <span>${remainingLabel}</span>
+          <span>${deltaFromStartLabel}</span>
+          <span class="gcv2-row-value muted">目标 ${_fmtWeight(targetWeight)} kg</span>
+        </div>
+        <div class="gcv2-row gcv2-trend ${trendCls}">
+          <span>${trendLabel}</span>
           <span class="gcv2-row-value muted">${remainingDays} 天剩余</span>
         </div>
       </div>
@@ -10056,8 +10715,8 @@ function _renderTodayCard() {
     return `
       <div class="today-card done">
         <div class="today-card-done-icon">✓</div>
-        <div class="today-card-done-text">${isLight ? '今天已轻量完成' : '今天已完成'}</div>
-        <div class="today-card-done-sub">训练 ${dur} 分钟 · 明天继续</div>
+        <div class="today-card-done-text">${isLight ? '今天用低压版完成了' : '今天已经守住'}</div>
+        <div class="today-card-done-sub">训练 ${dur} 分钟 · 明天接上</div>
       </div>
     `;
   }
@@ -10067,8 +10726,8 @@ function _renderTodayCard() {
     return `
       <div class="today-card adjusted-rest">
         <div class="today-card-done-icon">𖢨</div>
-        <div class="today-card-done-text">今天改为休息</div>
-        <div class="today-card-done-sub">明天继续 · 不算失败</div>
+        <div class="today-card-done-text">今天主动休息</div>
+        <div class="today-card-done-sub">不算缺席 · 明天接上</div>
       </div>
     `;
   }
@@ -10087,7 +10746,7 @@ function _renderTodayCard() {
           ${rec.cta} <span style="font-size:18px;">→</span>
         </button>
         <button class="today-card-adjust" onclick="openAdjustToday()">
-          调整
+          状态不好
         </button>
       </div>
     </div>
@@ -10112,11 +10771,23 @@ function closeAdjustTodayBg(e) {
 // 选项 1: 做轻量版
 function adjustToLight() {
   closeAdjustToday();
+  const today = todayStr();
   const todayDay = homeTodayDay();
-  // v0.1.1: 临时直接进训练流, 持久化时打 light 标记
-  // (训练完成时 markCompleted 会读 _adjustLevel 字段)
-  workoutState._pendingLevel = 'light';
-  startTraining(todayDay);
+
+  // 写入 record: 标记 level=light + 注入低压版的 todayAnswers
+  // 这样 enterWorkoutPage 不会再弹 quiz, adjustExercises 会按 low-pressure 模式裁剪
+  if (!state.records[today]) state.records[today] = {};
+  state.records[today].todayAnswers = {
+    energy: 'low',
+    duration: 10,        // 兑现承诺: 10 分钟最低版本
+    lowPressure: true    // 关键标记: adjustExercises 会基于这个走特殊裁剪
+  };
+  state.records[today].level = 'light';
+  state.records[today].inProgress = true;
+  saveState();
+
+  // 直接进训练页
+  enterWorkoutPage(todayDay);
 }
 
 // 选项 2: 今天改休息, 明天继续
@@ -10216,6 +10887,10 @@ function _renderRecentLogCard() {
         const node = NODES[nid];
         label = node ? _calTypeAbbr(node) : '✓';
       }
+    } else if (rec.adjusted === 'rest') {
+      // 主动改休息 (受 P0 修复保护)
+      cls = 'rest';
+      label = '休';
     } else if (date < today) {
       // 未训练但在契约期内
       if (cfg.startDate && date >= cfg.startDate) {
@@ -10595,7 +11270,11 @@ function openInfo(absDay) {
 
     case 'done-rest':
       tagHtml = `<span class="info-status-tag tag-rest">休 息 日</span>`;
-      bodyHtml = `<div class="info-desc">休息了。</div>`;
+      if (record.adjusted === 'rest') {
+        bodyHtml = `<div class="info-desc">这一天主动改了休息。<br><span style="color:var(--muted2);font-size:12px;line-height:1.7;">不算失败 · 训练顺延到第二天</span></div>`;
+      } else {
+        bodyHtml = `<div class="info-desc">休息了。</div>`;
+      }
       actionsHtml = `<button class="info-btn info-btn-secondary" onclick="closeInfo()" style="flex:1">关闭</button>`;
       break;
   }
@@ -10720,7 +11399,7 @@ function openChest(week) {
         </div>
         <div class="chest-stat">
           <div class="chest-stat-num">${missed}</div>
-          <div class="chest-stat-label">缺席</div>
+          <div class="chest-stat-label">未完成</div>
         </div>
       </div>
 
@@ -11035,12 +11714,11 @@ function finalizeQuiz() {
 function openChangeDrawer(dayNum) {
   const today = todayStr();
   const currentRecord = state.records[today];
-  let currentNodeId = (currentRecord && currentRecord.nodeId) || SEQUENCE[(getCurrentStageWeek()-1) * 7 + (daysBetween(state.config.startDate, today) % 7)] || SEQUENCE[0];
-  // 找到当前推荐的
-  const week = Math.max(1, Math.min(getCurrentStageWeek(), state.config.stageWeeks));
-  const weekStart = addDays(state.config.startDate, (week-1) * 7);
-  const dayIdx = daysBetween(weekStart, today);
-  let recommendedId = SEQUENCE[dayIdx] || SEQUENCE[0];
+  const absDay = daysBetween(state.config.startDate, today) + 1;
+  // 当前节点: 优先 record.nodeId (用户已选), 否则按 sequence (含顺延)
+  let currentNodeId = getPlannedNodeForDay(absDay, currentRecord);
+  // 推荐节点 = sequence 给的"应该做什么" (含顺延)
+  let recommendedId = getSequenceRaw(absDay);
 
   // cardio 通配符 → 没有真正"当前选中"; 不预选任何具体子类型, 让用户自由选
   const isCardioToday = (currentNodeId === 'cardio');
@@ -11706,10 +12384,98 @@ function renderStep4TargetTier() {
           <div class="tier-pact-meta">${directionLabel} ${Math.abs(tier.deltaKg)} kg · 每周 ${Math.abs(tier.perWeek).toFixed(1)} kg</div>
         </div>
       `;
+
+      // ─── 现实预期确认 (v0.1.3): 让用户清醒签约, 不是热血签约 ───
+      html += _renderRealityCheck(tier, data.direction);
     }
   }
 
   return html;
+}
+
+// 现实预期确认: tier 选定后展示
+// 让用户在签约前看到: 这个目标的难度 / 每周节奏 / 训练饮食分工 / 体重波动是正常的
+function _renderRealityCheck(tier, direction) {
+  if (direction === 'maintain') return '';
+
+  const perWeek = Math.abs(tier.perWeek);
+  // 难度评级 (按每周减重速度, 减脂科学常识)
+  let difficulty, difficultyLabel, difficultyColor;
+  if (direction === 'lose') {
+    if (perWeek < 0.4) {
+      difficulty = 'easy';
+      difficultyLabel = '保守';
+      difficultyColor = 'good';
+    } else if (perWeek < 0.7) {
+      difficulty = 'medium';
+      difficultyLabel = '适中';
+      difficultyColor = 'good';
+    } else if (perWeek < 1.0) {
+      difficulty = 'hard';
+      difficultyLabel = '偏激进';
+      difficultyColor = 'warn';
+    } else {
+      difficulty = 'extreme';
+      difficultyLabel = '极激进';
+      difficultyColor = 'warn';
+    }
+  } else {
+    // 增重: 每周 0.25 kg 是肌肉增长的健康上限
+    if (perWeek < 0.2) {
+      difficulty = 'easy';
+      difficultyLabel = '保守';
+      difficultyColor = 'good';
+    } else if (perWeek < 0.35) {
+      difficulty = 'medium';
+      difficultyLabel = '适中';
+      difficultyColor = 'good';
+    } else {
+      difficulty = 'hard';
+      difficultyLabel = '偏激进';
+      difficultyColor = 'warn';
+    }
+  }
+
+  const verb = direction === 'lose' ? '减' : '增';
+
+  // 难度对应的具体提醒
+  let strictnessHint = '';
+  if (difficulty === 'easy') {
+    strictnessHint = '节奏宽松。训练正常做、饮食基本控制就能达到。';
+  } else if (difficulty === 'medium') {
+    strictnessHint = '节奏适中。训练 + 适度控制饮食才能稳定推进。';
+  } else if (difficulty === 'hard') {
+    strictnessHint = direction === 'lose'
+      ? '节奏偏快。训练之外, 饮食必须严格 (热量缺口 ~500 kcal/天)。'
+      : '节奏偏快。需要刻意吃够蛋白和总热量, 比训练更重要。';
+  } else {
+    strictnessHint = '节奏极快, 不推荐。一周 1 kg 以上多半是水分而非脂肪, 容易反弹。';
+  }
+
+  return `
+    <div class="reality-check">
+      <div class="rc-row">
+        <div class="rc-label">这个目标</div>
+        <div class="rc-value ${difficultyColor}">${difficultyLabel}</div>
+      </div>
+      <div class="rc-detail">${strictnessHint}</div>
+
+      <div class="rc-divider"></div>
+
+      <div class="rc-fact">
+        <div class="rc-fact-num">70<span>%</span></div>
+        <div class="rc-fact-text">饮食决定能否${verb}, 训练放大效果。</div>
+      </div>
+      <div class="rc-fact">
+        <div class="rc-fact-num">±0.5<span>kg</span></div>
+        <div class="rc-fact-text">每天体重正常波动范围 (水分/盐/睡眠)。看 7 日均重, 不看单日。</div>
+      </div>
+      <div class="rc-note">
+        训练只是这件事的一部分。<br>
+        体重不变 ≠ 失败 — 它可能在做别的事。
+      </div>
+    </div>
+  `;
 }
 
 function setTargetTier(id) {
@@ -12032,11 +12798,10 @@ function enterWorkoutPage(dayNum) {
   const today = todayStr();
   const record = state.records[today] || {};
 
-  // 确定节点 (用户可能通过 更改 改过)
-  const week = Math.max(1, Math.min(getCurrentStageWeek(), state.config.stageWeeks));
-  const weekStart = addDays(state.config.startDate, (week-1) * 7);
-  const dayIdx = daysBetween(weekStart, today);
-  let nodeId = record.nodeId || SEQUENCE[dayIdx] || SEQUENCE[0];
+  // 确定节点: 用 getPlannedNodeForDay (尊重 record.nodeId / 主动休息顺延)
+  // 之前用 SEQUENCE[dayIdx] 导致"主动休息后, 首页推荐胸 → 实际进背"的 P0
+  const absDay = daysBetween(state.config.startDate, today) + 1;
+  let nodeId = getPlannedNodeForDay(absDay, record);
   // 防御: 万一是 'cardio' 通配符还没解析, 回退到户外快走 (最低门槛默认)
   if (nodeId === 'cardio') nodeId = 14;
 
@@ -12376,6 +13141,57 @@ function _estimateTotalTime(exercises) {
 function adjustExercises(exercises, answers) {
   let result = [...exercises];
 
+  // ─── 0. 低压版模式 (v0.2.5): 用户选择"做低压版,也算完成" ───
+  // 兑现承诺: 10 分钟最低版本, 进度继续推进。
+  // 哲学: 真低压 = 真低 + 留住习惯。给 70% 用户还是会半途放弃 — 给 25% 反而能完成。
+  // 裁剪策略:
+  //   - 主训练: 只留 1 个 primary 动作, 减到 2 组 (从 3-4 组)
+  //   - 矫正动作: 保留 1 个 (体态修复仍是核心价值, 不能砍光)
+  //   - 热身: 只留 1 个动态拉伸 (跳过松解 + 激活)
+  //   - 拉伸: 只留 1 个静态拉伸 (跳过松解)
+  //   - finisher: 砍掉 (低压不需要燃脂收尾)
+  if (answers.lowPressure) {
+    // 主训练: 1 个 primary, 2 组
+    const primaryMains = result.filter(e =>
+      e.category === 'main' && e.role === 'primary'
+    );
+    const correctiveMains = result.filter(e =>
+      e.category === 'main' && e.role === 'corrective'
+    );
+    const reducedMains = [];
+    if (primaryMains.length > 0) {
+      reducedMains.push({ ...primaryMains[0], sets: 2 });
+    }
+    if (correctiveMains.length > 0) {
+      // 留 1 个矫正 (尤其圆肩/骨盆前倾用户, 矫正不能完全砍)
+      reducedMains.push({ ...correctiveMains[0], sets: Math.min(2, correctiveMains[0].sets || 2) });
+    }
+
+    // 热身: 只留 1 个动态拉伸
+    const dynamicWarmups = result.filter(e =>
+      e.category === 'warmup' && e.subcategory === 'dynamic'
+    );
+    const reducedWarmups = dynamicWarmups.length > 0 ? [dynamicWarmups[0]] : [];
+
+    // 拉伸: 只留 1 个静态
+    const staticCooldowns = result.filter(e =>
+      e.category === 'cooldown' && e.subcategory === 'static'
+    );
+    const reducedCooldowns = staticCooldowns.length > 0 ? [staticCooldowns[0]] : [];
+
+    // 整合: 热身 + 主训 + 拉伸 (无 finisher)
+    result = [...reducedWarmups, ...reducedMains, ...reducedCooldowns];
+
+    // 同步 spec (sets 改了, spec 字符串里的 "X 组" 也得改)
+    result = result.map(e => {
+      if (e.category !== 'main' || !e.sets || !e.spec) return e;
+      const newSpec = e.spec.replace(/(\d+)\s*组/, `${e.sets} 组`);
+      return newSpec !== e.spec ? { ...e, spec: newSpec } : e;
+    });
+
+    return result;  // 低压版完成, 不走后续 quiz / 时间预算逻辑
+  }
+
   // 1. finisher 永远保留 (不计入时间预算, 由用户在主训练完成后决定做不做)
   //    - 主训练后弹 gate 询问: 状态如何? 要不要加 20 分钟燃脂?
   //    - yes  → 走 finisher → cooldown
@@ -12467,10 +13283,21 @@ function adjustExercises(exercises, answers) {
     });
   }
 
+  // 步骤 4: 同步 spec 字符串与 sets - 修复显示一致性 bug
+  // 数据里 spec 是预设字符串如 "3 组 × 8-10 次", 但 sets 可能被前面动态改过
+  // 不同步会出现"界面 4 组 / 文案 3 组"的矛盾
+  result = result.map(e => {
+    if (e.category !== 'main' || !e.sets || !e.spec) return e;
+    // 匹配"X 组" / "X组" 模式, 替换成新 sets 数
+    const newSpec = e.spec.replace(/(\d+)\s*组/, `${e.sets} 组`);
+    if (newSpec !== e.spec) {
+      return { ...e, spec: newSpec };
+    }
+    return e;
+  });
+
   return result;
 }
-
-// 推断动作显示类型 (基于 spec 字符串)
 // - 'reps':     有"次"的力量动作 -> 显示组次 + 圆点
 // - 'time':     有"秒"的计时动作 -> 倒计时圆环
 // - 'duration': 有"分"的有氧 -> 大计时器
@@ -12516,7 +13343,13 @@ function renderWorkoutPage() {
     document.getElementById('whTitle').innerHTML = `<svg style="width:14px;height:14px;stroke:var(--muted);stroke-width:1.8;fill:none;margin-right:6px;vertical-align:-2px;opacity:0.7;" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="2"/><path d="M12 8v8M8 12h8M9 22l3-6 3 6"/></svg>晨间体态 · 6 分钟`;
   } else {
     const node = NODES[workoutState.nodeId];
-    document.getElementById('whTitle').innerHTML = `<svg style="width:14px;height:14px;stroke:var(--muted);stroke-width:1.8;fill:none;margin-right:6px;vertical-align:-2px;opacity:0.7;"><use href="#${node.iconId}"/></svg>Day ${workoutState.dayNum} · ${node.name}`;
+    // 低压版: 加 chip 标签让用户清楚知道当前在低压模式 (避免"是不是没生效"的困惑)
+    const todayRecord = state.records[todayStr()] || {};
+    const isLowPressure = todayRecord.todayAnswers && todayRecord.todayAnswers.lowPressure;
+    const lowPressureBadge = isLowPressure
+      ? `<span class="wh-low-pressure">低压版</span>`
+      : '';
+    document.getElementById('whTitle').innerHTML = `<svg style="width:14px;height:14px;stroke:var(--muted);stroke-width:1.8;fill:none;margin-right:6px;vertical-align:-2px;opacity:0.7;"><use href="#${node.iconId}"/></svg>Day ${workoutState.dayNum} · ${node.name}${lowPressureBadge}`;
   }
 
   const total = exercises.length;
@@ -12626,12 +13459,20 @@ function renderWorkoutPage() {
     saveState();
   }
 
-  // 4. 一句话核心要点 (来自 tips 字段, 直接显示不藏)
-  const coachingTip = ex.tips || '';
-  const tipHtml = coachingTip ? `
-    <div class="ex-coaching-tip">
-      <span class="ect-icon">💡</span>
-      <span class="ect-text">${coachingTip}</span>
+  // 4. 一句话核心要点 (训练中的注意力锚点)
+  // 数据兼容: tips 现在是数组 (v0.2.0+) 但老数据可能是字符串 / 缺失
+  let primaryCue = '';
+  if (Array.isArray(ex.tips) && ex.tips.length > 0) {
+    primaryCue = ex.tips[0];                                     // 取最重要那条
+  } else if (typeof ex.tips === 'string' && ex.tips.trim()) {
+    primaryCue = ex.tips.split(/[\n·]|\/(?![^(]*\))/)[0].trim(); // 老格式自动拆首条
+  } else if (ex.coachingCue) {
+    primaryCue = ex.coachingCue;                                 // 兜底字段
+  }
+  const tipHtml = primaryCue ? `
+    <div class="ex-primary-cue">
+      <span class="ex-primary-cue-label">关键提示</span>
+      <div class="ex-primary-cue-text">${primaryCue}</div>
     </div>
   ` : '';
 
@@ -12888,24 +13729,39 @@ function saveSetInput() {
   _markInteraction();
   const w = parseFloat(document.getElementById('simWeightInput').value);
   const r = parseInt(document.getElementById('simRepsInput').value);
-  if (isNaN(w) || isNaN(r) || w <= 0 || r <= 0) return;
+  // reps 必须 > 0; weight 允许 0 (自重) 但不能 NaN < 0
+  if (isNaN(r) || r <= 0) return;
+  const safeW = isNaN(w) ? 0 : w;
+  if (safeW < 0) return;
 
   const { exercises, currentIdx } = workoutState;
   const ex = exercises[currentIdx];
   const today = todayStr();
 
-  // 写入 exerciseLog
+  // ─── PR 检测 (在写入前!) ───
+  // 拿当前动作的历史记录 (嵌套结构: [{date, sets:[...]}, ...])
+  // 不含正在保存的这一组
   if (!state.exerciseLog) state.exerciseLog = {};
+  const history = state.exerciseLog[ex.key] || [];
+  const pr = detectExercisePR(ex, { weight: safeW, reps: r }, history);
+
+  // ─── 写入 exerciseLog ───
   if (!state.exerciseLog[ex.key]) state.exerciseLog[ex.key] = [];
   let todayEntry = state.exerciseLog[ex.key].find(e => e.date === today);
   if (!todayEntry) {
     todayEntry = { date: today, sets: [] };
     state.exerciseLog[ex.key].push(todayEntry);
   }
-  todayEntry.sets.push({ weight: w, reps: r });
+  todayEntry.sets.push({ weight: safeW, reps: r });
   saveState();
 
   document.getElementById('setInputOverlay').classList.remove('active');
+
+  // ─── 显示 PR Toast (写入后, 不打断训练) ───
+  if (pr) {
+    setTimeout(() => showPRToast(pr, ex.name), 150);
+  }
+
   _commitCurrentSet();
 }
 
@@ -12931,6 +13787,301 @@ function _getTodayExerciseEntry(exKey) {
   if (!log) return null;
   const today = todayStr();
   return log.find(e => e.date === today) || null;
+}
+
+
+// ════════════════════════════════════════════════════════════
+// PR 检测系统 (v0.2.4)
+// 哲学: PR 是进步证据, 不是压力。
+//   - 第一次 = baseline, 不算 PR
+//   - 重量 PR = 突破历史最大重量
+//   - 同重量 reps PR = 同重量做更多次
+//   - 不做 e1RM (容易制造伪精确)
+//   - 只对主力量动作触发, 拉伸/矫正/计时不冒 PR
+// ════════════════════════════════════════════════════════════
+
+// 判断这个动作是否应该追 PR
+// 矫正/拉伸/热身/计时类动作不参与 PR 系统 — 否则会诱导用户加重违背目的
+function isPRTrackable(ex) {
+  if (!ex) return false;
+  // 只追 main 类
+  if (ex.category !== 'main') return false;
+  // 矫正动作不追 (避免诱导加重违背矫正目的)
+  if (ex.role === 'corrective') return false;
+  // 必须有 sets > 1 或 reps spec (排除"一整天"、"30-40 分钟"这种)
+  const spec = (ex.spec || '').toString();
+  // 排除明显不带次数的动作 (有氧、休息、整天)
+  if (/分钟|min|一整天|整天|小时|h\b/i.test(spec)) return false;
+  // 计时类动作不追 (平板支撑、靠墙站这种没 reps 概念)
+  if (/秒|sec|s\b/i.test(spec) && !/次|reps?/i.test(spec)) return false;
+  // 必须 spec 里有"次"或者明确组数 — 至此剩下的是力量类
+  if (!/次|reps?|组/i.test(spec)) return false;
+  return true;
+}
+
+// 检测当前组 (currentSet) 相对历史 (history) 是否构成 PR
+// history = state.exerciseLog[exKey] 的数组 (含今天和历史)
+// currentSet = { weight, reps } - 即将保存的这组
+//
+// 关键: 检测必须在写入历史之前调用, 否则会自己跟自己比
+//
+// 返回 null 或:
+//   { type: 'first_record' | 'weight_pr' | 'reps_pr',
+//     title, current, previous, exerciseName }
+function detectExercisePR(ex, currentSet, history) {
+  if (!isPRTrackable(ex)) return null;
+  const w = currentSet.weight;
+  const r = currentSet.reps;
+  if (typeof r !== 'number' || isNaN(r) || r <= 0) return null;
+
+  // 收集所有历史组 (已存的, 不含 currentSet)
+  const allPrevSets = [];
+  (history || []).forEach(entry => {
+    (entry.sets || []).forEach(s => {
+      if (typeof s.weight === 'number' && typeof s.reps === 'number') {
+        allPrevSets.push({ weight: s.weight, reps: s.reps, date: entry.date });
+      }
+    });
+  });
+
+  // 第一次做这个动作 — 不是 PR, 是 baseline
+  if (allPrevSets.length === 0) {
+    return {
+      type: 'first_record',
+      title: '起点已记录',
+      current: { weight: w, reps: r },
+      previous: null,
+      exerciseName: ex.name
+    };
+  }
+
+  // 有重量的动作: 先看是否超过历史最大重量
+  if (typeof w === 'number' && w > 0) {
+    let maxWeight = 0;
+    let bestEntry = null;
+    allPrevSets.forEach(s => {
+      if (s.weight > maxWeight) { maxWeight = s.weight; bestEntry = s; }
+    });
+
+    if (w > maxWeight) {
+      return {
+        type: 'weight_pr',
+        title: '新重量 PR',
+        current: { weight: w, reps: r },
+        previous: { weight: maxWeight, reps: bestEntry ? bestEntry.reps : null },
+        exerciseName: ex.name
+      };
+    }
+
+    // 重量没超, 看同重量是否做更多 reps
+    const sameWeightSets = allPrevSets.filter(s => s.weight === w);
+    if (sameWeightSets.length > 0) {
+      const maxRepsAtSameWeight = Math.max(...sameWeightSets.map(s => s.reps));
+      if (r > maxRepsAtSameWeight) {
+        return {
+          type: 'reps_pr',
+          title: '同重量多做了',
+          current: { weight: w, reps: r },
+          previous: { weight: w, reps: maxRepsAtSameWeight },
+          exerciseName: ex.name
+        };
+      }
+    }
+  } else {
+    // 自重动作 (w=0 或 undefined): 只看 reps 是否突破历史最大
+    const maxReps = Math.max(...allPrevSets.map(s => s.reps));
+    if (r > maxReps) {
+      return {
+        type: 'reps_pr',
+        title: '自重 reps PR',
+        current: { weight: 0, reps: r },
+        previous: { weight: 0, reps: maxReps },
+        exerciseName: ex.name
+      };
+    }
+  }
+
+  return null;
+}
+
+// PR Toast: 1.8 秒淡入淡出, 不需要用户点确认 (训练中断越少越好)
+function showPRToast(pr, exerciseName) {
+  if (!pr) return;
+  let icon, title, body;
+  if (pr.type === 'first_record') {
+    icon = '📌';
+    title = '起点已记录';
+    body = pr.current.weight > 0
+      ? `${pr.current.weight}kg × ${pr.current.reps}`
+      : `${pr.current.reps} 次 (自重)`;
+  } else if (pr.type === 'weight_pr') {
+    icon = '💪';
+    title = '新重量 PR';
+    body = `${pr.current.weight}kg × ${pr.current.reps} · 上次最高 ${pr.previous.weight}kg`;
+  } else if (pr.type === 'reps_pr') {
+    icon = '💪';
+    title = '同重量多做了';
+    if (pr.current.weight > 0) {
+      body = `${pr.current.weight}kg × ${pr.current.reps} · 上次最多 × ${pr.previous.reps}`;
+    } else {
+      body = `${pr.current.reps} 次 · 上次最多 ${pr.previous.reps} 次`;
+    }
+  } else {
+    return;
+  }
+
+  // 找/建 toast 容器
+  let toast = document.getElementById('prToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'prToast';
+    toast.className = 'pr-toast';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `
+    <div class="pr-toast-icon">${icon}</div>
+    <div class="pr-toast-content">
+      <div class="pr-toast-title">${title}</div>
+      ${body ? `<div class="pr-toast-body">${body}</div>` : ''}
+      <div class="pr-toast-exercise">${exerciseName || ''}</div>
+    </div>
+  `;
+  // 触发动画
+  toast.classList.remove('show');
+  void toast.offsetWidth;  // reflow
+  toast.classList.add('show');
+  // 1.8s 后消失
+  clearTimeout(toast._hideTimer);
+  toast._hideTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 1800);
+}
+
+// 动作详情「你的进步」(v0.2.4)
+// 不画曲线 - 先把证据说清楚, 比画图更诚实
+function renderExerciseProgress(exKey) {
+  const log = (state.exerciseLog || {})[exKey] || [];
+
+  // 收集所有有效组
+  const allSets = [];
+  log.forEach(entry => {
+    (entry.sets || []).forEach(s => {
+      if (typeof s.reps === 'number' && s.reps > 0) {
+        allSets.push({ weight: s.weight, reps: s.reps, date: entry.date });
+      }
+    });
+  });
+
+  // 没记录 - 空状态
+  if (allSets.length === 0) {
+    return `
+      <div class="ex-progress-card">
+        <div class="epc-title">你的进步</div>
+        <div class="epc-empty">
+          还没有力量记录。<br>
+          <b>完成一组后,这里会出现你的进步。</b>
+        </div>
+      </div>
+    `;
+  }
+
+  // 按日期排序
+  allSets.sort((a, b) => a.date.localeCompare(b.date));
+  const firstSet = allSets[0];
+
+  // 找最佳: 优先按 weight, 同重量看 reps
+  let bestSet = allSets[0];
+  allSets.forEach(s => {
+    if (s.weight > bestSet.weight) bestSet = s;
+    else if (s.weight === bestSet.weight && s.reps > bestSet.reps) bestSet = s;
+  });
+
+  // 只有一次记录 - 起点状态
+  if (allSets.length === 1) {
+    const dateLabel = _epcDateLabel(firstSet.date);
+    return `
+      <div class="ex-progress-card">
+        <div class="epc-title">你的进步</div>
+        <div class="epc-row">
+          <span class="epc-label">起点已记录</span>
+          <div class="epc-value">
+            ${_epcSetText(firstSet)}
+            <div class="epc-value-meta">${dateLabel}</div>
+          </div>
+        </div>
+        <div class="epc-delta muted">下次我们就知道你有没有变强。</div>
+      </div>
+    `;
+  }
+
+  // 有多次记录 - 完整对比
+  const firstDateLabel = _epcDateLabel(firstSet.date);
+  const bestDateLabel = _epcDateLabel(bestSet.date);
+  const isBestToday = bestSet.date === todayStr();
+
+  // 计算变化 (重量优先, 否则 reps)
+  let deltaText = '';
+  let deltaCls = '';
+  if (firstSet.weight > 0 && bestSet.weight > 0 && bestSet.weight !== firstSet.weight) {
+    const pct = Math.round((bestSet.weight - firstSet.weight) / firstSet.weight * 100);
+    if (pct > 0) {
+      deltaText = `重量 +${pct}%`;
+      deltaCls = '';
+    } else {
+      deltaText = `重量 ${pct}%`;
+      deltaCls = 'muted';
+    }
+  } else if (bestSet.reps > firstSet.reps) {
+    const pct = Math.round((bestSet.reps - firstSet.reps) / firstSet.reps * 100);
+    deltaText = `次数 +${pct}%`;
+  } else if (bestSet.weight === firstSet.weight && bestSet.reps === firstSet.reps) {
+    deltaText = '保持稳定';
+    deltaCls = 'muted';
+  } else {
+    deltaText = '继续记录, 看趋势';
+    deltaCls = 'muted';
+  }
+
+  return `
+    <div class="ex-progress-card">
+      <div class="epc-title">你的进步</div>
+      <div class="epc-row">
+        <span class="epc-label">首次记录</span>
+        <div class="epc-value">
+          ${_epcSetText(firstSet)}
+          <div class="epc-value-meta">${firstDateLabel}</div>
+        </div>
+      </div>
+      <div class="epc-row">
+        <span class="epc-label">当前最佳</span>
+        <div class="epc-value highlight">
+          ${_epcSetText(bestSet)}
+          <div class="epc-value-meta">${bestDateLabel}${isBestToday ? ' ⭐' : ''}</div>
+        </div>
+      </div>
+      <div class="epc-delta ${deltaCls}">${deltaText}</div>
+    </div>
+  `;
+}
+
+// 工具: 一组数据的文本表示
+function _epcSetText(s) {
+  if (s.weight && s.weight > 0) return `${s.weight}kg × ${s.reps}`;
+  return `× ${s.reps} 次`;
+}
+
+// 工具: 友好的日期标签 (今天 / N 天前 / N 周前)
+function _epcDateLabel(dateStr) {
+  const today = todayStr();
+  if (dateStr === today) return '今天';
+  const days = Math.floor((new Date(today + 'T00:00:00') - new Date(dateStr + 'T00:00:00')) / 86400000);
+  if (days === 1) return '昨天';
+  if (days < 7) return `${days} 天前`;
+  if (days < 30) {
+    const weeks = Math.floor(days / 7);
+    return `${weeks} 周前`;
+  }
+  return `${Math.floor(days / 7)} 周前`;
 }
 
 function completeCurrentSet() {
@@ -14384,6 +15535,31 @@ function _renderRoutineDetail(nodeId) {
     </div>
   `;
 
+  // 训练目的说明 (新增 v0.2.1): 让用户理解计划, 不只是看到列表
+  // 有氧 routine 是个组合 (4 选 1), 用 99 节点 (有氧通配符) 的 purpose
+  const purposeNodeId = (type === 'cardio') ? 99 : nodeId;
+  const purpose = ROUTINE_PURPOSE[purposeNodeId];
+  let purposeBlock = '';
+  if (purpose) {
+    purposeBlock = `
+      <div class="rd-purpose">
+        <div class="rd-purpose-row">
+          <div class="rd-purpose-label">今天目标</div>
+          <div class="rd-purpose-text rd-purpose-goal">${purpose.goal}</div>
+        </div>
+        <div class="rd-purpose-row">
+          <div class="rd-purpose-label">为什么这样排</div>
+          <div class="rd-purpose-text">${purpose.sequence}</div>
+        </div>
+        ${purpose.protect ? `
+        <div class="rd-purpose-row rd-purpose-protect">
+          <div class="rd-purpose-label">不要跳过</div>
+          <div class="rd-purpose-text">${purpose.protect}</div>
+        </div>` : ''}
+      </div>
+    `;
+  }
+
   // 有氧
   if (type === 'cardio') {
     // 4 选 1, 每个选项点击 → 弹该 cardio 节点对应的 main exercise 详情
@@ -14411,6 +15587,7 @@ function _renderRoutineDetail(nodeId) {
     return `
       ${header}
       <div class="rd-body">
+        ${purposeBlock}
         <div class="re-section">4 选 1 · 训练时按状态选</div>
         ${rows}
       </div>
@@ -14422,6 +15599,7 @@ function _renderRoutineDetail(nodeId) {
     return `
       ${header}
       <div class="rd-body">
+        ${purposeBlock}
         <div class="rd-rest-tip">
           <div class="rd-rest-icon">💤</div>
           <div class="rd-rest-title">让身体完整修复一天</div>
@@ -14508,7 +15686,7 @@ function _renderRoutineDetail(nodeId) {
 
   return `
     ${header}
-    <div class="rd-body">${body}</div>
+    <div class="rd-body">${purposeBlock}${body}</div>
   `;
 }
 
@@ -14546,25 +15724,127 @@ function _showExerciseInfo(exKey) {
   if (!ex) return;
 
   let html = '';
-  if (ex.desc) html += `
-    <div class="details-section">
-      <div class="details-label">动作说明</div>
-      <div class="details-content">${ex.desc.replace(/\\n/g, '<br>')}</div>
-    </div>`;
-  if (ex.tips) html += `
-    <div class="details-section">
-      <div class="details-label">要点</div>
-      <div class="details-content">${ex.tips}</div>
-    </div>`;
-  if (ex.cautions) html += `
-    <div class="details-section">
-      <div class="details-label">注意</div>
-      <div class="details-content">${ex.cautions}</div>
-    </div>`;
 
-  // 没有任何详情字段, 兜底显示一句
+  // ─── 顶层: 肌群标签 (主要 + 辅助) ───
+  // 数据约定: muscles 数组第一个为主, 之后是辅助
+  if (Array.isArray(ex.muscles) && ex.muscles.length > 0) {
+    const primary = ex.muscles[0];
+    const secondary = ex.muscles.slice(1);
+    let chipsHtml = `<span class="ex-muscle-chip primary">${primary}</span>`;
+    secondary.forEach(m => {
+      chipsHtml += `<span class="ex-muscle-chip">${m}</span>`;
+    });
+    html += `
+      <div class="ex-muscle-row">
+        <div class="ex-muscle-label">作用肌群</div>
+        <div class="ex-muscle-chips">${chipsHtml}</div>
+      </div>
+    `;
+  }
+
+  // ─── 第一层: 一句话目标 (练哪里) ───
+  const targetText = ex.targetMuscle ||
+    (ex.desc ? ex.desc.split(/[。\n]/)[0] + '。' : '');
+  if (targetText) {
+    html += `
+      <div class="ex-guide-target">
+        <div class="ex-guide-label">练哪里</div>
+        <div class="ex-guide-target-text">${targetText}</div>
+      </div>
+    `;
+  }
+
+  // ─── 第二层: 3 个关键点 (技术要领) ───
+  // ex.tips 可以是字符串(用 / 或 \n 分隔多条) 或数组
+  let tips = [];
+  if (Array.isArray(ex.tips)) {
+    tips = ex.tips;
+  } else if (typeof ex.tips === 'string' && ex.tips.trim()) {
+    // 自动拆: 优先按 \n / · / / 分隔
+    tips = ex.tips.split(/[\n·]|\/(?![^(]*\))/).map(t => t.trim()).filter(Boolean);
+  }
+  if (tips.length > 0) {
+    let tipsHtml = '';
+    tips.forEach((t, i) => {
+      tipsHtml += `<div class="ex-guide-tip"><span class="egt-num">${i + 1}</span><span class="egt-text">${t}</span></div>`;
+    });
+    html += `
+      <div class="ex-guide-section">
+        <div class="ex-guide-label">关键点</div>
+        ${tipsHtml}
+      </div>
+    `;
+  }
+
+  // ─── 第三层: 重量建议 ───
+  if (ex.weightHint) {
+    html += `
+      <div class="ex-guide-section">
+        <div class="ex-guide-label">重量怎么选</div>
+        <div class="ex-guide-content">${ex.weightHint}</div>
+      </div>
+    `;
+  } else if (ex.category === 'main' && ex.sets && ex.sets >= 2) {
+    // 默认重量建议 (没显式指定时给个通用版本)
+    html += `
+      <div class="ex-guide-section">
+        <div class="ex-guide-label">重量怎么选</div>
+        <div class="ex-guide-content">选一个 <b>能完成 ${ex.spec || '8-10 次'}, 但最后 1-2 次明显吃力</b> 的重量。第二组保持同重量, 如果还能多做 3 次以上 — 下次加重。</div>
+      </div>
+    `;
+  }
+
+  // ─── 第四层: 常见错误 / 注意 ───
+  if (ex.cautions) {
+    html += `
+      <div class="ex-guide-section caution">
+        <div class="ex-guide-label">注意</div>
+        <div class="ex-guide-content">${ex.cautions}</div>
+      </div>
+    `;
+  }
+
+  // ─── 第五层: 替代动作 (器械占用 / 不会做时) ───
+  if (ex.alternatives && ex.alternatives.length > 0) {
+    let altHtml = ex.alternatives.map(a => `<div class="ex-guide-alt-item">${a}</div>`).join('');
+    html += `
+      <div class="ex-guide-section">
+        <div class="ex-guide-label">不会做 / 器械占用?</div>
+        ${altHtml}
+      </div>
+    `;
+  }
+
+  // ─── 第六层: 详细说明 (desc, 兜底放最后) ───
+  if (ex.desc && !ex.targetMuscle) {
+    // 如果没有专门的 targetMuscle, desc 已经被用作 target 第一句; 剩下的内容继续显示
+    const remaining = ex.desc.split(/[。\n]/).slice(1).join('。').trim();
+    if (remaining) {
+      html += `
+        <div class="ex-guide-section">
+          <div class="ex-guide-label">动作要领</div>
+          <div class="ex-guide-content">${remaining.replace(/\\n/g, '<br>')}</div>
+        </div>
+      `;
+    }
+  } else if (ex.desc && ex.targetMuscle) {
+    // 有 targetMuscle, desc 完整放在"动作要领"
+    html += `
+      <div class="ex-guide-section">
+        <div class="ex-guide-label">动作要领</div>
+        <div class="ex-guide-content">${ex.desc.replace(/\\n/g, '<br>')}</div>
+      </div>
+    `;
+  }
+
+  // 兜底
   if (!html) {
-    html = `<div class="details-section"><div class="details-content" style="color:var(--muted);">暂无更多说明</div></div>`;
+    html = `<div class="ex-guide-section"><div class="ex-guide-content" style="color:var(--muted);">这个动作暂无指导内容,可以根据动作名搜索学习。</div></div>`;
+  }
+
+  // ─── 第七层: 你的进步 (v0.2.4) - 只对可追 PR 的动作显示 ───
+  if (isPRTrackable(ex)) {
+    html += renderExerciseProgress(exKey);
   }
 
   document.getElementById('detailsModalTitle').textContent = ex.name;
@@ -14650,8 +15930,12 @@ function _renderCalendar() {
     if (dateStr > todayStr_) continue;
     monthTotal++;
     const rec = state.records[dateStr];
-    if (rec && rec.completed) monthDone++;
-    else if (dateStr < todayStr_) {
+    if (rec && rec.completed) {
+      monthDone++;
+    } else if (rec && rec.adjusted === 'rest') {
+      // 主动改休息: 也算"完成"(履约形式), 不计 missed
+      monthDone++;
+    } else if (dateStr < todayStr_) {
       // 检查是不是休息日 (训练日才算 missed)
       if (hasActive) {
         const absDay = daysBetween(contractStart, dateStr) + 1;
@@ -14708,11 +15992,15 @@ function _renderCalendar() {
     const rec = state.records[dateStr] || {};
     const isPast = dateStr < todayStr_;
     const isFuture = dateStr > todayStr_;
-    const isRest = seqNodeId === 22;
+    const isRest = (rec.nodeId || seqNodeId) === 22;
+    const isAdjustedRest = rec.adjusted === 'rest';
 
     let stateCls = 'pending';
     if (rec.completed) {
       stateCls = isRest ? 'done-rest' : 'done';
+    } else if (isAdjustedRest) {
+      // 主动改休息: 视觉同 done-rest, 不计 missed
+      stateCls = 'done-rest';
     } else if (inContract && isPast && !isRest) {
       stateCls = 'missed';
     } else if (inContract && isPast && isRest) {
@@ -14753,7 +16041,7 @@ function _renderCalendar() {
     <div class="cal-legend">
       <span class="cal-legend-item"><span class="cal-legend-dot done"></span>完成训练</span>
       <span class="cal-legend-item"><span class="cal-legend-dot done-rest"></span>休息打卡</span>
-      <span class="cal-legend-item"><span class="cal-legend-dot missed"></span>缺席</span>
+      <span class="cal-legend-item"><span class="cal-legend-dot missed"></span>未完成</span>
       <span class="cal-legend-item"><span class="cal-legend-dot future"></span>待发生</span>
     </div>
     <div class="cal-legend cal-legend-corner">
@@ -15485,22 +16773,33 @@ function _summarizeContract(contract) {
   const records = contract.records || {};
   const totalDays = (cfg.stageWeeks || 4) * 7;
 
-  let done = 0, doneRest = 0, missed = 0;
+  let done = 0, doneRest = 0, adjustedRest = 0, missed = 0;
   for (let d = 1; d <= totalDays; d++) {
     const dateStr = addDays(cfg.startDate, d - 1);
     const rec = records[dateStr] || {};
-    const nodeId = rec.nodeId || (cfg.sequence || SEQUENCE)[(d - 1) % 7];
+    // 用 sequence (含顺延), 不再用静态 SEQUENCE[(d-1)%7]
+    // 注意: 这里是历史契约统计, contract.config.sequence 是契约固化的 sequence
+    // 如果 contract.records 里有 nodeId 优先用那个, 否则按 sequence
+    const seqArr = cfg.sequence || SEQUENCE;
+    const nodeId = rec.nodeId || seqArr[(d - 1) % 7];
     const isRest = nodeId === 22;
 
     if (rec.completed) {
+      // 实际训练完成 (含休息日打卡)
       if (isRest) doneRest++;
       else done++;
+    } else if (rec.adjusted === 'rest') {
+      // 主动改休息 — 不算 missed (用户已诚实声明现实)
+      adjustedRest++;
     } else if (dateStr < todayStr()) {
-      missed++;
+      // 计划休息日 (D7 类) 即使没主动打卡, 也算履约 — 与 homeDayStatus / 日历口径一致
+      if (isRest) doneRest++;
+      else missed++;
     }
   }
   const trainingDays = done;
-  const completedAll = done + doneRest;
+  // 完整履约 = 训练 + 休息日打卡 + 主动改休息
+  const completedAll = done + doneRest + adjustedRest;
 
   let statusClass, statusLabel;
   if (contract.status === 'abandoned') {
@@ -15508,10 +16807,10 @@ function _summarizeContract(contract) {
     statusLabel = '中止';
   } else if (missed === 0) {
     statusClass = 'perfect';
-    statusLabel = '满勤履约';
+    statusLabel = '你守住了这 4 周';
   } else {
     statusClass = 'partial';
-    statusLabel = `部分履约 ${completedAll}/${totalDays}`;
+    statusLabel = `走了 ${completedAll}/${totalDays} 天`;
   }
 
   // 日期范围
@@ -15526,7 +16825,7 @@ function _summarizeContract(contract) {
     statusLabel,
     title: `${cfg.stageWeeks || 4} 周契约 · ${dateStr}`,
     subtitle: `<span class="${statusClass === 'perfect' ? 'perfect' : ''}">${statusLabel}</span>`,
-    trainingDays, doneRest, missed, completedAll, totalDays
+    trainingDays, doneRest, adjustedRest, missed, completedAll, totalDays
   };
 }
 
@@ -15659,6 +16958,9 @@ function _renderReviewPage(contract, isHistorical) {
       if (rec.completed) {
         cls = isRest ? 'rest' : 'done';
         weekDone++;
+      } else if (rec.adjusted === 'rest') {
+        // 主动改休息 = 履约形式, 不算 missed
+        cls = 'rest';
       } else if (dateStr < todayStr()) {
         cls = 'missed';
       }
@@ -15824,7 +17126,7 @@ function _renderReviewPage(contract, isHistorical) {
         </div>
         <div class="review-stat-card">
           <div class="review-stat-num">${summary.missed}</div>
-          <div class="review-stat-label">缺席</div>
+          <div class="review-stat-label">未完成</div>
         </div>
       </div>
     </div>
