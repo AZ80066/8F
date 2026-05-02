@@ -2198,6 +2198,87 @@ body{
 }
 
 /* ═══════════════════════════════════════════
+   训练 Tab 摘要卡 (v0.2.13) - 心智修正
+   只回答: 目标 / 结构 / 当前位置 → 完整方案在 Sheet
+   ═══════════════════════════════════════════ */
+.wt-plan-summary{
+  margin:14px 16px 18px;
+  padding:18px 20px 14px;
+  background:linear-gradient(180deg, rgba(74,222,128,0.05) 0%, var(--surface) 100%);
+  border:1px solid rgba(74,222,128,0.18);
+  border-radius:14px;
+}
+.wt-ps-eyebrow{
+  font-size:10.5px;
+  letter-spacing:2.5px;
+  color:var(--accent);
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:14px;
+}
+.wt-ps-row{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  padding:6px 0;
+  font-size:13px;
+}
+.wt-ps-label{
+  flex-shrink:0;
+  width:36px;
+  color:var(--muted);
+  font-weight:600;
+  letter-spacing:0.3px;
+  padding-top:1px;
+  font-size:12px;
+}
+.wt-ps-value{
+  flex:1;
+  color:var(--text);
+  line-height:1.5;
+  letter-spacing:0.2px;
+}
+.wt-ps-link{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  margin-top:12px;
+  padding:10px 0 0;
+  border-top:1px solid rgba(255,255,255,0.06);
+  font-size:12.5px;
+  color:var(--accent);
+  font-weight:600;
+  letter-spacing:0.4px;
+  cursor:pointer;
+  user-select:none;
+}
+.wt-ps-link svg{
+  width:13px;
+  height:13px;
+  margin-top:1px;
+}
+.wt-ps-link:active{ opacity:0.65; }
+
+/* 列表标题 */
+.wt-list-header{
+  margin:0 16px 8px;
+  padding:0 4px;
+}
+.wt-list-title{
+  font-size:14px;
+  font-weight:700;
+  color:var(--text);
+  letter-spacing:0.5px;
+  margin-bottom:3px;
+}
+.wt-list-sub{
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:0.3px;
+}
+
+/* ═══════════════════════════════════════════
    Log Tab - 行动日历 (旧地图改造)
    ═══════════════════════════════════════════ */
 #panel-log{
@@ -16672,7 +16753,20 @@ function renderWorkoutTab() {
   if (_workoutTabView.mode === 'detail') {
     container.innerHTML = _renderRoutineDetail(_workoutTabView.selectedNodeId);
   } else {
-    container.innerHTML = WORKOUT_ROUTINES.map(_renderRoutineRow).join('');
+    // v0.2.13 训练 Tab 心智修正:
+    //   摘要卡 (本期方案) + 列表 (本期训练内容)
+    //   让用户进 Tab 第一眼知道"这是本期计划", 不是普通课程库
+    const summaryCard = _renderWorkoutPlanSummary();
+    const listHeader = `
+      <div class="wt-list-header">
+        <div class="wt-list-title">本期训练内容</div>
+        <div class="wt-list-sub">这期会反复用到的训练模块</div>
+      </div>
+    `;
+    container.innerHTML =
+      summaryCard +
+      listHeader +
+      WORKOUT_ROUTINES.map(_renderRoutineRow).join('');
   }
 
   // 调整顶栏文案
@@ -16680,8 +16774,51 @@ function renderWorkoutTab() {
   if (sub) {
     sub.textContent = _workoutTabView.mode === 'detail'
       ? '点左上角返回'
-      : '这份契约的所有训练';
+      : '本期契约 · 训练内容';
   }
+}
+
+// ────── 训练 Tab 顶部摘要卡 (v0.2.13) ──────
+// 只回答 3 件事: 目标 / 结构 / 当前位置
+// 详细方案在 ContractPlan Sheet 里 (复用)
+function _renderWorkoutPlanSummary() {
+  const cfg = state.config;
+  const stageWeeks = cfg.stageWeeks || 4;
+  const totalDays = stageWeeks * 7;
+  const todayDay = homeTodayDay();
+  const week = Math.max(1, Math.min(getCurrentStageWeek(), stageWeeks));
+
+  // 目标行
+  let goalText;
+  if (cfg.startWeight && cfg.targetWeight) {
+    const delta = (cfg.targetWeight - cfg.startWeight).toFixed(1);
+    const direction = cfg.targetWeight < cfg.startWeight ? '减重' : '增重';
+    goalText = `建立训练节奏 + ${direction} ${Math.abs(delta)} kg`;
+  } else {
+    goalText = '建立训练节奏 + 体态塑形';
+  }
+
+  return `
+    <div class="wt-plan-summary">
+      <div class="wt-ps-eyebrow">本期训练方案</div>
+      <div class="wt-ps-row">
+        <div class="wt-ps-label">目标</div>
+        <div class="wt-ps-value">${goalText}</div>
+      </div>
+      <div class="wt-ps-row">
+        <div class="wt-ps-label">结构</div>
+        <div class="wt-ps-value">每周 4 力量 · 2 有氧 · 1 休息</div>
+      </div>
+      <div class="wt-ps-row">
+        <div class="wt-ps-label">当前</div>
+        <div class="wt-ps-value">第 ${week} 周 / 共 ${stageWeeks} 周 · DAY ${todayDay} / ${totalDays}</div>
+      </div>
+      <div class="wt-ps-link" onclick="openContractPlanSheet()">
+        <span>查看完整方案</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+  `;
 }
 
 // ───── 列表态: 单 routine 概览行 ─────
