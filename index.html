@@ -223,47 +223,94 @@ body{
    ═══════════════════════════════════════════ */
 
 /* 顶栏: 4 周契约 · DAY 11 / 28 */
-.home-topbar{
+/* ═══════════════════════════════════════════
+   Sticky Hero Header (v0.2.7) - 满宽直角, BODYTRACK 风
+   全局顶部, 不滚动消失, 是 app 一部分而不是 feed 卡片
+   ═══════════════════════════════════════════ */
+.home-hero{
   position:absolute;
   top:0;left:0;right:0;
   z-index:30;
-  background:rgba(10,10,10,0.85);
-  backdrop-filter:blur(16px) saturate(180%);
-  -webkit-backdrop-filter:blur(16px) saturate(180%);
-  padding:14px 20px;
+  padding:16px 20px 16px;
+  background:#0a0a0a;
+  background-image:
+    radial-gradient(ellipse 60% 100% at 100% 50%, rgba(74,222,128,0.14) 0%, transparent 60%),
+    linear-gradient(180deg, #0c0e0d 0%, #060606 100%);
   border-bottom:1px solid rgba(255,255,255,0.06);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+  overflow:hidden;
+  transition:padding 0.22s ease;
 }
-.ht-left{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.ht-prefix{
-  font-size:11px;
-  letter-spacing:1px;
-  color:var(--muted);
-  font-weight:400;
-}
-.ht-divider{
-  color:var(--muted2);
-  font-size:11px;
-}
-.ht-day{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:16px;
-  letter-spacing:1.5px;
+.hh-eyebrow{
+  font-size:10.5px;
+  font-weight:600;
   color:var(--accent);
+  letter-spacing:1.6px;
+  margin-bottom:5px;
+  transition:opacity 0.22s ease, max-height 0.22s ease, margin 0.22s ease;
+  max-height:20px;
+  opacity:1;
+  overflow:hidden;
+}
+.hh-title{
+  font-family:'Bebas Neue', sans-serif;
+  font-size:32px;
   line-height:1;
+  letter-spacing:0.5px;
+  margin-bottom:7px;
+  transition:font-size 0.22s ease, margin 0.22s ease;
+}
+.hh-title-main{
+  color:rgba(255,255,255,0.95);
+}
+.hh-title-accent{
+  color:var(--accent);
+}
+.hh-meta{
+  font-size:11px;
+  color:rgba(255,255,255,0.45);
+  letter-spacing:0.4px;
+  line-height:1.5;
+  transition:opacity 0.22s ease, max-height 0.22s ease;
+  max-height:40px;
+  opacity:1;
+  overflow:hidden;
+}
+.hh-meta-divider{
+  color:rgba(255,255,255,0.18);
+  margin:0 5px;
+}
+.hh-meta-soft{
+  font-style:italic;
+  color:rgba(255,255,255,0.65);
+  letter-spacing:0.3px;
+}
+.hh-meta-soft.hh-meta-done{
+  color:var(--accent);
+}
+
+/* 滚动后压缩态: 只保留小号 BODYTRACK */
+.home-hero.compact{
+  padding:10px 20px 10px;
+}
+.home-hero.compact .hh-eyebrow{
+  max-height:0;
+  margin-bottom:0;
+  opacity:0;
+}
+.home-hero.compact .hh-title{
+  font-size:20px;
+  margin-bottom:0;
+}
+.home-hero.compact .hh-meta{
+  max-height:0;
+  opacity:0;
 }
 
 /* Feed 滚动容器 */
 .home-feed{
   position:absolute;
   inset:0;
-  padding-top:50px;
+  padding-top:108px;  /* 给 hero (展开态 ~104px) 让出空间 */
   padding-bottom:30px;
   overflow-y:auto;
   overflow-x:hidden;
@@ -379,84 +426,6 @@ body{
 }
 .fnc-btn:active{transform:scale(0.99);}
 
-/* ═══════════════════════════════════════════
-   蜕变宣言卡 (v0.2.6) - 首页第一张卡, 身份锚点
-   哲学: 不是数据, 是宣言。视觉极简, 大词印刷风。
-   ═══════════════════════════════════════════ */
-.manifesto-card{
-  margin:14px 16px 0;
-  padding:24px 22px 20px;
-  background:#0a0a0a;
-  background-image:
-    radial-gradient(ellipse at 100% 60%, rgba(74,222,128,0.10) 0%, transparent 55%),
-    linear-gradient(180deg, #0c0e0d 0%, #050505 100%);
-  border:1px solid rgba(74,222,128,0.12);
-  border-radius:18px;
-  position:relative;
-  overflow:hidden;
-}
-.mc-long-term{
-  font-size:11px;
-  font-weight:600;
-  color:var(--accent);
-  letter-spacing:1.5px;
-  margin-bottom:10px;
-}
-.mc-title{
-  font-family:'Bebas Neue', sans-serif;
-  font-size:64px;
-  line-height:1;
-  letter-spacing:0.5px;
-  margin-bottom:16px;
-}
-.mc-title-main{
-  color:rgba(255,255,255,0.92);
-}
-.mc-title-accent{
-  color:var(--accent);
-  margin-left:4px;
-}
-.mc-targets{
-  font-size:12px;
-  color:rgba(255,255,255,0.55);
-  letter-spacing:0.5px;
-  line-height:1.6;
-  display:flex;
-  flex-wrap:nowrap;
-  align-items:center;
-  gap:10px;
-  padding-bottom:14px;
-  margin-bottom:12px;
-  border-bottom:1px solid rgba(255,255,255,0.06);
-  white-space:nowrap;
-  overflow:hidden;
-}
-.mc-target-weight{
-  color:rgba(255,255,255,0.78);
-  font-weight:500;
-  letter-spacing:0.3px;
-  flex-shrink:0;
-}
-.mc-target-form{
-  color:rgba(255,255,255,0.55);
-  letter-spacing:0.8px;
-  flex-shrink:1;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.mc-contract{
-  font-size:11px;
-  color:rgba(255,255,255,0.42);
-  letter-spacing:1px;
-  margin-bottom:12px;
-}
-.mc-bottom-line{
-  font-size:12.5px;
-  color:rgba(255,255,255,0.62);
-  line-height:1.7;
-  letter-spacing:0.3px;
-  font-style:italic;
-}
 
 /* === 减重目标卡 v2 (折叠 + 体重录入合一 + mini sparkline) === */
 .goal-card-v2{
@@ -1125,6 +1094,132 @@ body{
   flex-shrink:0;
   line-height:1;
   padding-bottom:2px;
+}
+
+/* === 力量证据卡 (v0.2.9) - 主证据 1 个 + 其余压成一行 === */
+.strength-evidence-card{
+  margin:14px 16px 0;
+  padding:18px 20px 14px;
+  background:linear-gradient(180deg, rgba(74,222,128,0.06) 0%, var(--surface) 100%);
+  border:1px solid rgba(74,222,128,0.20);
+  border-radius:14px;
+}
+.se-eyebrow{
+  font-size:10px;
+  letter-spacing:2.5px;
+  color:var(--accent);
+  font-weight:700;
+  margin-bottom:10px;
+}
+.se-headline{
+  font-size:17px;
+  color:var(--text);
+  font-weight:700;
+  line-height:1.4;
+  letter-spacing:0.3px;
+  margin-bottom:6px;
+}
+.se-detail{
+  font-size:13px;
+  color:var(--accent);
+  letter-spacing:0.5px;
+  font-weight:600;
+  font-family:'Bebas Neue', sans-serif;
+  font-size:16px;
+  margin-bottom:8px;
+}
+.se-more{
+  font-size:11.5px;
+  color:var(--muted);
+  letter-spacing:0.5px;
+  margin-bottom:10px;
+}
+.se-note{
+  margin-top:6px;
+  padding-top:10px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  font-size:11.5px;
+  color:var(--muted);
+  font-style:italic;
+  line-height:1.6;
+  letter-spacing:0.3px;
+}
+
+/* === 明日预告卡 (v0.2.8) - 信息卡, 不可点击 === */
+.tomorrow-card{
+  margin:14px 16px 0;
+  padding:14px 16px 14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  position:relative;
+}
+.tc-eyebrow{
+  font-size:10px;
+  letter-spacing:2.5px;
+  color:var(--muted);
+  font-weight:700;
+  margin-bottom:10px;
+}
+.tc-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.tc-icon{
+  flex-shrink:0;
+  width:40px;
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:rgba(74,222,128,0.08);
+  border:1px solid rgba(74,222,128,0.18);
+}
+.tc-icon svg{
+  width:20px;
+  height:20px;
+  color:var(--accent);
+}
+.tc-icon-rest{
+  background:rgba(168,170,255,0.08);
+  border-color:rgba(168,170,255,0.20);
+}
+.tc-icon-rest svg{ color:#a8aaff; }
+.tc-icon-cardio{
+  background:rgba(255,170,90,0.08);
+  border-color:rgba(255,170,90,0.20);
+}
+.tc-icon-cardio svg{ color:#ffaa5a; }
+.tc-info{
+  flex:1;
+  min-width:0;
+}
+.tc-type{
+  font-size:10.5px;
+  letter-spacing:1.2px;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-weight:600;
+  margin-bottom:3px;
+}
+.tc-name{
+  font-size:14px;
+  color:var(--text);
+  font-weight:600;
+  line-height:1.4;
+  margin-bottom:4px;
+}
+.tc-meta{
+  font-size:11.5px;
+  color:var(--muted);
+  line-height:1.5;
+  letter-spacing:0.3px;
+}
+.tc-meta-divider{
+  color:var(--muted2);
+  margin:0 5px;
 }
 
 /* === 今日推荐卡 (产品核心,Liftoff 没有) === */
@@ -5728,6 +5823,7 @@ body{
 }
 
 
+.morning-card{
   display:flex;
   align-items:center;
   gap:14px;
@@ -8188,12 +8284,14 @@ body{
      首页 Panel
      ═══════════════════════════════════════════ -->
 <div class="panel active" id="panel-home">
-  <!-- 顶栏: 契约 + 进度 (替代 sticky-bar) -->
-  <div class="home-topbar" id="homeTopbar">
-    <div class="ht-left">
-      <span class="ht-prefix">4 周契约</span>
-      <span class="ht-divider">·</span>
-      <span class="ht-day" id="htDay">DAY 1 / 28</span>
+  <!-- Sticky Hero Header (v0.2.7): 全局顶部, 满宽直角, BODYTRACK 主视觉 -->
+  <div class="home-hero" id="homeHero">
+    <div class="hh-eyebrow">6 个月蜕变计划</div>
+    <div class="hh-title">
+      <span class="hh-title-main">BODY</span><span class="hh-title-accent">TRACK</span>
+    </div>
+    <div class="hh-meta" id="hhMeta">
+      <!-- "从 85kg 到 75kg · 铠甲胸 · 倒三角 · 腹肌" 注入 -->
     </div>
   </div>
 
@@ -9355,6 +9453,23 @@ function getSequenceRaw(absDay) {
   return SEQUENCE[(absDay - 1 - offset) % 7];
 }
 
+// ────────────── 历史契约专用版 (v0.2.10 P1) ──────────────
+// 当我们对历史契约 (state.contracts[i]) 做复盘时, 不能用 state.records
+// 必须用 contract.records 来计算 offset。同时尊重 contract.config.sequence。
+function getContractSequenceRaw(contract, absDay) {
+  const cfg = contract.config || {};
+  const records = contract.records || {};
+  const seq = cfg.sequence || SEQUENCE;
+  // 计算 absDay 之前的主动休息次数 (offset)
+  let offset = 0;
+  for (let d = 1; d < absDay; d++) {
+    const dateStr = addDays(cfg.startDate, d - 1);
+    const rec = records[dateStr] || {};
+    if (rec.adjusted === 'rest') offset++;
+  }
+  return seq[(absDay - 1 - offset) % seq.length];
+}
+
 // ════════════════════════════════════════════════════════════
 // getPlannedNodeForDay (v0.2.2 关键架构):
 // 这是回答"D{absDay} 应该做什么节点"的唯一权威函数。
@@ -9940,30 +10055,80 @@ function renderHomePanel() {
   );
 
   const sealedOverlay = document.getElementById('sealedOverlay');
-  const topbar = document.getElementById('homeTopbar');
+  const hero = document.getElementById('homeHero');
 
   if (sealed && !hasUnreadReview) {
     // 完全封存 - 没契约、没未读复盘 → 显示 sealed overlay
     if (sealedOverlay) sealedOverlay.classList.add('show');
-    if (topbar) topbar.style.display = 'none';
+    if (hero) hero.style.display = 'none';
     return;
   }
 
   if (sealedOverlay) sealedOverlay.classList.remove('show');
-  if (topbar) topbar.style.display = '';
+  if (hero) hero.style.display = '';
 
-  // 顶栏: DAY X / 28 (有 active 契约时)
-  if (!sealed) {
-    const todayDay = homeTodayDay();
-    const totalDays = (state.config.stageWeeks || 4) * 7;
-    document.getElementById('htDay').textContent = `DAY ${todayDay} / ${totalDays}`;
-  } else {
-    // sealed 但有未读复盘
-    document.getElementById('htDay').textContent = '上一份契约';
+  // Hero meta 行 (v0.2.9): 按状态切换 - missed / completed / default
+  const cfg = state.config;
+  const hhMeta = document.getElementById('hhMeta');
+  if (hhMeta) {
+    if (!sealed && cfg.startWeight && cfg.targetWeight) {
+      // 默认: 形态目标 (静态)
+      const startW = _fmtWeight(cfg.startWeight);
+      const targetW = _fmtWeight(cfg.targetWeight);
+      const formGoals = ['铠甲胸', '倒三角', '腹肌'];   // 硬编码 - 等 v0.3 setup 输入
+
+      // 状态判断 - 看今天是否完成 / 昨天是否 missed
+      const today = todayStr();
+      const todayRec = state.records[today] || {};
+      const todayDone = !!todayRec.completed;
+      const todayAbsDay = homeTodayDay();
+      let yesterdayMissed = false;
+      if (todayAbsDay >= 2) {
+        const yStatus = homeDayStatus(todayAbsDay - 1);
+        yesterdayMissed = yStatus === 'missed';
+      }
+
+      let metaText;
+      if (yesterdayMissed && !todayDone) {
+        // 昨天断了, 今天还没练 → 接回文案
+        metaText = `<span class="hh-meta-soft">昨天断了一下,不是结束。今天接上,契约还活着。</span>`;
+      } else if (todayDone) {
+        // 今天已完成 → 庆祝
+        metaText = `<span class="hh-meta-soft hh-meta-done">今天守住了。继续往那个 ${targetW}kg 的你推进。</span>`;
+      } else {
+        // 默认: 形态目标
+        metaText =
+          `从 ${startW}kg 到 ${targetW}kg` +
+          `<span class="hh-meta-divider">·</span>` +
+          formGoals.join('<span class="hh-meta-divider">·</span>');
+      }
+      hhMeta.innerHTML = metaText;
+    } else {
+      hhMeta.textContent = '上一份契约';
+    }
   }
 
   // Feed 内容
   renderHomeFeed();
+
+  // 滚动 > 30px 时 hero 进入 compact 态 (只剩小号 BODYTRACK)
+  _bindHomeHeroScrollObserver();
+}
+
+// hero 滚动压缩监听 (幂等 - 重复调用安全)
+function _bindHomeHeroScrollObserver() {
+  const feed = document.getElementById('homeFeed');
+  const hero = document.getElementById('homeHero');
+  if (!feed || !hero) return;
+  if (feed._heroScrollBound) return;  // 已绑定不重复
+  feed._heroScrollBound = true;
+  const onScroll = () => {
+    if (feed.scrollTop > 30) hero.classList.add('compact');
+    else hero.classList.remove('compact');
+  };
+  feed.addEventListener('scroll', onScroll, { passive: true });
+  // 初始判断 (从其他 tab 切回时可能已滚)
+  onScroll();
 }
 
 // ═══════════════════════════════════════════
@@ -9972,42 +10137,193 @@ function renderHomePanel() {
 // 用户在折叠/展开目标卡时的临时状态 (不持久化, 切 tab 重置)
 let _goalCardExpanded = false;
 
+// ════════════════════════════════════════════════════════════
+// Feed Context 引擎 (v0.2.9)
+// 哲学: Feed 不是卡片列表, 是用户当天的叙事流。
+//   每张卡承担一个心理任务, 出现位置由用户当下状态决定 — 不固定。
+//
+// 步骤:
+//   1. computeFeedContext() → 收集所有状态信号
+//   2. getHomeFeedCards(ctx) → 按状态编排卡片顺序
+//   3. renderHomeFeed() → 真正渲染
+// ════════════════════════════════════════════════════════════
+
+// 收集 Feed 编排所需的全部状态信号
+function computeFeedContext() {
+  const ctx = {
+    today: todayStr(),
+    todayCompleted: false,
+    todayAdjustedRest: false,
+    todayIsRestDay: false,         // 今天本身就是计划休息日
+    postureCompleted: false,
+    yesterdayMissed: false,        // 昨天是训练日且断了 (真 missed, 不是计划休息)
+    weightStalled: false,          // 近 14 天 7 日均重持平
+    hasStrengthEvidence: false,    // 是否有近 7 天 PR
+    hasContractEnd: false,
+    hasWeekReview: false,
+    contractActive: false
+  };
+
+  // 系统事件检测先跑 - 不依赖 active contract 存在
+  // (修 P0: 契约结束后 active 已清空, 但仍要让"打开你的复盘"卡出现)
+  ctx.hasContractEnd = _hasUnreadContractReview();
+
+  // 契约状态
+  const c = getActiveContract();
+  ctx.contractActive = !!(c && c.status === 'active' && state.config.startDate && state.config.setupCompleted);
+  if (!ctx.contractActive) return ctx;
+
+  const today = ctx.today;
+
+  // 今日状态
+  const todayRec = state.records[today] || {};
+  ctx.todayCompleted = !!todayRec.completed;
+  ctx.todayAdjustedRest = todayRec.adjusted === 'rest';
+  const todayAbsDay = homeTodayDay();
+  ctx.todayIsRestDay = getPlannedNodeForDay(todayAbsDay, todayRec) === 22;
+
+  // 体态状态
+  const todayPosture = (state.posture || {})[today];
+  ctx.postureCompleted = !!(todayPosture && todayPosture.completed);
+
+  // 昨天 missed 检测 (真 missed: 训练日 + 空白)
+  if (todayAbsDay >= 2) {
+    const yStatus = homeDayStatus(todayAbsDay - 1);
+    ctx.yesterdayMissed = yStatus === 'missed';
+  }
+
+  // 体重停滞检测 (近 14 天 7 日均重对比, 持平 = 停滞)
+  const weights = state.weights || {};
+  let recentSum = 0, recentN = 0, prevSum = 0, prevN = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(today, -i);
+    if (weights[d] != null) { recentSum += weights[d]; recentN++; }
+  }
+  for (let i = 7; i < 14; i++) {
+    const d = addDays(today, -i);
+    if (weights[d] != null) { prevSum += weights[d]; prevN++; }
+  }
+  if (recentN >= 2 && prevN >= 2) {
+    const recentAvg = recentSum / recentN;
+    const prevAvg = prevSum / prevN;
+    ctx.weightStalled = Math.abs(recentAvg - prevAvg) < 0.2;
+  }
+
+  // 系统事件 - 周复盘 (仅 active contract 时计算; contractEnd 在前面已算)
+  ctx.hasWeekReview = _hasUnreadWeekReview();
+
+  // 力量证据 (有 PR 才算)
+  ctx.hasStrengthEvidence = !!_findTopStrengthEvidence();
+
+  return ctx;
+}
+
+// 编排卡片顺序: 这才是真正的 Feed 设计
+// 返回字符串数组, 每个是卡片 ID
+function getHomeFeedCards(ctx) {
+  const cards = [];
+
+  if (!ctx.contractActive) {
+    // 无活跃契约: 只显示复盘 + 签新契约 CTA
+    if (ctx.hasContractEnd) cards.push('contractEnd');
+    cards.push('signNewContract');
+    return cards;
+  }
+
+  // 系统事件: 复盘最高优先, 但不能挤压今日训练太远
+  if (ctx.hasContractEnd) cards.push('contractEnd');
+  else if (ctx.hasWeekReview) cards.push('weekReview');
+
+  // 主体编排: 按今日状态分支
+  if (ctx.todayCompleted) {
+    // 状态 B: 今日已完成 → 切换到"奖励 + 期待"
+    cards.push('todayDone');                                  // 完成反馈 (替代今日训练卡)
+    if (ctx.hasStrengthEvidence) cards.push('strengthEvidence');
+    cards.push('tomorrowPreview');
+    cards.push('weightTrend');
+    cards.push('recent7Days');
+    if (ctx.postureCompleted) cards.push('posture');          // 体态完成态沉底
+  } else if (ctx.todayAdjustedRest) {
+    // 状态: 今日主动休息 → 已经做出选择, 给恢复支持
+    cards.push('todayDone');                                  // 显示主动休息状态
+    cards.push('tomorrowPreview');                            // 明天接上
+    if (ctx.hasStrengthEvidence) cards.push('strengthEvidence');
+    cards.push('weightTrend');
+    cards.push('recent7Days');
+    if (ctx.postureCompleted) cards.push('posture');
+    else cards.push('posture');                               // 主动休息日体态可以做
+  } else {
+    // 状态 A: 今日未完成 → 一切服务"开始训练"
+    cards.push('todayTraining');                              // 主行动卡
+    if (!ctx.postureCompleted) cards.push('posture');
+    // 体重停滞 + 有 PR: 力量证据上提到体重前 (对冲焦虑)
+    if (ctx.hasStrengthEvidence) cards.push('strengthEvidence');
+    cards.push('weightTrend');
+    cards.push('tomorrowPreview');                            // 未完成时弱化, 后置
+    cards.push('recent7Days');
+    if (ctx.postureCompleted) cards.push('posture');
+  }
+
+  return cards;
+}
+
 function renderHomeFeed() {
   const feed = document.getElementById('homeFeed');
   if (!feed) return;
 
-  const c = getActiveContract();
-  const hasActive = c && c.status === 'active' && state.config.startDate && state.config.setupCompleted;
+  const ctx = computeFeedContext();
+  state._lastFeedContext = ctx;  // 暴露给力量证据卡等使用
+  const cardOrder = getHomeFeedCards(ctx);
 
-  let html = '';
-
-  if (hasActive) {
-    const today = todayStr();
-    const todayPosture = (state.posture || {})[today];
-    const postureDone = !!(todayPosture && todayPosture.completed);
-
-    // 排序:
-    //   宣言锚点 > 系统事件 > 主心智 > 待做习惯 > 决策 > 历史 > 已完成的反馈
-    html += _renderManifestoCard();                            // 0. 蜕变宣言 (永远显示, 第一眼)
-    html += _renderContractEndCard();                          // 1. 历史复盘 (条件)
-    html += _renderWeekReviewCard();                           // 2. 周复盘 (条件)
-    html += _renderGoalCard();                                 // 3. 减重目标 (永远)
-    if (!postureDone) html += _renderPostureCard();            // 4a. 体态未做 - 提醒位
-    html += _renderTodayCard();                                // 5. 今日决策 (永远)
-    html += _renderRecentLogCard();                            // 6. 最近 7 天 (永远)
-    if (postureDone) html += _renderPostureCard();             // 4b. 体态已做 - 反馈位 (最末)
-  } else {
-    // 没活跃契约但首页能进 (因为有未读复盘) → 只显示复盘卡 + 签新 CTA
-    html += _renderContractEndCard();
-    html += `
+  // 卡片 ID → 渲染函数
+  const renderers = {
+    contractEnd: _renderContractEndCard,
+    weekReview: _renderWeekReviewCard,
+    todayTraining: _renderTodayCard,
+    todayDone: _renderTodayCard,                              // 同 _renderTodayCard 内部已根据 record 状态切换
+    posture: _renderPostureCard,
+    strengthEvidence: _renderStrengthEvidenceCard,
+    weightTrend: _renderGoalCard,
+    tomorrowPreview: _renderTomorrowCard,
+    recent7Days: _renderRecentLogCard,
+    signNewContract: () => `
       <div class="feed-new-contract">
         <div class="fnc-text">读完复盘后,<br>准备好就签下一份契约。</div>
         <button class="fnc-btn" onclick="startSetup()">签新契约</button>
       </div>
-    `;
-  }
+    `
+  };
 
+  let html = '';
+  for (const id of cardOrder) {
+    const fn = renderers[id];
+    if (fn) html += fn();
+  }
   feed.innerHTML = html;
+}
+
+// ─── Helper: 检查是否有未读契约结束复盘 ───
+function _hasUnreadContractReview() {
+  const reviewed = state.ui.reviewedContracts || {};
+  return (state.contracts || []).some(c =>
+    (c.status === 'completed' || c.status === 'abandoned') && !reviewed[c.id]
+  );
+}
+
+// ─── Helper: 检查是否有未读周复盘 (D8 / D15 / D22 unread) ───
+function _hasUnreadWeekReview() {
+  const cfg = state.config;
+  if (!cfg.startDate) return false;
+  const todayDay = homeTodayDay();
+  const reviewKeys = state.ui.weekReviewsRead || {};
+  for (const week of [1, 2, 3]) {
+    const triggerDay = week * 7 + 1;  // D8 / D15 / D22
+    if (todayDay >= triggerDay) {
+      const key = `${cfg.startDate}_w${week}`;
+      if (!reviewKeys[key]) return true;
+    }
+  }
+  return false;
 }
 
 // ────────────── 体态 feed 卡 (晨间 6 分钟) ──────────────
@@ -10384,110 +10700,6 @@ function _openContractReview(contractId) {
   _renderReviewPage(c, /*isHistorical=*/false);
 }
 
-// 宣言卡底部文案 — 按用户状态优先选 (不按时间)
-// 让卡从"海报"升级到"魔鬼教练": 它读懂用户当下处境, 而不是机械按 Day 切
-function _manifestoCueByState(absDay) {
-  const cfg = state.config;
-  const today = todayStr();
-
-  // 状态 1: 今天主动休息了 (优先级最高 - 用户刚做的决定)
-  const todayRec = state.records[today] || {};
-  if (todayRec.adjusted === 'rest') {
-    return `恢复不是重置。明天接上, 才算你真的会练。`;
-  }
-
-  // 状态 2: 昨天是训练日但断线 (真 missed - 用 homeDayStatus 判断, 尊重计划休息日)
-  if (absDay >= 2) {
-    const yesterdayStatus = homeDayStatus(absDay - 1);
-    if (yesterdayStatus === 'missed') {
-      return `昨天断了一下, 不是结束。今天接上, 契约还活着。`;
-    }
-  }
-
-  // 状态 3: 连续完成 ≥ 3 天 (含训练 / 休息打卡 / 主动休息 - 都算履约)
-  let streak = 0;
-  for (let d = absDay - 1; d >= 1; d--) {
-    const s = homeDayStatus(d);
-    if (s === 'done' || s === 'done-rest') streak++;
-    else break;
-  }
-  if (streak >= 3) {
-    return `你开始不像"想改变的人", 而像"会持续的人"了。`;
-  }
-
-  // 状态 4: 体重停滞 (近 2 周 7 日均重持平, 需有足够数据)
-  const weights = state.weights || {};
-  function avg7Around(targetDate) {
-    let sum = 0, n = 0;
-    for (let i = 0; i < 7; i++) {
-      const d = addDays(targetDate, -i);
-      if (weights[d] != null) { sum += weights[d]; n++; }
-    }
-    return n >= 2 ? sum / n : null;
-  }
-  const recentAvg = avg7Around(today);
-  const prevAvg = avg7Around(addDays(today, -7));
-  if (recentAvg != null && prevAvg != null && Math.abs(recentAvg - prevAvg) < 0.2) {
-    return `体重没动, 不代表身体没动。先守住训练。`;
-  }
-
-  // 默认: 北极星 (跟 NORESET 灵魂咬合)
-  return `你不需要重来。你只需要今天不断。`;
-}
-
-// ────────────── 蜕变宣言卡 (v0.2.6) ──────────────
-// 哲学: 这不是数据卡, 是身份锚点。
-//   体重卡 = "我现在多少斤" (进度)
-//   宣言卡 = "我要变成什么样的人" (牵引)
-// 数据回答 "距离", 宣言回答 "为什么"。
-//
-// 当前版本 (A 范围): 硬编码 — 让 dogfood 验证心智是否成立。
-// 未来 (v0.3): 从 Setup 接收 user.identity.formGoals + 6 个月时间轴。
-function _renderManifestoCard() {
-  const cfg = state.config;
-  if (!cfg.startDate || !cfg.startWeight || !cfg.targetWeight) return '';
-
-  // ─── 长程: 6 个月蜕变计划 ───
-  const longLabel = `6 个月蜕变计划`;
-
-  // ─── 近程: 当前契约第几周 ───
-  const today = todayStr();
-  const dayInContract = daysBetween(cfg.startDate, today) + 1;
-  const totalDays = (cfg.stageWeeks || 4) * 7;
-  const safeDay = Math.max(1, Math.min(dayInContract, totalDays));
-  const week = Math.ceil(safeDay / 7);
-  const contractLabel = `当前契约 · 第 ${week} 周 / 共 ${cfg.stageWeeks || 4} 周`;
-
-  // 大词: 用契约名 (用户后续可在 Setup 自定义) - 当前硬编码
-  const titleMain = 'NO';
-  const titleAccent = 'RESET';
-
-  // 形态目标: 硬编码 - dogfood 验证后再做 Setup 输入
-  const formGoals = ['铠甲胸', '倒三角', '腹肌'];
-
-  // 结果目标: 起点 → 目标
-  const startW = _fmtWeight(cfg.startWeight);
-  const targetW = _fmtWeight(cfg.targetWeight);
-
-  // 底部一句话 - 按"用户状态"优先, 不按时间线性
-  const bottomLine = _manifestoCueByState(safeDay);
-
-  return `
-    <div class="manifesto-card">
-      <div class="mc-long-term">${longLabel}</div>
-      <div class="mc-title">
-        <span class="mc-title-main">${titleMain}</span><span class="mc-title-accent">${titleAccent}</span>
-      </div>
-      <div class="mc-targets">
-        <span class="mc-target-weight">${startW} → ${targetW} kg</span>
-        <span class="mc-target-form">${formGoals.join(' · ')}</span>
-      </div>
-      <div class="mc-contract">${contractLabel}</div>
-      <div class="mc-bottom-line">${bottomLine}</div>
-    </div>
-  `;
-}
-
 // ────────────── 减重目标卡 + 体重录入合一 ──────────────
 function _renderGoalCard() {
   const cfg = state.config;
@@ -10506,7 +10718,7 @@ function _renderGoalCard() {
       <div class="goal-card">
         <div class="goal-card-empty">
           <div class="goal-card-empty-icon">🎯</div>
-          <div class="goal-card-empty-text">这份契约没有设减重目标</div>
+          <div class="goal-card-empty-text">这份契约没有体重目标</div>
         </div>
       </div>
     `;
@@ -10523,7 +10735,8 @@ function _renderGoalCard() {
   }
 
   const direction = targetDelta < 0 ? 'lose' : 'gain';
-  const directionLabel = direction === 'lose' ? '减重目标' : '增重目标';
+  // v0.2.7: 总目标已由 Hero Header 承担, 此卡降级为"体重趋势"证据卡
+  const directionLabel = '体重趋势';
   const remainingDays = Math.max(0, (cfg.stageWeeks || 4) * 7 - homeTodayDay() + 1);
 
   // 距离目标多远
@@ -10987,6 +11200,92 @@ function adjustToRest() {
   if (state.ui.activeTab === 'home') renderHomePanel();
 }
 
+// ════════════════════════════════════════════════════════════
+// 明日训练预告卡 (v0.2.8)
+// 哲学: 降低不确定性 + 建立期待 + 帮安排生活
+//   "用户今天完成后, 会更容易回来"
+// 不是行动卡 — 不可点击触发训练 (那是明天的事)
+// ════════════════════════════════════════════════════════════
+function _renderTomorrowCard() {
+  const cfg = state.config;
+  if (!cfg.startDate) return '';
+
+  const todayDay = homeTodayDay();
+  const totalDays = (cfg.stageWeeks || 4) * 7;
+  // 契约最后一天后不显示明日卡 (没有明天了)
+  if (todayDay >= totalDays) return '';
+
+  const tomorrowAbsDay = todayDay + 1;
+  const tomorrowSeq = getSequenceRaw(tomorrowAbsDay);
+
+  // 计算训练详情 (类型 + 名称 + 时长 + 重点)
+  let typeLabel, name, duration, focus, iconClass;
+  if (tomorrowSeq === 'cardio') {
+    typeLabel = '有氧 · Zone 2';
+    name = '心肺耐力 + 主动燃脂';
+    duration = '30-40 分钟';
+    focus = 'Zone 2 心率, 喘但能说话';
+    iconClass = 'tc-icon-cardio';
+  } else if (tomorrowSeq === 22) {
+    typeLabel = '完全休息';
+    name = '让身体修复一天';
+    duration = '一整天';
+    focus = '睡满 7-8 小时, 蛋白质摄入充分';
+    iconClass = 'tc-icon-rest';
+  } else {
+    // 力量日
+    const node = NODES[tomorrowSeq];
+    if (!node) return '';
+    typeLabel = '力量 · ' + node.name;
+    const focusMap = {
+      1: { name: '胸 + 肩稳定', focus: '上斜哑铃卧推 · 前锯肌激活', duration: '30-45 分钟' },
+      3: { name: '背阔 + 抗驼背', focus: '对握下拉 · 坐姿划船 · TRX 面拉', duration: '30-45 分钟' },
+      5: { name: '臀腿后链 + 核心', focus: '保加利亚分腿蹲 · 罗马尼亚硬拉', duration: '30-45 分钟' },
+      6: { name: '肩稳定 + 手臂线条', focus: '轻重量肩推 · 侧平举 · 三头', duration: '25-35 分钟' }
+    };
+    const cfg2 = focusMap[tomorrowSeq];
+    if (cfg2) {
+      name = cfg2.name;
+      duration = cfg2.duration;
+      focus = cfg2.focus;
+    } else {
+      name = node.name;
+      duration = '30-45 分钟';
+      focus = '';
+    }
+    iconClass = 'tc-icon-strength';
+  }
+
+  return `
+    <div class="tomorrow-card">
+      <div class="tc-eyebrow">明 日 预 告</div>
+      <div class="tc-row">
+        <div class="tc-icon ${iconClass}">
+          ${_tomorrowCardIcon(tomorrowSeq)}
+        </div>
+        <div class="tc-info">
+          <div class="tc-type">${typeLabel}</div>
+          <div class="tc-name">${name}</div>
+          <div class="tc-meta">
+            <span class="tc-meta-duration">${duration}</span>
+            ${focus ? `<span class="tc-meta-divider">·</span><span class="tc-meta-focus">${focus}</span>` : ''}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function _tomorrowCardIcon(seq) {
+  if (seq === 'cardio') {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+  }
+  if (seq === 22) {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  }
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M6.5 17.5h11M3 8v8M21 8v8"/><rect x="6" y="9" width="12" height="6" rx="1"/></svg>';
+}
+
 function _recommendForToday(absDay) {
   const seqRaw = getSequenceRaw(absDay);
 
@@ -11042,6 +11341,198 @@ function _recommendForToday(absDay) {
 }
 
 // ────────────── 最近 7 天 (轻量历史入口) ──────────────
+// ════════════════════════════════════════════════════════════
+// 力量进步证据卡 (v0.2.8)
+// 哲学: 减脂之外的第二条正反馈通道。
+//   "我不是只在消耗, 我在变强 — 这是身体真实变化的证据"
+// 数据来源: state.exerciseLog (PR 系统已建)
+// 触发: 至少有 1 项过去 7 天的进步 (重量 PR / reps PR)
+// ════════════════════════════════════════════════════════════
+// 计算每日"日期级最佳" — 不再用组级最佳, 避免同天组间提升伪 PR (P0 严谨性)
+// 返回 { maxWeight, repsAtMaxWeight, maxRepsAtAnyWeight, weightOfMaxReps }
+function _dailyBest(sets) {
+  if (!sets || sets.length === 0) return null;
+  const maxWeight = Math.max(...sets.map(s => s.weight || 0));
+  const setsAtMaxW = sets.filter(s => (s.weight || 0) === maxWeight);
+  const repsAtMaxWeight = Math.max(...setsAtMaxW.map(s => s.reps || 0));
+  return { maxWeight, repsAtMaxWeight };
+}
+
+// 把动作翻译成"身体变化"文案 — 不报数据, 报感受
+// 按 muscles[0] (主肌群) + role 分类映射
+function _exerciseToBodyChange(ex) {
+  if (!ex) return '你变强了';
+  const m = (ex.muscles && ex.muscles[0]) || '';
+  // 按主肌群类型映射成"身体变化"
+  if (/胸大肌|前锯/.test(m)) return '你的胸肩推力变强了';
+  if (/背阔/.test(m)) return '你的背部发力更稳了';
+  if (/中下斜方|菱形|肩袖/.test(m)) return '你的肩胛控制更稳了';
+  if (/三角肌中束/.test(m)) return '你的肩膀线条出来了';
+  if (/三角肌|肩稳|后三角/.test(m)) return '你的肩膀更挺了';
+  if (/三头/.test(m)) return '你的手臂线条出来了';
+  if (/二头/.test(m)) return '你的手臂力量上来了';
+  if (/股四头|臀大肌|腘绳/.test(m)) return '你的下肢支撑更强了';
+  if (/腹横|腹直|竖脊/.test(m)) return '你的核心控制更稳了';
+  return '你变强了';
+}
+
+// 找到首页应该展示的力量进步 (跨日期)
+// 返回: null (无进步) | { top: 主证据, total: 总动作数 }
+//   top = { type, exName, exKey, bodyChange, headline, detail }
+function _findTopStrengthEvidence() {
+  const log = state.exerciseLog || {};
+  if (Object.keys(log).length === 0) return null;
+
+  const today = todayStr();
+  const sevenDaysAgo = addDays(today, -7);
+
+  const evidences = [];
+
+  for (const exKey of Object.keys(log)) {
+    const ex = EXERCISE_LIBRARY[exKey];
+    if (!ex || ex.category !== 'main') continue;
+    if (!isPRTrackable(ex)) continue;
+
+    // ─── v0.2.10 P1 修复: 改成"近 7 天某日 vs 该日前任意历史" ───
+    // 旧逻辑误伤场景: 5 天前 8kg + 今天 10kg → 不显示 (因为 5 天前也属于 recent)
+    // 新逻辑: 对近 7 天里的每一天, 找它之前所有日期的最佳, 跟当天最佳比较
+    const dailyBests = {};   // date → { maxWeight, repsAtMaxWeight }
+    for (const entry of log[exKey]) {
+      const best = _dailyBest(entry.sets);
+      if (best) dailyBests[entry.date] = best;
+    }
+    const allDates = Object.keys(dailyBests).sort();   // 升序
+    if (allDates.length < 2) continue;   // 至少 2 个不同日期
+
+    // 找近 7 天的日期里, 哪一天构成了"vs 该日之前所有日期的进步"
+    let bestEvidence = null;
+    for (let i = 1; i < allDates.length; i++) {
+      const recentDate = allDates[i];
+      if (recentDate < sevenDaysAgo) continue;   // 必须在近 7 天内
+
+      const currentBest = dailyBests[recentDate];
+      const previousDates = allDates.slice(0, i);   // 这一天之前所有日期
+      // 取之前最佳重量 + 该重量下最佳 reps
+      const previousMaxW = Math.max(...previousDates.map(d => dailyBests[d].maxWeight));
+      // 重量 PR 优先
+      if (currentBest.maxWeight > previousMaxW && currentBest.maxWeight > 0) {
+        const cand = {
+          type: 'weight',
+          exName: ex.name,
+          exKey,
+          bodyChange: _exerciseToBodyChange(ex),
+          headline: `${ex.name}突破了`,
+          detail: `${previousMaxW}kg → ${currentBest.maxWeight}kg × ${currentBest.repsAtMaxWeight}`,
+          improvement: currentBest.maxWeight - previousMaxW,
+          improvementPct: previousMaxW > 0 ? (currentBest.maxWeight - previousMaxW) / previousMaxW : 0,
+          recentDate
+        };
+        if (!bestEvidence || cand.improvementPct > bestEvidence.improvementPct) {
+          bestEvidence = cand;
+        }
+        continue;
+      }
+      // 同重量 reps PR: 比较 currentBest 的 maxWeight 这个重量在之前的最高 reps
+      const targetW = currentBest.maxWeight;
+      const previousRepsAtW = [];
+      for (const d of previousDates) {
+        // dailyBest 只记 max 重量 reps, 我们要"该重量下出现过的所有 reps 的最大值"
+        const sets = (log[exKey].find(e => e.date === d) || {}).sets || [];
+        for (const s of sets) {
+          if ((s.weight || 0) === targetW) previousRepsAtW.push(s.reps || 0);
+        }
+      }
+      if (previousRepsAtW.length === 0) continue;
+      const previousMaxReps = Math.max(...previousRepsAtW);
+      if (currentBest.repsAtMaxWeight > previousMaxReps) {
+        const wDisplay = targetW > 0 ? `${targetW}kg` : '自重';
+        const cand = {
+          type: 'reps',
+          exName: ex.name,
+          exKey,
+          bodyChange: _exerciseToBodyChange(ex),
+          headline: `${ex.name}做得更稳了`,
+          detail: `${wDisplay} × ${previousMaxReps} → × ${currentBest.repsAtMaxWeight}`,
+          improvement: currentBest.repsAtMaxWeight - previousMaxReps,
+          improvementPct: previousMaxReps > 0 ? (currentBest.repsAtMaxWeight - previousMaxReps) / previousMaxReps : 0,
+          recentDate
+        };
+        // weight PR 优先, 同 type 比 improvementPct
+        if (!bestEvidence) {
+          bestEvidence = cand;
+        } else if (bestEvidence.type === 'reps' && cand.improvementPct > bestEvidence.improvementPct) {
+          bestEvidence = cand;
+        }
+      }
+    }
+
+    if (bestEvidence) evidences.push(bestEvidence);
+  }
+
+  if (evidences.length === 0) return null;
+
+  // 排序: weight PR 优先, 然后按 improvementPct 排
+  evidences.sort((a, b) => {
+    if (a.type !== b.type) return a.type === 'weight' ? -1 : 1;
+    return b.improvementPct - a.improvementPct;
+  });
+
+  return {
+    top: evidences[0],
+    total: evidences.length
+  };
+}
+
+// ════════════════════════════════════════════════════════════
+// 力量证据卡 (v0.2.9 重写)
+// 角色: 正反馈卡 — 用户怀疑"我是不是白练"时, 给身体变化证据。
+// 哲学:
+//   1. 低频出现 (没进步就消失, 不显示空状态)
+//   2. 主证据 1 个 + 其余压成一行
+//   3. 跨日期才算 (同天组间提升不进首页)
+//   4. 文案翻译为身体变化, 不报数据
+//   5. 体重停滞时文案变化 — 这是它最有价值的时刻
+// ════════════════════════════════════════════════════════════
+function _renderStrengthEvidenceCard() {
+  const result = _findTopStrengthEvidence();
+  if (!result) return '';
+
+  const { top, total } = result;
+
+  // 文案根据场景分支:
+  //   场景 A: 体重停滞 → 上提 + 对冲焦虑文案
+  //   场景 B: 普通 PR → 翻译身体变化
+  // (今日完成场景不在卡内文案体现 — 由 Feed 编排上提位置体现)
+  const ctx = state._lastFeedContext;
+  const isStalled = ctx && ctx.weightStalled;
+
+  let bodyHeadline, bodyDetail, footnote;
+
+  if (isStalled) {
+    bodyHeadline = '体重没动,但你变强了';
+    bodyDetail = `${top.exName} ${top.detail}`;
+    footnote = '别被单日体重骗走。';
+  } else {
+    bodyHeadline = top.bodyChange;
+    bodyDetail = `${top.exName} ${top.detail}`;
+    footnote = '训练正在留下痕迹。';
+  }
+
+  const moreText = total > 1
+    ? `<div class="se-more">还有 ${total - 1} 个动作也在进步</div>`
+    : '';
+
+  return `
+    <div class="strength-evidence-card">
+      <div class="se-eyebrow">你 在 变 强</div>
+      <div class="se-headline">${bodyHeadline}</div>
+      <div class="se-detail">${bodyDetail}</div>
+      ${moreText}
+      <div class="se-note">${footnote}</div>
+    </div>
+  `;
+}
+
 function _renderRecentLogCard() {
   const today = todayStr();
   const cfg = state.config;
@@ -13889,7 +14380,8 @@ function closeSetInputBg(e) {
 function onSetInputChange() {
   const w = parseFloat(document.getElementById('simWeightInput').value);
   const r = parseInt(document.getElementById('simRepsInput').value);
-  const valid = !isNaN(w) && w > 0 && !isNaN(r) && r > 0;
+  // 与 saveSetInput 保持一致: reps 必须 > 0, weight 允许空 / 0 (自重) / 正数
+  const valid = !isNaN(r) && r > 0 && (isNaN(w) || w >= 0);
   document.getElementById('simSaveBtn').disabled = !valid;
 }
 
@@ -16961,11 +17453,9 @@ function _summarizeContract(contract) {
   for (let d = 1; d <= totalDays; d++) {
     const dateStr = addDays(cfg.startDate, d - 1);
     const rec = records[dateStr] || {};
-    // 用 sequence (含顺延), 不再用静态 SEQUENCE[(d-1)%7]
-    // 注意: 这里是历史契约统计, contract.config.sequence 是契约固化的 sequence
-    // 如果 contract.records 里有 nodeId 优先用那个, 否则按 sequence
-    const seqArr = cfg.sequence || SEQUENCE;
-    const nodeId = rec.nodeId || seqArr[(d - 1) % 7];
+    // v0.2.10 P1: 用 getContractSequenceRaw (含顺延), 不再静态 SEQUENCE[(d-1)%7]
+    // 之前: 主动休息后, 复盘统计的"计划休息/训练"判断会跟首页/日历不一致
+    const nodeId = rec.nodeId || getContractSequenceRaw(contract, d);
     const isRest = nodeId === 22;
 
     if (rec.completed) {
@@ -17348,14 +17838,14 @@ function checkContractEnd() {
 
   // 触发条件 (任一):
   // 1. 已经过了最后一天 (daysPassed >= totalDays, 即第 29+ 天打开 app)
-  // 2. 今天是最后一天且今天的训练已完成 (第 28 天训练完立即结束)
+  // 2. 今天是最后一天且今天履约 (训练完成 OR 主动休息 — 都是合法履约形态)
   let shouldEnd = false;
   if (daysPassed >= totalDays) {
     shouldEnd = true;
   } else if (todayDay === totalDays) {
-    // 检查今天的记录是否已完成
     const todayRec = state.records[today] || {};
-    if (todayRec.completed) shouldEnd = true;
+    // v0.2.10 P1: adjusted=rest 也算履约, 应触发结束 (而非等到第 29 天)
+    if (todayRec.completed || todayRec.adjusted === 'rest') shouldEnd = true;
   }
 
   if (shouldEnd) {
