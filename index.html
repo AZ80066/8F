@@ -730,6 +730,327 @@ body{
   animation:wioFadeIn 0.2s ease;
 }
 .week-review-overlay.show{display:flex;}
+
+/* ═══════════════════════════════════════════
+   未来 7 天 Sheet (v0.2.11)
+   - 给用户接下来的确定性, 不抢首页 Feed 行动节奏
+   ═══════════════════════════════════════════ */
+.future-plan-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  z-index:200;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  animation:wioFadeIn 0.2s ease;
+}
+.future-plan-overlay.show{display:flex;}
+.future-plan-modal{
+  width:100%;
+  max-width:600px;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  border-radius:18px 18px 0 0;
+  padding:14px 0 calc(22px + max(12px, env(safe-area-inset-bottom)));
+  animation:wimSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height:85vh;
+  overflow-y:auto;
+}
+.fp-title{
+  font-size:18px;
+  font-weight:700;
+  color:var(--text);
+  text-align:center;
+  margin:8px 0 6px;
+  padding:0 22px;
+}
+.fp-sub{
+  font-size:12px;
+  color:var(--accent);
+  text-align:center;
+  margin-bottom:18px;
+  padding:0 22px;
+  letter-spacing:0.5px;
+}
+.fp-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:14px 22px;
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.fp-row:first-of-type{
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.fp-day-col{
+  flex-shrink:0;
+  width:62px;
+  text-align:left;
+}
+.fp-day-label{
+  font-size:11px;
+  font-weight:600;
+  color:var(--muted);
+  letter-spacing:0.5px;
+  margin-bottom:2px;
+}
+.fp-day-num{
+  font-family:'Bebas Neue', sans-serif;
+  font-size:13px;
+  letter-spacing:1px;
+  color:rgba(255,255,255,0.35);
+  margin-bottom:1px;
+}
+.fp-day-date{
+  font-size:10px;
+  color:rgba(255,255,255,0.30);
+  letter-spacing:0.3px;
+}
+.fp-icon{
+  flex-shrink:0;
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:rgba(74,222,128,0.08);
+  border:1px solid rgba(74,222,128,0.18);
+}
+.fp-icon svg{
+  width:16px;
+  height:16px;
+  color:var(--accent);
+}
+.fp-icon-rest{
+  background:rgba(168,170,255,0.08);
+  border-color:rgba(168,170,255,0.20);
+}
+.fp-icon-rest svg{ color:#a8aaff; }
+.fp-icon-cardio{
+  background:rgba(255,170,90,0.08);
+  border-color:rgba(255,170,90,0.20);
+}
+.fp-icon-cardio svg{ color:#ffaa5a; }
+.fp-info{
+  flex:1;
+  min-width:0;
+}
+.fp-name{
+  font-size:14px;
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:3px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.fp-meta{
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:0.3px;
+  line-height:1.5;
+}
+.fp-goal{
+  color:rgba(255,255,255,0.50);
+}
+.fp-meta-divider{
+  color:var(--muted2);
+  margin:0 5px;
+}
+/* 状态: 今天 / 已完成 / 未来 */
+.fp-row.fp-today{
+  background:linear-gradient(90deg, rgba(74,222,128,0.06) 0%, transparent 100%);
+}
+.fp-row.fp-today .fp-day-label{
+  color:var(--accent);
+}
+.fp-row.fp-today .fp-name{
+  color:var(--accent);
+}
+.fp-row.fp-done{
+  opacity:0.55;
+}
+.fp-row.fp-done .fp-name{
+  text-decoration:line-through;
+  text-decoration-color:rgba(255,255,255,0.20);
+}
+.fp-status-badge{
+  font-size:10px;
+  letter-spacing:0.8px;
+  padding:1px 8px;
+  border-radius:9px;
+  font-weight:600;
+}
+.fp-badge-done{
+  background:rgba(74,222,128,0.10);
+  color:var(--accent);
+  border:1px solid rgba(74,222,128,0.25);
+}
+.fp-end-hint{
+  margin:14px 22px 0;
+  padding:10px 12px;
+  font-size:11px;
+  color:var(--muted);
+  text-align:center;
+  font-style:italic;
+  background:rgba(255,255,255,0.02);
+  border-radius:8px;
+}
+.fp-close-btn{
+  display:block;
+  width:calc(100% - 44px);
+  margin:18px 22px 0;
+  padding:13px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  color:var(--text);
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+}
+.fp-close-btn:active{transform:scale(0.99);}
+
+/* 明日预告卡 - 查看本周入口 (v0.2.11) */
+.tc-week-link{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px solid rgba(255,255,255,0.05);
+  font-size:12px;
+  color:var(--accent);
+  font-weight:600;
+  letter-spacing:0.5px;
+  cursor:pointer;
+  user-select:none;
+}
+.tc-week-link svg{
+  width:13px;
+  height:13px;
+  margin-top:1px;
+}
+.tc-week-link:active{
+  opacity:0.65;
+}
+
+/* ═══════════════════════════════════════════
+   本期契约方案 Sheet (v0.2.12) - 计划解释层
+   复用 future-plan-overlay 容器, 内容样式独立
+   ═══════════════════════════════════════════ */
+.pac-plan-link{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  margin-top:14px;
+  padding:10px 0 0;
+  border-top:1px solid rgba(255,255,255,0.06);
+  font-size:12.5px;
+  color:var(--accent);
+  font-weight:600;
+  letter-spacing:0.4px;
+  cursor:pointer;
+  user-select:none;
+}
+.pac-plan-link svg{
+  width:13px;
+  height:13px;
+  margin-top:1px;
+}
+.pac-plan-link:active{ opacity:0.65; }
+
+.cp-section{
+  padding:16px 22px;
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.cp-section:first-child{ border-top:1px solid rgba(255,255,255,0.06); }
+.cp-section-title{
+  font-size:11px;
+  letter-spacing:1.5px;
+  color:var(--accent);
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:8px;
+}
+.cp-section-text{
+  font-size:14px;
+  color:var(--text);
+  line-height:1.6;
+  letter-spacing:0.3px;
+}
+.cp-weeks{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.cp-week-row{
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  padding:10px 12px;
+  background:rgba(255,255,255,0.02);
+  border-radius:10px;
+  border-left:2px solid rgba(255,255,255,0.10);
+  transition:all 0.2s;
+}
+.cp-week-row.cp-week-current{
+  background:rgba(74,222,128,0.06);
+  border-left-color:var(--accent);
+}
+.cp-week-row.cp-week-past{
+  opacity:0.55;
+}
+.cp-week-num{
+  flex-shrink:0;
+  width:46px;
+  font-family:'Bebas Neue', sans-serif;
+  font-size:14px;
+  letter-spacing:1px;
+  color:var(--muted);
+  line-height:1.4;
+  padding-top:1px;
+}
+.cp-week-row.cp-week-current .cp-week-num{ color:var(--accent); }
+.cp-week-info{ flex:1; min-width:0; }
+.cp-week-name{
+  font-size:13px;
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:3px;
+}
+.cp-week-text{
+  font-size:11.5px;
+  color:var(--muted);
+  line-height:1.6;
+  letter-spacing:0.2px;
+}
+.cp-reason p{
+  font-size:13px;
+  color:var(--text);
+  line-height:1.7;
+  letter-spacing:0.2px;
+  margin:0 0 8px;
+}
+.cp-reason p:last-child{ margin-bottom:0; }
+.cp-reason b{
+  color:var(--accent);
+  font-weight:700;
+}
+.cp-soft{
+  display:block;
+  margin-top:6px;
+  font-size:12px;
+  color:var(--muted);
+  font-style:italic;
+  letter-spacing:0.2px;
+}
+
 .week-review-modal{
   width:100%;
   max-width:600px;
@@ -8511,6 +8832,28 @@ body{
   </div>
 </div>
 
+<!-- 本期契约方案 sheet (v0.2.12) -->
+<div class="future-plan-overlay" id="contractPlanOverlay" onclick="if(event.target.id==='contractPlanOverlay')closeContractPlanSheet()">
+  <div class="future-plan-modal" onclick="event.stopPropagation()">
+    <div class="wim-handle"></div>
+    <div class="fp-title">本期训练方案</div>
+    <div class="fp-sub" id="cpSub">4 周契约 · 减脂塑形</div>
+    <div id="cpBody"></div>
+    <button class="fp-close-btn" onclick="closeContractPlanSheet()">关闭</button>
+  </div>
+</div>
+
+<!-- 未来 7 天计划 sheet (v0.2.11) -->
+<div class="future-plan-overlay" id="futurePlanOverlay" onclick="if(event.target.id==='futurePlanOverlay')closeFuturePlanSheet()">
+  <div class="future-plan-modal" onclick="event.stopPropagation()">
+    <div class="wim-handle"></div>
+    <div class="fp-title">未来 7 天安排</div>
+    <div class="fp-sub">主动休息会自动顺延,计划不会丢。</div>
+    <div id="fpList"></div>
+    <button class="fp-close-btn" onclick="closeFuturePlanSheet()">关闭</button>
+  </div>
+</div>
+
 <!-- 周复盘 overlay (轻量版, sheet 风格) -->
 <div class="week-review-overlay" id="weekReviewOverlay" onclick="if(event.target.id==='weekReviewOverlay')closeWeekReview()">
   <div class="week-review-modal" onclick="event.stopPropagation()">
@@ -11272,6 +11615,10 @@ function _renderTomorrowCard() {
           </div>
         </div>
       </div>
+      <div class="tc-week-link" onclick="openFuturePlanSheet()">
+        <span>查看未来 7 天</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
     </div>
   `;
 }
@@ -11284,6 +11631,213 @@ function _tomorrowCardIcon(seq) {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
   }
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11M6.5 17.5h11M3 8v8M21 8v8"/><rect x="6" y="9" width="12" height="6" rx="1"/></svg>';
+}
+
+// ════════════════════════════════════════════════════════════
+// 未来 7 天 Bottom Sheet (v0.2.11)
+// 角色: 给用户"接下来 7 天的确定性", 不抢首页 Feed 的行动节奏
+// 关键: 必须用 getPlannedNodeForDay 尊重主动休息顺延
+// 不做: 拖拽/换训练/点开开始训练 — 只是查看
+// ════════════════════════════════════════════════════════════
+function openFuturePlanSheet() {
+  _renderFuturePlanList();
+  document.getElementById('futurePlanOverlay').classList.add('show');
+}
+
+function closeFuturePlanSheet() {
+  document.getElementById('futurePlanOverlay').classList.remove('show');
+}
+
+function _renderFuturePlanList() {
+  const cfg = state.config;
+  if (!cfg.startDate) return;
+
+  const todayDay = homeTodayDay();
+  const totalDays = (cfg.stageWeeks || 4) * 7;
+
+  // 显示从今天起的 7 天 (或剩余, 取较小)
+  const remainDays = totalDays - todayDay + 1;
+  const showCount = Math.min(7, Math.max(1, remainDays));
+
+  const WEEKDAY_NAMES = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+  let rowsHtml = '';
+  for (let i = 0; i < showCount; i++) {
+    const absDay = todayDay + i;
+    const dateStr = addDays(cfg.startDate, absDay - 1);
+    const rec = state.records[dateStr] || {};
+    const nodeId = getPlannedNodeForDay(absDay, rec);
+
+    // 真实日历日期: 5/3 周日
+    const dateObj = new Date(dateStr + 'T00:00:00');
+    const calendarLabel = `${dateObj.getMonth() + 1}/${dateObj.getDate()} ${WEEKDAY_NAMES[dateObj.getDay()]}`;
+
+    // 相对日期标签
+    let dayLabel;
+    if (i === 0) dayLabel = '今天';
+    else if (i === 1) dayLabel = '明天';
+    else dayLabel = `DAY ${absDay}`;
+
+    // 训练类型 + 副标题 (复用 ROUTINE_PURPOSE.goal)
+    let typeName, goalText, iconClass, durationText;
+    if (nodeId === 'cardio') {
+      typeName = '有氧训练';
+      goalText = (ROUTINE_PURPOSE[99] || {}).goal || 'Zone 2 心率 + 主动减脂';
+      iconClass = 'fp-icon-cardio';
+      durationText = '30-40 分钟';
+    } else if (nodeId === 22) {
+      typeName = '完全休息';
+      goalText = '恢复日 · 让身体修复';
+      iconClass = 'fp-icon-rest';
+      durationText = '一整天';
+    } else {
+      const node = NODES[nodeId];
+      typeName = node ? node.name : '训练';
+      goalText = (ROUTINE_PURPOSE[nodeId] || {}).goal || '';
+      iconClass = 'fp-icon-strength';
+      durationText = nodeId === 6 ? '25-35 分钟' : '30-45 分钟';
+    }
+
+    // 状态: 已完成 / 主动休息 / 今日 / 未来
+    let statusClass = 'fp-future';
+    let statusBadge = '';
+    if (i === 0) {
+      if (rec.completed) {
+        statusClass = 'fp-done';
+        statusBadge = '<span class="fp-status-badge fp-badge-done">已完成</span>';
+      } else if (rec.adjusted === 'rest') {
+        statusClass = 'fp-done';
+        statusBadge = '<span class="fp-status-badge fp-badge-done">已主动休息</span>';
+      } else {
+        statusClass = 'fp-today';
+      }
+    }
+
+    rowsHtml += `
+      <div class="fp-row ${statusClass}">
+        <div class="fp-day-col">
+          <div class="fp-day-label">${dayLabel}</div>
+          <div class="fp-day-date">${calendarLabel}</div>
+        </div>
+        <div class="fp-icon ${iconClass}">${_tomorrowCardIcon(nodeId)}</div>
+        <div class="fp-info">
+          <div class="fp-name">${typeName}${statusBadge}</div>
+          <div class="fp-meta">
+            <span>${durationText}</span>
+            ${goalText ? `<span class="fp-meta-divider">·</span><span class="fp-goal">${goalText}</span>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // 契约最后 3 天提示
+  if (showCount < 7) {
+    rowsHtml += `
+      <div class="fp-end-hint">
+        契约即将完成 — 剩余 ${showCount} 天
+      </div>
+    `;
+  }
+
+  document.getElementById('fpList').innerHTML = rowsHtml;
+}
+
+// ════════════════════════════════════════════════════════════
+// 本期契约方案 Sheet (v0.2.12)
+// 角色: 解释"为什么这样练" — 不是行动信息, 是计划解释层
+// 入口: 我的 Tab → 当前契约卡 → 查看本期训练方案
+// 哲学: 用户需要的不只是安排, 而是理解计划逻辑。理解后才会更愿意坚持。
+// ════════════════════════════════════════════════════════════
+function openContractPlanSheet() {
+  _renderContractPlanBody();
+  document.getElementById('contractPlanOverlay').classList.add('show');
+}
+
+function closeContractPlanSheet() {
+  document.getElementById('contractPlanOverlay').classList.remove('show');
+}
+
+function _renderContractPlanBody() {
+  const cfg = state.config;
+  const stageWeeks = cfg.stageWeeks || 4;
+  const startW = cfg.startWeight;
+  const targetW = cfg.targetWeight;
+  const targetDelta = (startW && targetW) ? Math.abs(targetW - startW).toFixed(1) : null;
+  const direction = (startW && targetW) ? (targetW < startW ? '减重' : '增重') : '';
+
+  const currentWeek = Math.max(1, Math.min(getCurrentStageWeek(), stageWeeks));
+
+  // 本期目标 (从 config 取)
+  let goalText;
+  if (targetDelta) {
+    goalText = `建立训练节奏 + ${direction} ${targetDelta} kg + 保住肌肉`;
+  } else {
+    goalText = '建立训练节奏 + 保住肌肉量';
+  }
+
+  // 训练结构 (固定: 4 力量 + 2 有氧 + 1 休息)
+  const structureText = '4 次力量训练 · 2 次 Zone 2 有氧 · 1 次完全休息';
+
+  // 4 周侧重 (用现成 WEEK_THEMES, 不另写一套)
+  let weekRowsHtml = '';
+  for (let w = 0; w < stageWeeks; w++) {
+    const theme = WEEK_THEMES[w] || { name: `第 ${w + 1} 周`, text: '' };
+    const isCurrent = (w + 1) === currentWeek;
+    const isPast = (w + 1) < currentWeek;
+    const stateClass = isCurrent ? 'cp-week-current' : isPast ? 'cp-week-past' : 'cp-week-future';
+    weekRowsHtml += `
+      <div class="cp-week-row ${stateClass}">
+        <div class="cp-week-num">第 ${w + 1} 周</div>
+        <div class="cp-week-info">
+          <div class="cp-week-name">${theme.name}</div>
+          <div class="cp-week-text">${theme.text}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // sub 行
+  document.getElementById('cpSub').textContent = `${stageWeeks} 周契约 · ${direction || '体态塑形'}`;
+
+  document.getElementById('cpBody').innerHTML = `
+    <!-- 本期目标 -->
+    <div class="cp-section">
+      <div class="cp-section-title">本期目标</div>
+      <div class="cp-section-text">${goalText}</div>
+    </div>
+
+    <!-- 训练结构 -->
+    <div class="cp-section">
+      <div class="cp-section-title">每周结构</div>
+      <div class="cp-section-text">${structureText}</div>
+    </div>
+
+    <!-- 4 周侧重 -->
+    <div class="cp-section">
+      <div class="cp-section-title">4 周节奏</div>
+      <div class="cp-weeks">${weekRowsHtml}</div>
+    </div>
+
+    <!-- 为什么这样安排 -->
+    <div class="cp-section">
+      <div class="cp-section-title">为什么这样排</div>
+      <div class="cp-reason">
+        <p><b>力量训练</b>负责保肌肉和塑形。${direction === '减重' ? '减脂时如果没力量,掉的可能是肌肉。' : ''}</p>
+        <p><b>Zone 2 有氧</b>负责提高消耗和恢复能力,不消耗神经,不影响力量。</p>
+        <p><b>完全休息</b>不是偷懒,是让身体修复 — 肌肉的成长发生在休息时。</p>
+      </div>
+    </div>
+
+    <!-- 下一期怎么接 -->
+    <div class="cp-section cp-next">
+      <div class="cp-section-title">本期之后</div>
+      <div class="cp-section-text">
+        本期结束后,下一期会根据你的完成率、体重趋势和力量记录继续调整。<br>
+        <span class="cp-soft">这不是孤立计划,是一段长期蜕变的第一段。</span>
+      </div>
+    </div>
+  `;
 }
 
 function _recommendForToday(absDay) {
@@ -16950,6 +17504,10 @@ function renderProfileActiveCard() {
         <strong>${startW} kg</strong>
         <span class="arrow">→</span>
         <strong>${targetW} kg</strong>
+      </div>
+      <div class="pac-plan-link" onclick="openContractPlanSheet()">
+        <span>查看本期训练方案</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </div>
     </div>
   `;
