@@ -940,6 +940,333 @@ body{
 }
 
 /* ═══════════════════════════════════════════
+   今日状态卡 (v0.2.14)
+   - Feed 第一行动卡: 状态决定今日训练目标
+   ═══════════════════════════════════════════ */
+.readiness-card{
+  margin:14px 16px 0;
+  padding:18px 20px;
+  background:linear-gradient(160deg, rgba(74,222,128,0.06) 0%, var(--surface) 100%);
+  border:1px solid rgba(74,222,128,0.20);
+  border-radius:14px;
+}
+.rc-eyebrow{
+  font-size:10.5px;
+  letter-spacing:2.5px;
+  color:var(--accent);
+  font-weight:700;
+  margin-bottom:8px;
+}
+.rc-question{
+  font-size:16px;
+  color:var(--text);
+  font-weight:600;
+  margin-bottom:14px;
+  letter-spacing:0.3px;
+}
+.rc-options{
+  display:flex;
+  gap:8px;
+}
+.rc-option{
+  flex:1;
+  padding:14px 6px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  cursor:pointer;
+  text-align:center;
+  transition:all 0.15s;
+}
+.rc-option:active{
+  transform:scale(0.98);
+  border-color:var(--accent);
+}
+.rc-option.rc-opt-default{
+  background:rgba(74,222,128,0.04);
+  border-color:rgba(74,222,128,0.30);
+}
+.rc-opt-label{
+  font-size:14px;
+  font-weight:700;
+  color:var(--text);
+  letter-spacing:0.5px;
+  margin-bottom:3px;
+}
+.rc-opt-desc{
+  font-size:10.5px;
+  color:var(--muted);
+  letter-spacing:0.2px;
+  line-height:1.4;
+}
+
+/* 状态卡 - 已确认收缩态 */
+.readiness-card-mini{
+  margin:14px 16px 0;
+  padding:12px 18px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+  user-select:none;
+}
+.readiness-card-mini:active{ opacity:0.7; }
+.rcm-label{
+  font-size:10.5px;
+  letter-spacing:1.5px;
+  color:var(--muted);
+  font-weight:600;
+}
+.rcm-value{
+  font-size:13.5px;
+  font-weight:700;
+  color:var(--accent);
+  letter-spacing:0.3px;
+}
+.rcm-cue{
+  flex:1;
+  font-size:11.5px;
+  color:var(--muted);
+  letter-spacing:0.2px;
+  text-align:right;
+}
+.rcm-arrow{
+  font-size:18px;
+  color:var(--muted2);
+  margin-left:4px;
+}
+
+/* 今日训练卡 - 预告态 (v0.2.14: 状态未确认时) */
+.today-card-preview{
+  opacity:0.85;
+}
+.today-card-preview-hint{
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px solid rgba(255,255,255,0.05);
+  font-size:11.5px;
+  color:var(--muted);
+  font-style:italic;
+  letter-spacing:0.3px;
+  text-align:center;
+}
+
+/* 今日训练卡 - cue 行 (v0.2.14: 状态确认后展示训练目标) */
+.today-card-cue{
+  margin-top:10px;
+  padding:8px 12px;
+  background:rgba(74,222,128,0.06);
+  border-left:2px solid var(--accent);
+  border-radius:4px;
+  font-size:12px;
+  color:var(--accent);
+  font-weight:600;
+  letter-spacing:0.3px;
+}
+
+/* 今日训练卡 - low 状态 (v0.2.14: 不太好时主推主动休息) */
+.today-card-low{
+  background:linear-gradient(180deg, rgba(168,170,255,0.04) 0%, var(--surface) 100%);
+  border:1px solid rgba(168,170,255,0.18);
+}
+.today-card-low .today-card-title{
+  color:#a8aaff;
+}
+
+/* ═══════════════════════════════════════════
+   训练准备 Sheet (v0.2.14)
+   ═══════════════════════════════════════════ */
+.prep-workout-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.7);
+  z-index:200;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  animation:wioFadeIn 0.2s ease;
+}
+.prep-workout-overlay.show{display:flex;}
+.prep-workout-modal{
+  width:100%;
+  max-width:600px;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  border-radius:18px 18px 0 0;
+  padding:14px 0 calc(22px + max(12px, env(safe-area-inset-bottom)));
+  animation:wimSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height:85vh;
+  overflow-y:auto;
+}
+.prep-workout-header{
+  font-size:11px;
+  letter-spacing:2.5px;
+  color:var(--muted);
+  text-transform:uppercase;
+  text-align:center;
+  margin:6px 0 18px;
+  font-weight:700;
+}
+.prep-step-title{
+  font-size:18px;
+  font-weight:700;
+  color:var(--text);
+  text-align:center;
+  margin-bottom:6px;
+  padding:0 22px;
+}
+.prep-step-sub{
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+  margin-bottom:24px;
+  padding:0 22px;
+}
+.prep-options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  padding:0 22px;
+}
+.prep-option{
+  width:100%;
+  padding:18px 20px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  cursor:pointer;
+  text-align:left;
+  transition:all 0.15s;
+}
+.prep-option:active{
+  transform:scale(0.99);
+  border-color:var(--accent);
+  background:rgba(74,222,128,0.04);
+}
+.prep-opt-time{
+  font-family:'Bebas Neue', sans-serif;
+  font-size:22px;
+  letter-spacing:1.5px;
+  color:var(--accent);
+  margin-bottom:4px;
+}
+.prep-opt-name{
+  font-size:14px;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:3px;
+  letter-spacing:0.3px;
+}
+.prep-opt-desc{
+  font-size:11.5px;
+  color:var(--muted);
+  letter-spacing:0.2px;
+}
+
+/* Step 2: 方案确认 */
+.prep-confirm{
+  padding:0 22px;
+}
+.prep-cf-eyebrow{
+  font-size:10.5px;
+  letter-spacing:2.5px;
+  color:var(--accent);
+  font-weight:700;
+  margin-bottom:6px;
+  text-align:center;
+}
+.prep-cf-title{
+  font-size:24px;
+  font-weight:700;
+  color:var(--text);
+  text-align:center;
+  letter-spacing:0.5px;
+  margin-bottom:4px;
+}
+.prep-cf-version{
+  font-size:13px;
+  color:var(--accent);
+  text-align:center;
+  letter-spacing:0.4px;
+  margin-bottom:18px;
+  font-weight:600;
+}
+.prep-cf-row{
+  display:flex;
+  gap:12px;
+  padding:10px 0;
+  border-top:1px solid rgba(255,255,255,0.04);
+  font-size:13px;
+}
+.prep-cf-row:first-of-type{
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.prep-cf-label{
+  flex-shrink:0;
+  width:36px;
+  color:var(--muted);
+  letter-spacing:0.5px;
+  font-weight:600;
+  font-size:11.5px;
+  padding-top:1px;
+}
+.prep-cf-value{
+  flex:1;
+  color:var(--text);
+  line-height:1.5;
+  letter-spacing:0.2px;
+}
+.prep-cf-value.prep-cf-cue{
+  color:var(--accent);
+  font-weight:600;
+}
+.prep-cf-reason{
+  margin-top:14px;
+  padding:10px 12px;
+  background:rgba(255,255,255,0.02);
+  border-radius:8px;
+  font-size:11.5px;
+  color:var(--muted);
+  font-style:italic;
+  line-height:1.6;
+  text-align:center;
+  letter-spacing:0.2px;
+}
+.prep-cf-btns{
+  display:flex;
+  gap:10px;
+  margin-top:18px;
+}
+.prep-cf-back{
+  flex:0 0 auto;
+  padding:13px 18px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  color:var(--text);
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+}
+.prep-cf-go{
+  flex:1;
+  padding:13px;
+  background:var(--accent);
+  border:none;
+  border-radius:12px;
+  color:#000;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:0.5px;
+  cursor:pointer;
+}
+.prep-cf-go:active{ transform:scale(0.99); }
+.prep-cf-back:active{ opacity:0.7; }
+
+/* ═══════════════════════════════════════════
    本期契约方案 Sheet (v0.2.12) - 计划解释层
    复用 future-plan-overlay 容器, 内容样式独立
    ═══════════════════════════════════════════ */
@@ -8893,23 +9220,12 @@ body{
 </div>
 
 <!-- "我今天状态不好" overlay (B+: 受约束调整, 不允许自由切 routine) -->
-<div class="adjust-today-overlay" id="adjustTodayOverlay" onclick="closeAdjustTodayBg(event)">
-  <div class="adjust-today-modal" onclick="event.stopPropagation()">
+<!-- 训练准备 Sheet (v0.2.14) -->
+<div class="prep-workout-overlay" id="prepWorkoutOverlay" onclick="if(event.target.id==='prepWorkoutOverlay')closePrepWorkout()">
+  <div class="prep-workout-modal" onclick="event.stopPropagation()">
     <div class="wim-handle"></div>
-    <div class="adjust-title">今天状态不好?</div>
-    <div class="adjust-sub">告诉它现在的样子, 它来想办法。</div>
-
-    <button class="adjust-option" onclick="adjustToLight()">
-      <div class="adjust-option-name">做低压版,也算完成</div>
-      <div class="adjust-option-desc">10 分钟最低版本, 进度继续推进。</div>
-    </button>
-
-    <button class="adjust-option" onclick="adjustToRest()">
-      <div class="adjust-option-name">今天主动休息,明天接上</div>
-      <div class="adjust-option-desc">今天不算缺席, 训练顺延到明天。</div>
-    </button>
-
-    <button class="adjust-cancel" onclick="closeAdjustToday()">先不调整</button>
+    <div class="prep-workout-header" id="prepHeader">准备训练 · Step 1/2</div>
+    <div id="prepBody"></div>
   </div>
 </div>
 
@@ -10579,6 +10895,7 @@ function computeFeedContext() {
     todayCompleted: false,
     todayAdjustedRest: false,
     todayIsRestDay: false,         // 今天本身就是计划休息日
+    todayReadiness: null,          // v0.2.14: null | 'low' | 'normal' | 'high'
     postureCompleted: false,
     yesterdayMissed: false,        // 昨天是训练日且断了 (真 missed, 不是计划休息)
     weightStalled: false,          // 近 14 天 7 日均重持平
@@ -10603,6 +10920,7 @@ function computeFeedContext() {
   const todayRec = state.records[today] || {};
   ctx.todayCompleted = !!todayRec.completed;
   ctx.todayAdjustedRest = todayRec.adjusted === 'rest';
+  ctx.todayReadiness = todayRec.readiness || null;   // v0.2.14
   const todayAbsDay = homeTodayDay();
   ctx.todayIsRestDay = getPlannedNodeForDay(todayAbsDay, todayRec) === 22;
 
@@ -10658,6 +10976,12 @@ function getHomeFeedCards(ctx) {
   if (ctx.hasContractEnd) cards.push('contractEnd');
   else if (ctx.hasWeekReview) cards.push('weekReview');
 
+  // ─── v0.2.14: 状态卡前置 (在今日训练前) ───
+  // 哲学: 状态决定训练目标。状态未确认时, 今日训练卡是"预告态"; 确认后才显示行动 CTA。
+  // 已完成 / 主动休息日不展示状态卡 (没必要再问)
+  const showReadinessCard = !ctx.todayCompleted && !ctx.todayAdjustedRest && !ctx.todayIsRestDay;
+  if (showReadinessCard) cards.push('readiness');
+
   // 主体编排: 按今日状态分支
   if (ctx.todayCompleted) {
     // 状态 B: 今日已完成 → 切换到"奖励 + 期待"
@@ -10677,8 +11001,8 @@ function getHomeFeedCards(ctx) {
     if (ctx.postureCompleted) cards.push('posture');
     else cards.push('posture');                               // 主动休息日体态可以做
   } else {
-    // 状态 A: 今日未完成 → 一切服务"开始训练"
-    cards.push('todayTraining');                              // 主行动卡
+    // 状态 A: 今日未完成 → 今日训练卡跟随 readiness 切换 (预告态 / 行动态)
+    cards.push('todayTraining');                              // 主行动卡 (内部按 readiness 渲染)
     if (!ctx.postureCompleted) cards.push('posture');
     // 体重停滞 + 有 PR: 力量证据上提到体重前 (对冲焦虑)
     if (ctx.hasStrengthEvidence) cards.push('strengthEvidence');
@@ -10703,6 +11027,7 @@ function renderHomeFeed() {
   const renderers = {
     contractEnd: _renderContractEndCard,
     weekReview: _renderWeekReviewCard,
+    readiness: _renderReadinessCard,                          // v0.2.14
     todayTraining: _renderTodayCard,
     todayDone: _renderTodayCard,                              // 同 _renderTodayCard 内部已根据 record 状态切换
     posture: _renderPostureCard,
@@ -11524,6 +11849,86 @@ function _renderGoalChart(startW, targetW, weights, startDate, totalDays) {
 
 // ────────────── 体重快记卡 ──────────────
 // ────────────── 今日推荐卡 ──────────────
+// ════════════════════════════════════════════════════════════
+// 今日状态卡 (v0.2.14)
+// 角色: Feed 第一行动卡 — 今日先决条件
+// 哲学: 状态决定训练目标。状态好不是多塞动作, 而是允许更高质量、更高意图地完成同一训练。
+//
+// 状态:
+//   未确认 → 显示 3 选 1 大按钮 (不太好/还可以/很有精神)
+//   已确认 → 收缩成单行展示态, 可点击重选
+// ════════════════════════════════════════════════════════════
+function _renderReadinessCard() {
+  const today = todayStr();
+  const rec = state.records[today] || {};
+  const readiness = rec.readiness;
+
+  // 已确认: 收缩展示态
+  if (readiness) {
+    const labels = {
+      low: '不太好',
+      normal: '还可以',
+      high: '很有精神'
+    };
+    const cues = {
+      low: '今日目标 · 完成就好',
+      normal: '今日目标 · 维持质量',
+      high: '今日目标 · 可以推进'
+    };
+    return `
+      <div class="readiness-card-mini" onclick="resetReadiness()">
+        <div class="rcm-label">今日状态</div>
+        <div class="rcm-value">${labels[readiness]}</div>
+        <div class="rcm-cue">${cues[readiness]}</div>
+        <div class="rcm-arrow">›</div>
+      </div>
+    `;
+  }
+
+  // 未确认: 3 选 1
+  return `
+    <div class="readiness-card">
+      <div class="rc-eyebrow">今 日 状 态</div>
+      <div class="rc-question">今天身体状态如何?</div>
+      <div class="rc-options">
+        <button class="rc-option" onclick="setReadiness('low')">
+          <div class="rc-opt-label">不太好</div>
+          <div class="rc-opt-desc">疲惫 / 压力大</div>
+        </button>
+        <button class="rc-option rc-opt-default" onclick="setReadiness('normal')">
+          <div class="rc-opt-label">还可以</div>
+          <div class="rc-opt-desc">能练 · 不宜 push</div>
+        </button>
+        <button class="rc-option" onclick="setReadiness('high')">
+          <div class="rc-opt-label">很有精神</div>
+          <div class="rc-opt-desc">恢复好 · 可推进</div>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+// 用户选择状态
+function setReadiness(level) {
+  const today = todayStr();
+  if (!state.records[today]) state.records[today] = {};
+  state.records[today].readiness = level;
+  state.records[today].readinessAt = new Date().toISOString();
+  saveState();
+  if (navigator.vibrate) navigator.vibrate(20);
+  renderHomePanel();
+}
+
+// 重选状态 (点击展示态)
+function resetReadiness() {
+  const today = todayStr();
+  if (!state.records[today]) return;
+  delete state.records[today].readiness;
+  delete state.records[today].readinessAt;
+  saveState();
+  renderHomePanel();
+}
+
 function _renderTodayCard() {
   const today = todayStr();
   const todayDay = homeTodayDay();
@@ -11556,62 +11961,103 @@ function _renderTodayCard() {
   // 推荐: 当前节奏
   const rec = _recommendForToday(todayDay);
 
+  // ─── v0.2.14: 按 readiness 切换 (预告态 / 行动态) ───
+  const readiness = todayRecord.readiness;
+  const isRestDay = rec.title.includes('休息');
+
+  // ─── v0.2.14: cardio 日检测 ───
+  const seqRaw = getSequenceRaw(todayDay);
+  const isCardioDay = seqRaw === 'cardio' || (typeof CARDIO_NODE_IDS !== 'undefined' && CARDIO_NODE_IDS.includes(seqRaw));
+
+  // 状态未确认 → 预告态 (无主 CTA, 弱化)
+  if (!readiness && !isRestDay) {
+    return `
+      <div class="today-card today-card-preview">
+        <div class="today-card-label">今 日 训 练 预 告</div>
+        <div class="today-card-title">${rec.title}</div>
+        <div class="today-card-meta">${rec.meta}</div>
+        <div class="today-card-reason">${rec.reason}</div>
+        <div class="today-card-preview-hint">
+          先选择今日状态, 系统会给你今日方案
+        </div>
+      </div>
+    `;
+  }
+
+  // ─── 状态: 不太好 ───
+  // 力量日: 主推主动休息 / 还是想训练
+  // cardio 日: 主推主动休息 / 我去走走 (最低门槛 Zone 2)
+  if (readiness === 'low' && !isRestDay) {
+    if (isCardioDay) {
+      return `
+        <div class="today-card today-card-low">
+          <div class="today-card-label">今 日 建 议</div>
+          <div class="today-card-title">主动休息</div>
+          <div class="today-card-meta">不算缺席 · 明天接上</div>
+          <div class="today-card-reason">今天 Zone 2 也是恢复, 状态不好不勉强。想动一下就出门走走。</div>
+          <div class="today-card-btn-row">
+            <button class="today-card-cta" onclick="adjustToRest()">
+              今天主动休息 <span style="font-size:18px;">→</span>
+            </button>
+            <button class="today-card-adjust" onclick="startCardioDirect(${todayDay}, 14)">
+              我去走走
+            </button>
+          </div>
+        </div>
+      `;
+    }
+    return `
+      <div class="today-card today-card-low">
+        <div class="today-card-label">今 日 建 议</div>
+        <div class="today-card-title">主动休息</div>
+        <div class="today-card-meta">不算缺席 · 明天接上</div>
+        <div class="today-card-reason">状态不好不该硬撑。主动休息 = 履约,不是失败。</div>
+        <div class="today-card-btn-row">
+          <button class="today-card-cta" onclick="adjustToRest()">
+            今天主动休息 <span style="font-size:18px;">→</span>
+          </button>
+          <button class="today-card-adjust" onclick="${rec.action}">
+            还是想训练
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // ─── 状态: 还可以 / 很有精神 → 直接 CTA, 加 cue ───
+  // cardio 日的 cue 跟力量日不一样 (cardio 不存在"加重")
+  let cueText = '';
+  if (isCardioDay) {
+    cueText = readiness === 'high'
+      ? '今日目标: 心率维持, 时长可以拉长'
+      : readiness === 'normal'
+        ? '今日目标: Zone 2 心率, 主动减脂'
+        : '';
+  } else {
+    cueText = readiness === 'high'
+      ? '今日目标: 状态好, 可以尝试加重或多 1 次'
+      : readiness === 'normal'
+        ? '今日目标: 维持质量, 按上次重量完成即可'
+        : '';
+  }
+
   return `
     <div class="today-card">
-      <div class="today-card-label">今日推荐</div>
+      <div class="today-card-label">今日方案</div>
       <div class="today-card-title">${rec.title}</div>
       <div class="today-card-meta">${rec.meta}</div>
       <div class="today-card-reason">${rec.reason}</div>
+      ${cueText ? `<div class="today-card-cue">${cueText}</div>` : ''}
       <div class="today-card-btn-row">
         <button class="today-card-cta" onclick="${rec.action}">
           ${rec.cta} <span style="font-size:18px;">→</span>
-        </button>
-        <button class="today-card-adjust" onclick="openAdjustToday()">
-          状态不好
         </button>
       </div>
     </div>
   `;
 }
 
-// ────────────── 调整今天 (B+: 受约束调整) ──────────────
-function openAdjustToday() {
-  const overlay = document.getElementById('adjustTodayOverlay');
-  if (overlay) overlay.classList.add('show');
-}
-
-function closeAdjustToday() {
-  const overlay = document.getElementById('adjustTodayOverlay');
-  if (overlay) overlay.classList.remove('show');
-}
-
-function closeAdjustTodayBg(e) {
-  if (e.target.id === 'adjustTodayOverlay') closeAdjustToday();
-}
-
-// 选项 1: 做轻量版
-function adjustToLight() {
-  closeAdjustToday();
-  const today = todayStr();
-  const todayDay = homeTodayDay();
-
-  // 写入 record: 标记 level=light + 注入低压版的 todayAnswers
-  // 这样 enterWorkoutPage 不会再弹 quiz, adjustExercises 会按 low-pressure 模式裁剪
-  if (!state.records[today]) state.records[today] = {};
-  state.records[today].todayAnswers = {
-    energy: 'low',
-    duration: 10,        // 兑现承诺: 10 分钟最低版本
-    lowPressure: true    // 关键标记: adjustExercises 会基于这个走特殊裁剪
-  };
-  state.records[today].level = 'light';
-  state.records[today].inProgress = true;
-  saveState();
-
-  // 直接进训练页
-  enterWorkoutPage(todayDay);
-}
-
-// 选项 2: 今天改休息, 明天继续
+// ────────────── 主动休息 (v0.2.14: 由 readiness=low 状态卡触发) ──────────────
 function adjustToRest() {
   const today = todayStr();
   if (!state.records[today]) state.records[today] = {};
@@ -11619,7 +12065,6 @@ function adjustToRest() {
   state.records[today].nodeId = 22;  // 标记为休息节点
   state.records[today].adjustedAt = new Date().toISOString();
   saveState();
-  closeAdjustToday();
   // 刷新首页
   if (state.ui.activeTab === 'home') renderHomePanel();
 }
@@ -12828,8 +13273,156 @@ function _bindHomeScroll() {
 // ═══════════════════════════════════════════
 //   交互
 // ═══════════════════════════════════════════
+// ════════════════════════════════════════════════════════════
+// 训练准备流 (v0.2.14)
+// 流程: 状态卡 (首页 Feed 已确认) → prepareWorkout → 时间选择 → 方案确认 → enterWorkoutPage
+//
+// 时间档:
+//   readiness=low + 坚持训练: [10, 30, 45]
+//   readiness=normal/high:    [30, 45, 60]
+//
+// 状态 cue (训练目标):
+//   low:    完成就好, 不追重量
+//   normal: 维持质量, 不必追 PR
+//   high:   状态好, 可以推进
+//
+// Finisher gate 规则: 只在 readiness=high 时弹 (在 _showFinisherGate 内判断)
+// ════════════════════════════════════════════════════════════
+const _prepWorkoutState = { dayNum: null, step: 1, readiness: null, availableTime: null };
+
+function prepareWorkout(dayNum) {
+  const today = todayStr();
+  const rec = state.records[today] || {};
+  const readiness = rec.readiness || 'normal';
+  _prepWorkoutState.dayNum = dayNum;
+  _prepWorkoutState.readiness = readiness;
+  _prepWorkoutState.availableTime = null;
+  _prepWorkoutState.step = 1;
+  _renderPrepStep();
+  document.getElementById('prepWorkoutOverlay').classList.add('show');
+}
+
+function closePrepWorkout() {
+  document.getElementById('prepWorkoutOverlay').classList.remove('show');
+}
+
+function _renderPrepStep() {
+  const body = document.getElementById('prepBody');
+  if (_prepWorkoutState.step === 1) {
+    // Step 1: 时间选择
+    const readiness = _prepWorkoutState.readiness;
+    const options = readiness === 'low'
+      ? [10, 30, 45]
+      : [30, 45, 60];
+    const labels = {
+      10: { name: '徒手在家', desc: '居家徒手 · 不断线' },
+      30: { name: '精简训练', desc: '标准动作 · 降组数' },
+      45: { name: '标准训练', desc: '完整训练量' },
+      60: { name: '完整训练', desc: '充分热身 · 充分休息' }
+    };
+    let optsHtml = '';
+    options.forEach(t => {
+      optsHtml += `
+        <button class="prep-option" onclick="_pickPrepTime(${t})">
+          <div class="prep-opt-time">${t} 分钟</div>
+          <div class="prep-opt-name">${labels[t].name}</div>
+          <div class="prep-opt-desc">${labels[t].desc}</div>
+        </button>
+      `;
+    });
+    body.innerHTML = `
+      <div class="prep-step-title">今天有多少时间?</div>
+      <div class="prep-step-sub">选择实际可投入的训练时长</div>
+      <div class="prep-options">${optsHtml}</div>
+    `;
+    document.getElementById('prepHeader').textContent = '准备训练 · Step 1/2';
+  } else {
+    // Step 2: 方案确认
+    const dayNum = _prepWorkoutState.dayNum;
+    const readiness = _prepWorkoutState.readiness;
+    const time = _prepWorkoutState.availableTime;
+    const seqRaw = getSequenceRaw(dayNum);
+    const node = NODES[seqRaw] || {};
+    const purpose = ROUTINE_PURPOSE[seqRaw] || {};
+    const variantNames = {
+      10: '徒手在家',
+      30: '精简训练',
+      45: '标准训练',
+      60: '完整训练'
+    };
+    const cueText = {
+      low: '完成就好, 不追重量, 不硬撑',
+      normal: '维持质量, 按上次重量完成即可',
+      high: '状态好, 可以尝试加重或多 1 次'
+    }[readiness];
+    const includesText = time === 10
+      ? '徒手主训 · 拉伸'
+      : '热身 · 主训 · 拉伸';
+    const reasonText = readiness === 'low'
+      ? `状态不佳 + ${time} 分钟 → 今天目标是不断线`
+      : readiness === 'high'
+        ? `状态好 + ${time} 分钟 → 可以充分完成今天的训练`
+        : `状态可以 + ${time} 分钟 → 维持训练质量`;
+
+    body.innerHTML = `
+      <div class="prep-confirm">
+        <div class="prep-cf-eyebrow">今 日 方 案</div>
+        <div class="prep-cf-title">${node.name || '今日训练'}</div>
+        <div class="prep-cf-version">${variantNames[time]} · 约 ${time} 分钟</div>
+        ${purpose.goal ? `<div class="prep-cf-row"><span class="prep-cf-label">重点</span><span class="prep-cf-value">${purpose.goal}</span></div>` : ''}
+        <div class="prep-cf-row"><span class="prep-cf-label">包含</span><span class="prep-cf-value">${includesText}</span></div>
+        <div class="prep-cf-row"><span class="prep-cf-label">目标</span><span class="prep-cf-value prep-cf-cue">${cueText}</span></div>
+        <div class="prep-cf-reason">${reasonText}</div>
+        <div class="prep-cf-btns">
+          <button class="prep-cf-back" onclick="_prepBack()">重新调整</button>
+          <button class="prep-cf-go" onclick="_prepConfirm()">开始训练 →</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('prepHeader').textContent = '准备训练 · Step 2/2';
+  }
+}
+
+function _pickPrepTime(t) {
+  _prepWorkoutState.availableTime = t;
+  _prepWorkoutState.step = 2;
+  _renderPrepStep();
+}
+
+function _prepBack() {
+  _prepWorkoutState.step = 1;
+  _prepWorkoutState.availableTime = null;
+  _renderPrepStep();
+}
+
+function _prepConfirm() {
+  // 写入 record
+  const today = todayStr();
+  const dayNum = _prepWorkoutState.dayNum;
+  const readiness = _prepWorkoutState.readiness;
+  const availableTime = _prepWorkoutState.availableTime;
+  if (!state.records[today]) state.records[today] = {};
+  state.records[today].availableTime = availableTime;
+  // 写入 todayAnswers (兼容现有 adjustExercises 接口)
+  // readiness → energy 映射: low→tired, normal→normal, high→full
+  // availableTime → duration
+  const energyMap = { low: 'tired', normal: 'normal', high: 'full' };
+  state.records[today].todayAnswers = {
+    energy: energyMap[readiness] || 'normal',
+    duration: availableTime,
+    lowPressure: (availableTime === 10)   // 10 分钟 = 真低压 (徒手在家)
+  };
+  // variant 标签 (供 record 复盘使用)
+  state.records[today].variant = (availableTime === 10) ? 'light'
+    : (availableTime === 60) ? 'plus'
+    : 'standard';
+  saveState();
+  closePrepWorkout();
+  enterWorkoutPage(dayNum);
+}
+
 function startTraining(dayNum) {
-  // 检查今天是否已经答过问 (24h 内)
+  // 检查今天是否已经在训练中 (中断后回来)
   const today = todayStr();
   const rec = state.records[today];
   if (rec && rec.todayAnswers && rec.inProgress) {
@@ -12839,8 +13432,6 @@ function startTraining(dayNum) {
   }
 
   // cardio 日 → 永远弹有氧选择 (每次自由选, 不被历史选择锁定)
-  // 识别"是否仍是 cardio 日": record 已写入则尊重 record (如调休改成 22 休息),
-  // 否则看 SEQUENCE 原配。具体 cardio 子类型 (11/12/13/14) 也算 cardio 日 — 允许重选
   const absDay = dayNum;
   const seqRaw = getSequenceRaw(absDay);
   const recordedNodeId = rec && rec.nodeId;
@@ -12854,7 +13445,14 @@ function startTraining(dayNum) {
     return;
   }
 
-  // 弹出 2 问
+  // ─── v0.2.14: 有 readiness 走新流程, 没有则兜底走老的 startQuiz ───
+  // 正常情况: 用户已在 Feed 状态卡选过 readiness, 不应该走老路径
+  if (rec && rec.readiness) {
+    prepareWorkout(dayNum);
+    return;
+  }
+
+  // 兜底: 没选状态 (如直接从老入口进) → 走老的 2 问
   startQuiz(dayNum);
 }
 
@@ -12901,10 +13499,41 @@ function selectCardio(dayNum, nodeId) {
   const today = todayStr();
   if (!state.records[today]) state.records[today] = {};
   state.records[today].nodeId = nodeId;
+
+  // ─── v0.2.14: cardio 日不需要时间选择 (cardio 形式自带时长)
+  // 直接根据 readiness 生成 todayAnswers 进训练
+  // 兜底: 没选 readiness (老入口直接进) → 默认 normal
+  const readiness = state.records[today].readiness || 'normal';
+  const energyMap = { low: 'tired', normal: 'normal', high: 'full' };
+  state.records[today].todayAnswers = {
+    energy: energyMap[readiness],
+    duration: 45,            // cardio 默认时长 (走 / 单车 / 跑步机 30-45 min)
+    lowPressure: false       // cardio 日不存在 lowPressure 概念
+  };
+  state.records[today].variant = 'standard';
+
   saveState();
   closeCardioPick();
-  // 接着走 quiz 流程
-  startQuiz(dayNum);
+  enterWorkoutPage(dayNum);
+}
+
+// v0.2.14: cardio 日 low 状态直接进户外快走 (我去走走)
+// 不进 picker - 状态不好时不应该选自由泳/单车这种较高强度
+function startCardioDirect(dayNum, nodeId) {
+  const today = todayStr();
+  if (!state.records[today]) state.records[today] = {};
+  state.records[today].nodeId = nodeId;
+  // readiness 应该已经是 low (调用方保证)
+  const readiness = state.records[today].readiness || 'low';
+  const energyMap = { low: 'tired', normal: 'normal', high: 'full' };
+  state.records[today].todayAnswers = {
+    energy: energyMap[readiness],
+    duration: 30,            // low 状态走 30 分钟够了
+    lowPressure: false
+  };
+  state.records[today].variant = 'standard';
+  saveState();
+  enterWorkoutPage(dayNum);
 }
 
 // ═══════════════════════════════════════════
@@ -15485,12 +16114,29 @@ function moveToNextExercise() {
   }
 
   // 准备进入下一个动作 - 如果是第一个 finisher, 弹仪式过场页
-  // (60 分钟: 二选一 / 90 分钟: 单按钮直进 / 30 分钟: finisher 已被砍, 不会到这)
+  // v0.2.14: 只在 readiness=high (很有精神) 时弹 finisher gate
+  // 不太好/还可以: 不该再 push, 直接跳过 finisher 进 cooldown
   const nextEx = exercises[currentIdx + 1];
   const curEx = exercises[currentIdx];
   const enteringFinisher = nextEx && nextEx.category === 'finisher' && curEx && curEx.category !== 'finisher';
   if (enteringFinisher) {
-    _showFinisherGate();
+    const today = todayStr();
+    const todayRec = state.records[today] || {};
+    const readiness = todayRec.readiness;
+    if (readiness === 'high') {
+      _showFinisherGate();
+      return;
+    }
+    // 非 high 状态: 跳过 finisher, 直接进 cooldown
+    // 删除当前及后续所有 finisher 动作
+    workoutState.exercises = exercises.filter(e => e.category !== 'finisher');
+    // currentIdx 保持不变 — 下一个就是 cooldown
+    saveWorkoutProgress();
+    workoutState.currentIdx++;
+    workoutState.currentSet = 0;
+    workoutState.detailsExpanded = false;
+    workoutState.demoExpandedOverride = null;
+    renderWorkoutPage();
     return;
   }
 
