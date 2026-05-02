@@ -379,6 +379,85 @@ body{
 }
 .fnc-btn:active{transform:scale(0.99);}
 
+/* ═══════════════════════════════════════════
+   蜕变宣言卡 (v0.2.6) - 首页第一张卡, 身份锚点
+   哲学: 不是数据, 是宣言。视觉极简, 大词印刷风。
+   ═══════════════════════════════════════════ */
+.manifesto-card{
+  margin:14px 16px 0;
+  padding:24px 22px 20px;
+  background:#0a0a0a;
+  background-image:
+    radial-gradient(ellipse at 100% 60%, rgba(74,222,128,0.10) 0%, transparent 55%),
+    linear-gradient(180deg, #0c0e0d 0%, #050505 100%);
+  border:1px solid rgba(74,222,128,0.12);
+  border-radius:18px;
+  position:relative;
+  overflow:hidden;
+}
+.mc-long-term{
+  font-size:11px;
+  font-weight:600;
+  color:var(--accent);
+  letter-spacing:1.5px;
+  margin-bottom:10px;
+}
+.mc-title{
+  font-family:'Bebas Neue', sans-serif;
+  font-size:64px;
+  line-height:1;
+  letter-spacing:0.5px;
+  margin-bottom:16px;
+}
+.mc-title-main{
+  color:rgba(255,255,255,0.92);
+}
+.mc-title-accent{
+  color:var(--accent);
+  margin-left:4px;
+}
+.mc-targets{
+  font-size:12px;
+  color:rgba(255,255,255,0.55);
+  letter-spacing:0.5px;
+  line-height:1.6;
+  display:flex;
+  flex-wrap:nowrap;
+  align-items:center;
+  gap:10px;
+  padding-bottom:14px;
+  margin-bottom:12px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  white-space:nowrap;
+  overflow:hidden;
+}
+.mc-target-weight{
+  color:rgba(255,255,255,0.78);
+  font-weight:500;
+  letter-spacing:0.3px;
+  flex-shrink:0;
+}
+.mc-target-form{
+  color:rgba(255,255,255,0.55);
+  letter-spacing:0.8px;
+  flex-shrink:1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.mc-contract{
+  font-size:11px;
+  color:rgba(255,255,255,0.42);
+  letter-spacing:1px;
+  margin-bottom:12px;
+}
+.mc-bottom-line{
+  font-size:12.5px;
+  color:rgba(255,255,255,0.62);
+  line-height:1.7;
+  letter-spacing:0.3px;
+  font-style:italic;
+}
+
 /* === 减重目标卡 v2 (折叠 + 体重录入合一 + mini sparkline) === */
 .goal-card-v2{
   margin:14px 16px 0;
@@ -9908,7 +9987,8 @@ function renderHomeFeed() {
     const postureDone = !!(todayPosture && todayPosture.completed);
 
     // 排序:
-    //   系统事件 > 主心智 > 待做习惯 > 决策 > 历史 > 已完成的反馈
+    //   宣言锚点 > 系统事件 > 主心智 > 待做习惯 > 决策 > 历史 > 已完成的反馈
+    html += _renderManifestoCard();                            // 0. 蜕变宣言 (永远显示, 第一眼)
     html += _renderContractEndCard();                          // 1. 历史复盘 (条件)
     html += _renderWeekReviewCard();                           // 2. 周复盘 (条件)
     html += _renderGoalCard();                                 // 3. 减重目标 (永远)
@@ -10302,6 +10382,110 @@ function _openContractReview(contractId) {
   saveState();
 
   _renderReviewPage(c, /*isHistorical=*/false);
+}
+
+// 宣言卡底部文案 — 按用户状态优先选 (不按时间)
+// 让卡从"海报"升级到"魔鬼教练": 它读懂用户当下处境, 而不是机械按 Day 切
+function _manifestoCueByState(absDay) {
+  const cfg = state.config;
+  const today = todayStr();
+
+  // 状态 1: 今天主动休息了 (优先级最高 - 用户刚做的决定)
+  const todayRec = state.records[today] || {};
+  if (todayRec.adjusted === 'rest') {
+    return `恢复不是重置。明天接上, 才算你真的会练。`;
+  }
+
+  // 状态 2: 昨天是训练日但断线 (真 missed - 用 homeDayStatus 判断, 尊重计划休息日)
+  if (absDay >= 2) {
+    const yesterdayStatus = homeDayStatus(absDay - 1);
+    if (yesterdayStatus === 'missed') {
+      return `昨天断了一下, 不是结束。今天接上, 契约还活着。`;
+    }
+  }
+
+  // 状态 3: 连续完成 ≥ 3 天 (含训练 / 休息打卡 / 主动休息 - 都算履约)
+  let streak = 0;
+  for (let d = absDay - 1; d >= 1; d--) {
+    const s = homeDayStatus(d);
+    if (s === 'done' || s === 'done-rest') streak++;
+    else break;
+  }
+  if (streak >= 3) {
+    return `你开始不像"想改变的人", 而像"会持续的人"了。`;
+  }
+
+  // 状态 4: 体重停滞 (近 2 周 7 日均重持平, 需有足够数据)
+  const weights = state.weights || {};
+  function avg7Around(targetDate) {
+    let sum = 0, n = 0;
+    for (let i = 0; i < 7; i++) {
+      const d = addDays(targetDate, -i);
+      if (weights[d] != null) { sum += weights[d]; n++; }
+    }
+    return n >= 2 ? sum / n : null;
+  }
+  const recentAvg = avg7Around(today);
+  const prevAvg = avg7Around(addDays(today, -7));
+  if (recentAvg != null && prevAvg != null && Math.abs(recentAvg - prevAvg) < 0.2) {
+    return `体重没动, 不代表身体没动。先守住训练。`;
+  }
+
+  // 默认: 北极星 (跟 NORESET 灵魂咬合)
+  return `你不需要重来。你只需要今天不断。`;
+}
+
+// ────────────── 蜕变宣言卡 (v0.2.6) ──────────────
+// 哲学: 这不是数据卡, 是身份锚点。
+//   体重卡 = "我现在多少斤" (进度)
+//   宣言卡 = "我要变成什么样的人" (牵引)
+// 数据回答 "距离", 宣言回答 "为什么"。
+//
+// 当前版本 (A 范围): 硬编码 — 让 dogfood 验证心智是否成立。
+// 未来 (v0.3): 从 Setup 接收 user.identity.formGoals + 6 个月时间轴。
+function _renderManifestoCard() {
+  const cfg = state.config;
+  if (!cfg.startDate || !cfg.startWeight || !cfg.targetWeight) return '';
+
+  // ─── 长程: 6 个月蜕变计划 ───
+  const longLabel = `6 个月蜕变计划`;
+
+  // ─── 近程: 当前契约第几周 ───
+  const today = todayStr();
+  const dayInContract = daysBetween(cfg.startDate, today) + 1;
+  const totalDays = (cfg.stageWeeks || 4) * 7;
+  const safeDay = Math.max(1, Math.min(dayInContract, totalDays));
+  const week = Math.ceil(safeDay / 7);
+  const contractLabel = `当前契约 · 第 ${week} 周 / 共 ${cfg.stageWeeks || 4} 周`;
+
+  // 大词: 用契约名 (用户后续可在 Setup 自定义) - 当前硬编码
+  const titleMain = 'NO';
+  const titleAccent = 'RESET';
+
+  // 形态目标: 硬编码 - dogfood 验证后再做 Setup 输入
+  const formGoals = ['铠甲胸', '倒三角', '腹肌'];
+
+  // 结果目标: 起点 → 目标
+  const startW = _fmtWeight(cfg.startWeight);
+  const targetW = _fmtWeight(cfg.targetWeight);
+
+  // 底部一句话 - 按"用户状态"优先, 不按时间线性
+  const bottomLine = _manifestoCueByState(safeDay);
+
+  return `
+    <div class="manifesto-card">
+      <div class="mc-long-term">${longLabel}</div>
+      <div class="mc-title">
+        <span class="mc-title-main">${titleMain}</span><span class="mc-title-accent">${titleAccent}</span>
+      </div>
+      <div class="mc-targets">
+        <span class="mc-target-weight">${startW} → ${targetW} kg</span>
+        <span class="mc-target-form">${formGoals.join(' · ')}</span>
+      </div>
+      <div class="mc-contract">${contractLabel}</div>
+      <div class="mc-bottom-line">${bottomLine}</div>
+    </div>
+  `;
 }
 
 // ────────────── 减重目标卡 + 体重录入合一 ──────────────
