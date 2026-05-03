@@ -231,7 +231,7 @@ body{
   position:absolute;
   top:0;left:0;right:0;
   z-index:30;
-  padding:16px 20px 16px;
+  padding:14px 20px 18px;
   background:#0a0a0a;
   background-image:
     radial-gradient(ellipse 60% 100% at 100% 50%, rgba(74,222,128,0.14) 0%, transparent 60%),
@@ -271,7 +271,7 @@ body{
   letter-spacing:0.4px;
   line-height:1.5;
   transition:opacity 0.22s ease, max-height 0.22s ease;
-  max-height:40px;
+  max-height:80px;
   opacity:1;
   overflow:hidden;
 }
@@ -310,7 +310,7 @@ body{
 .home-feed{
   position:absolute;
   inset:0;
-  padding-top:108px;  /* 给 hero (展开态 ~104px) 让出空间 */
+  padding-top:116px;  /* v0.2.14.1: hero 展开态 (1 行 meta) 实测 ~113px, 留 3px 缓冲 */
   padding-bottom:30px;
   overflow-y:auto;
   overflow-x:hidden;
@@ -1521,6 +1521,10 @@ body{
   display:grid;
   grid-template-columns:repeat(7, 1fr);
   gap:5px;
+  /* v0.2.14.1: 大分辨率下限制整体宽度避免 cell 巨化 */
+  max-width:420px;
+  margin-left:auto;
+  margin-right:auto;
 }
 .rl-cell{
   aspect-ratio:1;
@@ -1531,6 +1535,11 @@ body{
   justify-content:center;
   position:relative;
   background:var(--card);
+  /* v0.2.14.1: 单 cell 最大尺寸 */
+  max-width:60px;
+  max-height:60px;
+  margin:0 auto;
+  width:100%;
 }
 .rl-cell-day{
   font-size:11px;
@@ -6288,6 +6297,23 @@ body{
   align-items:center;
   gap:8px;
 }
+/* 阶段化标题: 主标题 (动作日名) + 副标题 (阶段名) */
+.wh-title .wh-day-name{
+  font-size:13px;
+  font-weight:700;
+  color:var(--text);
+  letter-spacing:0.5px;
+  line-height:1.1;
+}
+.wh-title .wh-stage-name{
+  font-size:10px;
+  font-weight:600;
+  color:var(--accent);
+  letter-spacing:2.5px;
+  margin-top:3px;
+  text-transform:uppercase;
+  line-height:1;
+}
 /* 低压版标签 (v0.2.5): 训练时清楚显示自己在低压模式 */
 .wh-low-pressure{
   display:inline-block;
@@ -6321,6 +6347,35 @@ body{
   border-radius:2px;
   transition:width 0.5s ease;
   box-shadow:0 0 6px var(--accent-glow);
+}
+/* demo 风格分段式进度条 - 每个动作一段 */
+.wh-segments{
+  flex:1;
+  display:flex;
+  gap:3px;
+  height:6px;
+  align-items:center;
+}
+.wh-seg{
+  flex:1;
+  height:100%;
+  background:rgba(255,255,255,0.06);
+  border-radius:2px;
+  position:relative;
+  overflow:hidden;
+}
+.wh-seg-fill{
+  position:absolute;
+  top:0; left:0; bottom:0;
+  width:0;
+  background:var(--accent);
+  border-radius:2px;
+  transition:width 0.5s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.wh-seg.done .wh-seg-fill{ width:100%; }
+.wh-seg.current .wh-seg-fill{
+  background:linear-gradient(90deg, var(--accent-dk), var(--accent));
+  box-shadow:0 0 12px var(--accent-glow);
 }
 .wh-progress-count{
   font-family:'Bebas Neue',sans-serif;
@@ -6988,6 +7043,199 @@ body{
   background:var(--accent-dk);
 }
 
+/* ════════════════════════════════════════════
+   力量训练态 demo 风格 (中央心流区)
+   ════════════════════════════════════════════ */
+/* 顶部 chip 行 (role + type + muscle, 主项目业务标签紧凑展示) */
+.wt-chip-strip{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  padding:14px 20px 0;
+  align-items:center;
+}
+.wt-chip-strip .ex-tags{
+  display:contents;
+}
+.wt-chip-strip .ex-muscles{
+  margin:0;
+  padding:0;
+  font-size:11px;
+  letter-spacing:1px;
+  color:var(--muted2);
+  width:100%;
+  margin-top:4px;
+}
+.wt-chip-strip .ex-muscles::before{
+  content:'';
+  margin:0;
+}
+
+/* 训练心流主区域 */
+.wt-stage{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  justify-content:center;
+  padding:0 24px;
+}
+.wt-stage-inner{
+  display:flex;
+  flex-direction:column;
+}
+.wt-ex-name{
+  font-size:26px;
+  font-weight:700;
+  letter-spacing:0.5px;
+  line-height:1.2;
+  margin-bottom:6px;
+  text-align:center;
+}
+.wt-ex-cue{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-bottom:28px;
+  text-align:center;
+  padding:0 12px;
+}
+.wt-stage-inner .wt-stepper{
+  margin:0 0 14px;
+}
+
+/* demo 风格大圆点 (50px 数字, 三态) */
+.wt-sets{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  margin-top:24px;
+}
+.wt-set-dot{
+  width:50px; height:50px;
+  border-radius:50%;
+  background:var(--card);
+  border:1.5px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Bebas Neue', sans-serif;
+  font-size:20px;
+  letter-spacing:1px;
+  color:var(--muted);
+  transition:all 0.4s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.wt-set-dot.done{
+  background:var(--accent-lt);
+  border-color:var(--accent);
+  color:var(--accent);
+}
+.wt-set-dot.current{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#000;
+  font-weight:700;
+  transform:scale(1.12);
+  box-shadow:0 0 28px var(--accent-glow);
+}
+.wt-set-dot.pulse{
+  animation:wtSetPulse 0.6s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+@keyframes wtSetPulse{
+  0%{ transform:scale(1.12); }
+  40%{ transform:scale(1.4); box-shadow:0 0 36px var(--accent); }
+  100%{ transform:scale(1.12); }
+}
+
+/* ═══════════════════════════════════════════
+   步进器 (Phase 3.1: 替换录入抽屉, 训练态 inline 调整)
+   只力量类 + reps 显示
+   ═══════════════════════════════════════════ */
+.wt-stepper{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:14px 16px;
+  margin:14px 20px 6px;
+}
+.wt-step-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 0;
+}
+.wt-step-row + .wt-step-row{
+  margin-top:6px;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.wt-step-label{
+  flex-shrink:0;
+  width:46px;
+  font-size:11px;
+  letter-spacing:1.5px;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-weight:600;
+}
+.wt-step-btn{
+  flex-shrink:0;
+  width:40px; height:40px;
+  border-radius:50%;
+  background:var(--card);
+  border:1px solid var(--border);
+  color:var(--text);
+  font-size:24px;
+  font-weight:300;
+  line-height:1;
+  cursor:pointer;
+  font-family:inherit;
+  transition:all 0.1s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  padding:0;
+}
+.wt-step-btn:active{
+  transform:scale(0.92);
+  background:var(--accent);
+  color:#000;
+  border-color:var(--accent);
+}
+.wt-step-btn.holding{
+  background:var(--accent);
+  color:#000;
+  border-color:var(--accent);
+}
+.wt-step-value{
+  flex:1;
+  text-align:center;
+  font-family:'Bebas Neue', sans-serif;
+  font-size:34px;
+  letter-spacing:1px;
+  color:var(--accent);
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+}
+.wt-step-unit{
+  flex-shrink:0;
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:1px;
+  margin-right:4px;
+}
+.wt-step-tips{
+  font-size:11.5px;
+  color:var(--muted);
+  text-align:center;
+  margin:6px 20px 14px;
+  letter-spacing:0.3px;
+  padding:0 12px;
+  line-height:1.5;
+}
+
 /* ═══════════════════════════════════════════
    进度区 - 计时型 (time): 大数字 + 单位
    ═══════════════════════════════════════════ */
@@ -7505,10 +7753,85 @@ body{
   padding-bottom:calc(12px + max(20px, env(safe-area-inset-bottom)));
   border-top:1px solid var(--border);
   background:var(--bg);
+  position:relative;
+  transition:background 0.25s, border-top-color 0.25s;
+}
+/* 反馈态: 整栏变浅绿 + 上边框变绿 */
+.workout-bottom.feedback-mode{
+  background:rgba(200,241,53,0.14);
+  border-top:1.5px solid var(--accent);
+}
+
+/* 默认态容器 */
+.wb-default{
   display:flex;
   flex-direction:column;
   gap:10px;
 }
+.workout-bottom.feedback-mode .wb-default{
+  display:none;
+}
+
+/* 反馈态容器: 上方反馈 + 下方继续 */
+.wb-feedback{
+  display:none;
+  flex-direction:column;
+  gap:14px;
+  animation:wbFbSlide 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.workout-bottom.feedback-mode .wb-feedback{
+  display:flex;
+}
+@keyframes wbFbSlide{
+  from{ opacity:0; transform:translateY(20px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+.wb-fb-content{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.wb-fb-icon{
+  flex-shrink:0;
+  width:36px; height:36px;
+  border-radius:50%;
+  background:var(--accent);
+  color:#0a0a0a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  font-weight:700;
+  box-shadow:0 0 20px var(--accent-glow);
+}
+.wb-fb-text{
+  flex:1;
+  font-size:20px;
+  font-weight:700;
+  color:var(--accent);
+  letter-spacing:0.3px;
+  line-height:1.3;
+  text-shadow:0 0 12px var(--accent-glow);
+  font-family:inherit;
+}
+.wb-fb-cta{
+  width:100%;
+  padding:16px;
+  background:var(--accent);
+  color:#0a0a0a;
+  border:none;
+  border-radius:12px;
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:1px;
+  cursor:pointer;
+  font-family:inherit;
+  transition:transform 0.1s;
+  box-shadow:0 2px 16px var(--accent-glow);
+}
+.wb-fb-cta:active{transform:scale(0.98);}
+.wb-fb-cta:disabled{opacity:0.6;cursor:not-allowed;pointer-events:none;}
+
 .workout-action-row{
   display:flex;
   gap:10px;
@@ -7535,6 +7858,18 @@ body{
   justify-content:center;
   gap:6px;
   line-height:1;
+}
+/* Phase 3.2: 休息态锁定时的视觉 (disabled) */
+.workout-main-btn:disabled{
+  opacity:0.55;
+  cursor:not-allowed;
+  letter-spacing:0.5px;
+  font-variant-numeric:tabular-nums;
+}
+.workout-main-btn.locked{
+  background:var(--card);
+  color:var(--muted2);
+  box-shadow:none;
 }
 .workout-skip-btn{
   width:80px;
@@ -7570,57 +7905,6 @@ body{
   letter-spacing:0.3px;
 }
 .btn-view-all:active{color:var(--text);}
-
-/* 鼓励文案浮动 */
-.encouragement{
-  position:fixed;
-  top:30%;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:32px;
-  font-weight:900;
-  color:var(--accent);
-  z-index:400;
-  pointer-events:none;
-  text-shadow:0 0 20px var(--accent-glow), 0 0 40px rgba(200,241,53,0.4);
-  animation:encouragementFly 1.4s ease-out forwards;
-  letter-spacing:2px;
-  white-space:nowrap;
-}
-@keyframes encouragementFly{
-  0%{opacity:0;transform:translateX(-50%) scale(0.5) translateY(20px);}
-  20%{opacity:1;transform:translateX(-50%) scale(1.1) translateY(0);}
-  60%{opacity:1;transform:translateX(-50%) scale(1) translateY(-10px);}
-  100%{opacity:0;transform:translateX(-50%) scale(1) translateY(-40px);}
-}
-
-/* 动作完成 toast */
-.exercise-done-toast{
-  position:fixed;
-  bottom:100px;
-  left:50%;
-  transform:translateX(-50%);
-  background:var(--accent);
-  color:#0a0a0a;
-  padding:14px 24px;
-  border-radius:12px;
-  font-size:14px;
-  font-weight:700;
-  z-index:400;
-  pointer-events:none;
-  box-shadow:0 8px 32px rgba(0,0,0,0.5), 0 0 24px rgba(200,241,53,0.3);
-  animation:toastPop 1.6s ease-out forwards;
-  letter-spacing:1px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-@keyframes toastPop{
-  0%{opacity:0;transform:translateX(-50%) scale(0.8) translateY(20px);}
-  15%{opacity:1;transform:translateX(-50%) scale(1.05);}
-  85%{opacity:1;transform:translateX(-50%) scale(1);}
-  100%{opacity:0;transform:translateX(-50%) scale(1) translateY(-20px);}
-}
 
 /* ═══════════════════════════════════════════
    组间休息全屏浮层
@@ -7784,6 +8068,82 @@ body{
 }
 .ec-btn-primary:active{transform:scale(0.99);}
 
+/* ════════════════════════════════════════════
+   阶段过渡仪式 (1.5s 全屏: 图标 + 阶段大字 + 副标题)
+   ════════════════════════════════════════════ */
+.stage-transition-overlay{
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:300;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  pointer-events:none;
+}
+.stage-transition-overlay.active{
+  display:flex;
+  animation:stOverlayFade 2s ease forwards;
+}
+@keyframes stOverlayFade{
+  0%   { opacity:0; }
+  15%  { opacity:1; }    /* 0.3s 完全显示 */
+  70%  { opacity:1; }    /* 1.4s 保持 */
+  100% { opacity:0; }    /* 0.6s 缓慢淡出 */
+}
+.st-icon{
+  width:64px; height:64px;
+  border-radius:50%;
+  background:var(--accent-lt);
+  border:1.5px solid var(--accent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:24px;
+  opacity:0;
+  transform:scale(0.6);
+  animation:stIconIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+  box-shadow:0 0 40px var(--accent-glow);
+}
+@keyframes stIconIn{
+  0%   { opacity:0; transform:scale(0.6); }
+  100% { opacity:1; transform:scale(1); }
+}
+.st-icon svg{
+  width:32px; height:32px;
+  stroke:var(--accent);
+  stroke-width:2;
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.st-name{
+  font-size:32px;
+  font-weight:700;
+  letter-spacing:6px;
+  color:var(--text);
+  margin-bottom:14px;
+  opacity:0;
+  transform:translateY(8px);
+  animation:stTextIn 0.45s ease 0.45s forwards;
+  text-align:center;
+}
+.st-sub{
+  font-size:13px;
+  color:var(--muted);
+  letter-spacing:1.5px;
+  opacity:0;
+  transform:translateY(8px);
+  animation:stTextIn 0.45s ease 0.7s forwards;
+  text-align:center;
+}
+@keyframes stTextIn{
+  0%   { opacity:0; transform:translateY(8px); }
+  100% { opacity:1; transform:translateY(0); }
+}
+
 .finisher-gate-overlay{
   position:fixed;
   inset:0;
@@ -7934,182 +8294,188 @@ body{
   --accent-dk: #c66a28;
 }
 
+/* ════════════════════════════════════════════
+   训练完成 Finale (v0.17 demo 风格)
+   纯黑全屏 / 垂直居中 / 大金星 / 3 列统计 / PR 高亮
+   ════════════════════════════════════════════ */
 .finish-overlay{
   position:fixed;
   inset:0;
-  background:var(--bg);
+  background:#000;
   z-index:220;
   display:none;
   flex-direction:column;
   max-width:600px;
   margin:0 auto;
-  animation:finishFadeIn 0.4s ease;
+  padding:40px 24px;
+  animation:finishFadeIn 0.6s ease;
 }
 .finish-overlay.active{display:flex;}
 @keyframes finishFadeIn{
-  from{opacity:0;transform:translateY(8px);}
-  to{opacity:1;transform:translateY(0);}
+  from{opacity:0;}
+  to{opacity:1;}
 }
 
 .finish-body{
   flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
   overflow-y:auto;
-  padding:50px 24px 16px;
+  min-height:0;
 }
 .finish-body::-webkit-scrollbar{display:none;}
 
-.finish-tag{
-  text-align:center;
-  font-size:11px;
-  letter-spacing:6px;
-  color:var(--accent);
-  margin-bottom:18px;
-  font-weight:500;
-  animation:finishItemFade 0.5s ease 0.1s both;
-}
-
-.finish-time{
-  text-align:center;
-  margin-bottom:30px;
-  animation:finishItemFade 0.5s ease 0.2s both;
-}
-.finish-time-num{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:80px;
-  line-height:1;
-  letter-spacing:2px;
-  color:var(--text);
-  text-shadow:0 0 24px var(--accent-glow);
-  font-variant-numeric:tabular-nums;
-  margin-bottom:6px;
-}
-.finish-time-label{
-  font-size:11px;
-  letter-spacing:4px;
-  color:var(--muted);
-  font-weight:500;
-}
-
 @keyframes finishItemFade{
-  from{opacity:0;transform:translateY(10px);}
+  from{opacity:0;transform:translateY(16px);}
   to{opacity:1;transform:translateY(0);}
 }
 
-.finish-divider{
-  height:1px;
-  background:var(--border-lt);
-  width:100%;
-  margin:0 0 22px;
-  opacity:0.5;
+/* 顶部金星 (训练完成仪式感) */
+.finish-star{
+  text-align:center;
+  font-size:48px;
+  color:var(--accent);
+  text-shadow:0 0 60px var(--accent), 0 0 120px var(--accent-glow);
+  margin-bottom:20px;
+  line-height:1;
+  animation:finishStarBurst 0.9s 0.1s both cubic-bezier(0.34, 1.6, 0.64, 1);
+}
+@keyframes finishStarBurst{
+  0%{ opacity:0; transform:scale(0) rotate(-180deg); }
+  60%{ transform:scale(1.4) rotate(20deg); }
+  100%{ opacity:1; transform:scale(1) rotate(0); }
 }
 
-.finish-meta{
-  text-align:center;
-  margin-bottom:24px;
-  animation:finishItemFade 0.5s ease 0.3s both;
-}
-.finish-meta-name{
-  font-size:18px;
-  color:var(--text);
-  font-weight:700;
-  letter-spacing:0.5px;
-  margin-bottom:2px;
-}
-.finish-meta-day{
+/* 顶部 eyebrow + 渐变金属字标题 */
+.finish-eyebrow{
   font-size:11px;
+  letter-spacing:4px;
+  color:var(--accent);
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:10px;
+  text-align:center;
+  animation:finishItemFade 0.5s 0.5s both;
+}
+.finish-title{
+  font-size:38px;
+  font-weight:700;
+  letter-spacing:1px;
+  text-align:center;
+  margin-bottom:42px;
+  background:linear-gradient(135deg, var(--accent), var(--accent-dk));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 40px var(--accent-glow);
+  animation:finishItemFade 0.5s 0.7s both;
+}
+
+/* 3 列统计 (时长 / 组数 / 训练量) */
+.finish-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  margin-bottom:28px;
+}
+.finish-stat{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px 10px;
+  text-align:center;
+  animation:finishItemFade 0.5s both;
+}
+.finish-stat:nth-child(1){animation-delay:0.9s;}
+.finish-stat:nth-child(2){animation-delay:1.0s;}
+.finish-stat:nth-child(3){animation-delay:1.1s;}
+.finish-stat-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:36px;
+  letter-spacing:1px;
+  color:var(--accent);
+  margin-bottom:4px;
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+}
+.finish-stat-label{
+  font-size:10px;
   color:var(--muted);
   letter-spacing:1.5px;
+  text-transform:uppercase;
 }
 
-/* 数据行 */
-.finish-stats{
-  margin-bottom:22px;
-  animation:finishItemFade 0.5s ease 0.4s both;
-}
-.finish-stat-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:baseline;
-  padding:11px 0;
-  border-bottom:1px solid var(--border-lt);
-  font-size:13px;
-}
-.finish-stat-row:last-child{border-bottom:none;}
-.fst-label{
-  color:var(--muted);
-  letter-spacing:1px;
-}
-.fst-value{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:18px;
-  letter-spacing:0.5px;
-  color:var(--text);
-  font-variant-numeric:tabular-nums;
-}
-.fst-value .fst-unit{
-  font-size:12px;
-  color:var(--muted);
-  margin-left:3px;
-  font-family:'Noto Sans SC',sans-serif;
-  letter-spacing:0.5px;
-}
-.fst-value.delta-pos{color:var(--accent);}
-.fst-value.delta-neg{color:var(--warn);}
-
-/* PR 区块 */
+/* PR 卡 (动作名灰 + 数据放大高亮) */
 .finish-prs{
-  background:linear-gradient(135deg, var(--accent-lt) 0%, transparent 100%);
+  background:linear-gradient(135deg, rgba(200,241,53,0.2), rgba(200,241,53,0.05));
   border:1px solid var(--accent);
-  border-radius:12px;
-  padding:14px 16px;
-  margin-bottom:22px;
-  animation:finishItemFade 0.5s ease 0.5s both;
+  border-radius:16px;
+  padding:18px 20px;
+  animation:finishItemFade 0.5s 1.3s both;
 }
-.finish-prs-title{
+.finish-prs-eyebrow{
+  font-size:10.5px;
+  letter-spacing:2px;
+  color:var(--accent);
+  font-weight:700;
+  margin-bottom:14px;
   display:flex;
   align-items:center;
   gap:6px;
-  font-size:11px;
-  letter-spacing:2px;
-  color:var(--accent);
-  margin-bottom:10px;
-  font-weight:700;
 }
-.finish-prs-title::before{
+.finish-prs-eyebrow::before{
   content:'★';
   font-size:14px;
 }
 .finish-pr-item{
-  font-size:13px;
-  color:var(--text);
-  padding:5px 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:6px 0;
+}
+.finish-pr-item + .finish-pr-item{
+  border-top:1px solid rgba(255,255,255,0.04);
+  margin-top:4px;
+  padding-top:10px;
+}
+.finish-pr-name{
+  font-size:16px;
+  font-weight:600;
   letter-spacing:0.3px;
+  color:var(--muted);
+  flex-shrink:0;
 }
-.finish-pr-item .pr-name{font-weight:500;}
-.finish-pr-item .pr-data{
+.finish-pr-data{
   font-family:'Bebas Neue',sans-serif;
-  letter-spacing:1px;
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  line-height:1;
+  text-align:right;
+}
+.finish-pr-data .pr-from{
+  color:var(--muted2);
+  font-size:18px;
+  font-weight:500;
+}
+.finish-pr-data .pr-arrow{
   color:var(--accent);
-  margin-left:6px;
+  margin:0 6px;
+  font-size:18px;
+}
+.finish-pr-data .pr-to{
+  color:var(--accent);
+  font-size:26px;
+  font-weight:700;
+  text-shadow:0 0 24px var(--accent-glow);
 }
 
-/* 激情中文文案 */
-.finish-message{
-  text-align:center;
-  font-size:15px;
-  color:var(--text);
-  line-height:1.9;
-  letter-spacing:0.5px;
-  padding:18px 12px;
-  border-top:1px solid var(--border-lt);
-  margin-top:8px;
-  animation:finishItemFade 0.5s ease 0.6s both;
-}
-
+/* 底部完成按钮 */
 .finish-bottom{
-  padding:16px 24px 28px;
-  background:var(--bg);
-  border-top:1px solid var(--border-lt);
+  flex-shrink:0;
+  padding:20px 0 0;
 }
 .finish-done-btn{
   width:100%;
@@ -8124,6 +8490,7 @@ body{
   letter-spacing:2px;
   cursor:pointer;
   box-shadow:0 4px 24px rgba(200,241,53,0.3);
+  animation:finishItemFade 0.5s 1.4s both;
 }
 .finish-done-btn:active{transform:scale(0.99);}
 
@@ -8716,23 +9083,256 @@ body{
 }
 .sim-btn-primary:active{transform:scale(0.99);}
 
-.rest-overlay{
-  position:fixed;inset:0;
-  background:linear-gradient(180deg, #0a0a0a 0%, #0f1500 100%);
-  z-index:250;
+/* ════════════════════════════════════════════
+   准备页 (Phase 3.3: 动作切换前显示要点+历史+圆点)
+   只 main/corrective + currentSet=0 时显示
+   ════════════════════════════════════════════ */
+.prep-stage{
+  flex:1;
+  display:none;
+  flex-direction:column;
+  padding:30px 24px;
+  overflow-y:auto;
+  animation:prepFadeIn 0.4s ease-out;
+}
+.workout-overlay.prep-mode .workout-body{
+  display:none;
+}
+.workout-overlay.prep-mode .prep-stage{
+  display:flex;
+}
+@keyframes prepFadeIn{
+  from{ opacity:0; transform:translateY(10px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+.prep-eyebrow{
+  font-size:11px;
+  letter-spacing:3px;
+  color:var(--accent);
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:8px;
+  text-align:center;
+}
+.prep-name{
+  font-size:32px;
+  font-weight:700;
+  letter-spacing:0.5px;
+  text-align:center;
+  margin-bottom:32px;
+  line-height:1.2;
+}
+.prep-section{
+  margin-bottom:24px;
+}
+.prep-section-title{
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--muted);
+  text-transform:uppercase;
+  font-weight:600;
+  margin-bottom:10px;
+}
+.prep-cue{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 18px;
+}
+.prep-cue-item{
+  font-size:13.5px;
+  color:var(--text);
+  line-height:1.65;
+  letter-spacing:0.2px;
+  padding:4px 0;
+}
+.prep-cue-item + .prep-cue-item{
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+.prep-history{
+  display:flex;
+  justify-content:center;
+  align-items:baseline;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px;
+  gap:10px;
+}
+.prep-history-main{
+  font-family:'Bebas Neue', sans-serif;
+  font-size:26px;
+  letter-spacing:1.5px;
+  color:var(--accent);
+  line-height:1;
+}
+.prep-history-dot{
+  color:var(--muted2);
+  font-size:14px;
+  line-height:1;
+  margin:0 2px;
+}
+.prep-history-sub{
+  font-size:13px;
+  color:var(--muted);
+  letter-spacing:0.3px;
+  line-height:1;
+}
+.prep-history.no-history{
+  font-size:13px;
+  color:var(--muted);
+  letter-spacing:0.3px;
+}
+.prep-sets-dots{
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  align-items:center;
+}
+.prep-set-dot{
+  width:36px; height:36px;
+  border-radius:50%;
+  background:var(--card);
+  border:1.5px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Bebas Neue', sans-serif;
+  font-size:15px;
+  letter-spacing:1px;
+  color:var(--muted2);
+  animation:prepDotBreath 2.5s ease-in-out infinite;
+}
+.prep-set-dot:nth-child(2){ animation-delay:0.3s; }
+.prep-set-dot:nth-child(3){ animation-delay:0.6s; }
+.prep-set-dot:nth-child(4){ animation-delay:0.9s; }
+.prep-set-dot:nth-child(5){ animation-delay:1.2s; }
+@keyframes prepDotBreath{
+  0%, 100%{ opacity:0.6; }
+  50%{ opacity:1; }
+}
+
+/* ════════════════════════════════════════════
+   休息态 (Phase 3.2: 主体内嵌 stage, 不再全屏)
+   workoutOverlay.rest-mode 时切换显示
+   ════════════════════════════════════════════ */
+.rest-stage{
+  flex:1;
   display:none;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  max-width:600px;
-  margin:0 auto;
-  padding:30px;
+  padding:30px 24px;
   animation:restFadeIn 0.25s ease;
 }
-.rest-overlay.active{display:flex;}
+.workout-overlay.rest-mode .workout-body{
+  display:none;
+}
+.workout-overlay.rest-mode .rest-stage{
+  display:flex;
+}
 @keyframes restFadeIn{
   from{opacity:0;}
   to{opacity:1;}
+}
+
+/* ════════════════════════════════════════════
+   PR 仪式 - 主体内嵌
+   workoutOverlay.pr-mode 时切换显示
+   ════════════════════════════════════════════ */
+.pr-stage{
+  flex:1;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:30px 24px;
+  text-align:center;
+  animation:prFade 0.5s ease-out;
+}
+.workout-overlay.pr-mode .workout-body{
+  display:none;
+}
+.workout-overlay.pr-mode .rest-stage{
+  display:none;
+}
+.workout-overlay.pr-mode .prep-stage{
+  display:none;
+}
+.workout-overlay.pr-mode .pr-stage{
+  display:flex;
+}
+@keyframes prFade{
+  from{ opacity:0; }
+  to{ opacity:1; }
+}
+.pr-star{
+  font-size:72px;
+  margin-bottom:14px;
+  color:var(--accent);
+  text-shadow:0 0 50px var(--accent), 0 0 100px var(--accent-glow);
+  line-height:1;
+  animation:prStarIn 0.8s 0.1s both cubic-bezier(0.34, 1.6, 0.64, 1);
+}
+@keyframes prStarIn{
+  0%   { opacity:0; transform:scale(0) rotate(-180deg); }
+  60%  { transform:scale(1.4) rotate(20deg); }
+  100% { opacity:1; transform:scale(1) rotate(0); }
+}
+.pr-eyebrow{
+  font-size:12px;
+  letter-spacing:5px;
+  color:var(--accent);
+  text-transform:uppercase;
+  font-weight:700;
+  margin-bottom:14px;
+  opacity:0;
+  animation:prFadeUp 0.5s 0.5s both;
+}
+.pr-headline{
+  font-size:34px;
+  font-weight:700;
+  letter-spacing:1px;
+  margin-bottom:18px;
+  background:linear-gradient(135deg, var(--accent), var(--accent-dk));
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 40px var(--accent-glow);
+  line-height:1.2;
+  opacity:0;
+  animation:prFadeUp 0.5s 0.7s both;
+}
+.pr-detail{
+  font-family:'Bebas Neue', sans-serif;
+  font-size:30px;
+  letter-spacing:2px;
+  opacity:0;
+  animation:prFadeUp 0.5s 0.9s both;
+  line-height:1.2;
+}
+.pr-detail .pr-from{
+  color:var(--muted);
+  font-size:22px;
+}
+.pr-detail .pr-arrow{
+  color:var(--accent);
+  margin:0 10px;
+}
+.pr-detail .pr-to{
+  color:var(--text);
+}
+.pr-exercise{
+  margin-top:22px;
+  font-size:13px;
+  color:var(--muted);
+  letter-spacing:0.5px;
+  opacity:0;
+  animation:prFadeUp 0.5s 1.1s both;
+}
+@keyframes prFadeUp{
+  from{ opacity:0; transform:translateY(16px); }
+  to{ opacity:1; transform:translateY(0); }
 }
 
 .rest-icon{
@@ -8808,55 +9408,6 @@ body{
   font-size:12px;
   color:var(--muted);
   font-weight:400;
-}
-
-.rest-controls{
-  display:flex;
-  gap:10px;
-  width:100%;
-  max-width:340px;
-}
-.rest-btn{
-  flex:1;
-  background:transparent;
-  border:1px solid var(--border);
-  color:var(--muted);
-  padding:14px;
-  border-radius:10px;
-  font-size:13px;
-  font-weight:500;
-  cursor:pointer;
-  font-family:inherit;
-  letter-spacing:1px;
-  transition:all 0.15s;
-}
-.rest-btn:active{background:var(--card);transform:scale(0.97);}
-.rest-btn.primary{
-  color:var(--accent);
-  border-color:var(--accent);
-  background:var(--accent-lt);
-}
-/* 锁定状态: 倒计时未到, 显示等待时长 */
-.rest-btn.primary.locked{
-  color:var(--muted2);
-  border-color:var(--border);
-  background:transparent;
-  cursor:not-allowed;
-  letter-spacing:0.5px;
-  font-variant-numeric:tabular-nums;
-}
-.rest-btn.primary.locked:active{
-  background:transparent;
-  transform:none;
-}
-/* 锁定 -> 解锁的瞬间淡入解锁感 */
-.rest-btn.primary:not(.locked){
-  animation:restSkipUnlock 0.4s ease;
-}
-@keyframes restSkipUnlock{
-  0%{opacity:0.5;transform:scale(0.97);}
-  60%{opacity:1;transform:scale(1.03);}
-  100%{transform:scale(1);}
 }
 
 /* ═══════════════════════════════════════════
@@ -9150,6 +9701,12 @@ body{
       <div id="profileActiveCard"></div>
     </div>
 
+    <!-- 身体档案 (v0.2.14.1: 体重完整档案 - 复用已写好但未挂载的 renderProfileWeight) -->
+    <div class="profile-section" id="profileBodyArchiveSection">
+      <div class="profile-section-title">身体档案</div>
+      <div id="profileWeightCard"></div>
+    </div>
+
     <!-- 训练历史 (最近 N 次训练) -->
     <div class="profile-section" id="profileTrainingSection" style="display:none;">
       <div class="profile-section-title">
@@ -9334,21 +9891,81 @@ body{
     <div class="wh-info">
       <div class="wh-title" id="whTitle"></div>
       <div class="wh-progress-row">
-        <div class="wh-progress-bar"><div class="wh-progress-fill" id="whProgressFill" style="width:0%"></div></div>
+        <!-- 兼容 fallback (可能某些路径还在用) -->
+        <div class="wh-progress-bar" style="display:none;"><div class="wh-progress-fill" id="whProgressFill" style="width:0%"></div></div>
+        <!-- demo 风格: 分段式进度条, 每动作一段 -->
+        <div class="wh-segments" id="whSegments"></div>
         <span class="wh-progress-count" id="whProgressCount">0 / 0</span>
         <span class="wh-elapsed" id="whElapsed">00:00</span>
       </div>
     </div>
   </div>
   <div class="workout-body" id="workoutBody"></div>
-  <div class="workout-bottom" id="workoutBottom">
-    <div class="workout-action-row">
-      <button class="workout-main-btn" id="workoutMainBtn" onclick="completeCurrentSet()">完成</button>
-      <button class="workout-skip-btn" id="workoutSkipBtn" onclick="skipCurrentExercise()">跳过</button>
+
+  <!-- Phase 3.3: 准备页 - 主体内嵌 (workoutOverlay.prep-mode 时显示) -->
+  <div class="prep-stage" id="prepStage">
+    <div class="prep-eyebrow" id="prepEyebrow">下 一 个 动 作</div>
+    <div class="prep-name" id="prepName"></div>
+
+    <div class="prep-section">
+      <div class="prep-section-title">动作要点</div>
+      <div class="prep-cue" id="prepCue"></div>
     </div>
-    <button class="btn-view-all" onclick="openAllExercisesDrawer()">
-      ≡ 查看全部动作 <span id="allExCount"></span>
-    </button>
+
+    <div class="prep-section">
+      <div class="prep-section-title">上次记录</div>
+      <div class="prep-history" id="prepHistory"></div>
+    </div>
+
+    <div class="prep-section">
+      <div class="prep-section-title">本次组数</div>
+      <div class="prep-sets-dots" id="prepSetsDots"></div>
+    </div>
+  </div>
+
+  <!-- Phase 3.2: 休息态 - 主体内嵌 (workoutOverlay 加 rest-mode 类时显示) -->
+  <div class="rest-stage" id="restStage">
+    <div class="rest-icon">
+      <svg><use href="#ic-rest"/></svg>
+    </div>
+    <div class="rest-label">组 间 休 息</div>
+    <div class="rest-countdown" id="restCountdown">00</div>
+    <div class="rest-next-card">
+      <div class="rest-next-label">下一组</div>
+      <div class="rest-next-name" id="restNextName"></div>
+      <div class="rest-next-spec" id="restNextSpec"></div>
+    </div>
+  </div>
+
+  <!-- PR 仪式 - 主体内嵌 (workoutOverlay 加 pr-mode 类时显示) -->
+  <div class="pr-stage" id="prStage">
+    <div class="pr-star">★</div>
+    <div class="pr-eyebrow">P E R S O N A L  R E C O R D</div>
+    <div class="pr-headline" id="prHeadline">你刚刚突破了!</div>
+    <div class="pr-detail" id="prDetail"></div>
+    <div class="pr-exercise" id="prExercise"></div>
+  </div>
+
+  <div class="workout-bottom" id="workoutBottom">
+    <!-- 默认态: 完成 + 跳过 + 查看全部 -->
+    <div class="wb-default" id="wbDefault">
+      <div class="workout-action-row">
+        <button class="workout-main-btn" id="workoutMainBtn" onclick="completeCurrentSet()">完成</button>
+        <button class="workout-skip-btn" id="workoutSkipBtn" onclick="skipCurrentExercise()">跳过</button>
+      </div>
+      <button class="btn-view-all" onclick="openAllExercisesDrawer()">
+        ≡ 查看全部动作 <span id="allExCount"></span>
+      </button>
+    </div>
+
+    <!-- 反馈态: 完成组后, 整栏变绿 + 反馈文案 + 继续按钮 -->
+    <div class="wb-feedback" id="wbFeedback">
+      <div class="wb-fb-content">
+        <span class="wb-fb-icon" id="wbFbIcon">✓</span>
+        <span class="wb-fb-text" id="wbFbText"></span>
+      </div>
+      <button class="wb-fb-cta" onclick="onWorkoutContinueClick()">继续</button>
+    </div>
   </div>
 </div>
 
@@ -9364,6 +9981,15 @@ body{
       <button class="ec-btn-primary" onclick="confirmExit()">先走</button>
     </div>
   </div>
+</div>
+
+<!-- 阶段过渡仪式 (跨阶段切换时弹 1.5s) -->
+<div class="stage-transition-overlay" id="stageTransitionOverlay">
+  <div class="st-icon" id="stIcon">
+    <svg><use href="#ic-strength"/></svg>
+  </div>
+  <div class="st-name" id="stName"></div>
+  <div class="st-sub" id="stSub"></div>
 </div>
 
 <div class="finisher-gate-overlay" id="finisherGateOverlay">
@@ -9474,23 +10100,6 @@ body{
 </div>
 
 <!-- 组间休息浮层 -->
-<div class="rest-overlay" id="restOverlay">
-  <div class="rest-icon">
-    <svg><use href="#ic-rest"/></svg>
-  </div>
-  <div class="rest-label">组 间 休 息</div>
-  <div class="rest-countdown" id="restCountdown">00</div>
-  <div class="rest-next-card">
-    <div class="rest-next-label">下一组</div>
-    <div class="rest-next-name" id="restNextName"></div>
-    <div class="rest-next-spec" id="restNextSpec"></div>
-  </div>
-  <div class="rest-controls">
-    <button class="rest-btn" onclick="restAdd30()">+30 秒</button>
-    <button class="rest-btn primary" id="restSkipBtn" onclick="restSkip()">跳过</button>
-  </div>
-</div>
-
 <!-- 全部动作抽屉 -->
 <div class="modal-overlay" id="modalAllExercises" onclick="closeModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
@@ -11565,31 +12174,13 @@ function _renderGoalCard() {
   const deltaFromStartLabel = `较起点 ${startSign}${deltaFromStart.toFixed(1)} kg`;
   const avg7Display = avg7 != null ? `${_fmtWeight(avg7)} kg` : '—';
 
-  // 展开态: 完整折线图 + 历史记录
-  // 折叠态: 不显示任何曲线 (纯文字数据), 让卡片更紧凑
-  const fullChart = _goalCardExpanded
-    ? `<div class="goal-card-fullchart">${_renderGoalChart(startWeight, targetWeight, weights, cfg.startDate, (cfg.stageWeeks || 4) * 7)}</div>`
-    : '';
-
-  // 历史记录 (展开态显示)
-  let historyHtml = '';
-  if (_goalCardExpanded && hasRecorded) {
-    const recent = dates.slice(-5).reverse();
-    historyHtml = `
-      <div class="goal-card-history">
-        <div class="gch-title">最近记录</div>
-        ${recent.map(d => `
-          <div class="gch-row">
-            <span class="gch-date">${_fmtShortDate(d)}</span>
-            <span class="gch-weight">${_fmtWeight(weights[d])} kg</span>
-          </div>
-        `).join('')}
-      </div>
-    `;
-  }
+  // v0.2.14.1: 首页体重卡降级为"快速一瞥" — 完整档案在我的 Tab
+  // 不再有展开态: 折叠态只显示 mini sparkline + 趋势文字
+  const fullChart = '';
+  const historyHtml = '';
 
   return `
-    <div class="goal-card-v2 ${_goalCardExpanded ? 'expanded' : ''}" onclick="_toggleGoalCard()">
+    <div class="goal-card-v2" onclick="_goToWeightArchive()">
       <button class="gcv2-add" onclick="event.stopPropagation();openWeightInput();" aria-label="记录体重">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
@@ -11622,16 +12213,24 @@ function _renderGoalCard() {
       ${fullChart}
       ${historyHtml}
 
-      <div class="gcv2-toggle-hint">
-        ${_goalCardExpanded ? '收起 ▲' : '查看完整曲线 ▼'}
-      </div>
+      <div class="gcv2-toggle-hint">查看完整档案 ›</div>
     </div>
   `;
 }
 
 function _toggleGoalCard() {
-  _goalCardExpanded = !_goalCardExpanded;
-  renderHomeFeed();
+  // v0.2.14.1: 首页不再展开, 此函数保留兼容但不调用
+  _goToWeightArchive();
+}
+
+// v0.2.14.1: 跳转到「我的」Tab 的身体档案
+function _goToWeightArchive() {
+  switchTab('profile');
+  // 滚到身体档案 section
+  setTimeout(() => {
+    const el = document.getElementById('profileBodyArchiveSection');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
 }
 
 // 极简 mini sparkline: 7-10 个点, 无坐标轴
@@ -14728,10 +15327,16 @@ let workoutState = {
   restTimer: null,
   restSecondsLeft: 0,
   finishedCount: 0,      // 已完成动作数
-  isMorningPosture: false  // 晨间体态简化模式
+  isMorningPosture: false,  // 晨间体态简化模式
+  // Phase 3.1: 步进器当前值 (主项目仅力量+reps 用)
+  stepperWeight: null,   // kg, null 表示未初始化
+  stepperReps: null,     // 次, null 表示未初始化
+  // Phase 3.3: 准备页态 (动作切换前显示要点+历史+圆点)
+  inPrep: false,
 };
 
-const ENCOURAGEMENTS = ['💪 好!', '🔥 燃烧!', '⭐ 漂亮!', '🚀 不错!', '💥 强!', '👊 就是这样!', '⚡ 给力!', '🎯 精准!'];
+const ENCOURAGEMENTS = ['Good!', 'Nice!', 'Perfect!', 'Great!', 'Awesome!'];
+const EXERCISE_DONE_TEXTS = ['Done ✓'];
 
 function enterWorkoutPage(dayNum) {
   const today = todayStr();
@@ -14800,6 +15405,9 @@ function enterWorkoutPage(dayNum) {
     workoutState.finishedCount = 0;
   }
   workoutState.detailsExpanded = false;
+  // Phase 3.1: 进入训练时清步进器值
+  workoutState.stepperWeight = null;
+  workoutState.stepperReps = null;
   
   // 标记进行中
   if (!state.records[today]) state.records[today] = {};
@@ -14811,7 +15419,20 @@ function enterWorkoutPage(dayNum) {
   saveState();
   
   document.getElementById('workoutOverlay').classList.add('active');
-  renderWorkoutPage();
+
+  // 第一阶段过渡仪式 (跳过晨间体态)
+  // 准备页 1/2 之后, 进入训练第一阶段时弹一次
+  if (!workoutState.isMorningPosture && workoutState.exercises && workoutState.exercises[workoutState.currentIdx]) {
+    const firstStage = _stageOfExercise(workoutState.exercises[workoutState.currentIdx]);
+    showStageTransition(firstStage, () => {
+      // Phase 3.3: 第一个动作如果是 main 类且 currentSet=0 → 走准备页
+      if (!enterPrep()) renderWorkoutPage();
+    });
+  } else {
+    // 晨间或异常: 走原路径
+    if (!enterPrep()) renderWorkoutPage();
+  }
+
   // 启动总时长计时器 + 无交互暂停保护
   _startElapsedTimer();
 }
@@ -14853,6 +15474,11 @@ function finishMorningPosture() {
   const wo = document.getElementById('workoutOverlay');
   wo.classList.remove('active');
   wo.classList.remove('is-morning');
+  wo.classList.remove('rest-mode');  // Phase 3.2: 清休息态
+  wo.classList.remove('prep-mode');  // Phase 3.3: 清准备态
+  wo.classList.remove('pr-mode');    // 清 PR 仪式态
+  workoutState.inPrep = false;
+  workoutState._prNextAction = null;
 
   // 简洁的完成 toast (而不是 finish overlay)
   _showFbToast('🦴 体态打卡完成');
@@ -15268,7 +15894,450 @@ function _exerciseDemoUrl(ex) {
   return `https://search.bilibili.com/all?keyword=${q}`;
 }
 
+// ════════════════════════════════════════════
+//   Phase 3.1: 步进器 helper
+// ════════════════════════════════════════════
+
+// 解析 ex.spec 拿计划重量/次数 (兜底默认值)
+function _parseSpecDefaults(ex) {
+  const spec = (ex.spec || '').toString();
+  // 次数: 优先匹配 "10 次" "8-12 次"
+  let reps = 10;
+  const repsMatch = spec.match(/(\d+)\s*[-~]?\s*\d*\s*(?:次|reps?)/i);
+  if (repsMatch) reps = parseInt(repsMatch[1]);
+  // 重量主项目大多没在 spec 里, 默认 0 (用户自填)
+  return { weight: 0, reps };
+}
+
+// 判断动作是否为自重 (weightHint 包含 "自重")
+// 自重动作: 前锯肌俯卧撑 / 墙天使 / 死虫 / 平板支撑 / 靠墙站姿 / 悬挂下沉 等
+// 这类动作只需记录次数, 不需重量
+function _isBodyweight(ex) {
+  return !!(ex && ex.weightHint && ex.weightHint.indexOf('自重') !== -1);
+}
+
+// 解析步进器默认值 (今天上一组 → 上次训练 → 计划)
+function _resolveStepperDefaults(ex) {
+  const today = todayStr();
+  const log = (state.exerciseLog || {})[ex.key];
+
+  // 1. 今天本动作有记录 → 用最新一组
+  if (log) {
+    const todayEntry = log.find(e => e.date === today);
+    if (todayEntry && todayEntry.sets && todayEntry.sets.length > 0) {
+      const last = todayEntry.sets[todayEntry.sets.length - 1];
+      return { weight: last.weight || 0, reps: last.reps || 10 };
+    }
+  }
+
+  // 2. 之前训练过 → 用最近一次的第一组
+  if (log) {
+    const past = log
+      .filter(e => e.date < today && e.sets && e.sets.length > 0)
+      .sort((a, b) => b.date.localeCompare(a.date));
+    if (past.length > 0) {
+      const first = past[0].sets[0];
+      return { weight: first.weight || 0, reps: first.reps || 10 };
+    }
+  }
+
+  // 3. 用 spec 解析的计划值
+  return _parseSpecDefaults(ex);
+}
+
+// 绑定步进器事件 (点击 + 长按加速)
+function _bindStepperEvents() {
+  const btns = document.querySelectorAll('.wt-step-btn');
+  btns.forEach(btn => {
+    if (btn._stepperBound) return;  // 防重绑
+    btn._stepperBound = true;
+
+    const kind = btn.getAttribute('data-step');     // weight | reps
+    const delta = parseFloat(btn.getAttribute('data-delta'));
+
+    let holdTimer = null;
+    let acceleratedTimer = null;
+
+    const apply = () => {
+      if (kind === 'weight') {
+        let v = workoutState.stepperWeight || 0;
+        v = Math.max(0, Math.min(500, v + delta));
+        v = Math.round(v * 10) / 10;
+        workoutState.stepperWeight = v;
+        const el = document.getElementById('stepWeight');
+        if (el) el.textContent = v.toFixed(1);
+      } else {
+        let v = workoutState.stepperReps || 0;
+        v = Math.max(1, Math.min(99, v + delta));
+        workoutState.stepperReps = v;
+        const el = document.getElementById('stepReps');
+        if (el) el.textContent = v;
+      }
+      if (navigator.vibrate) navigator.vibrate(8);
+    };
+
+    const startHold = (e) => {
+      if (e.cancelable) e.preventDefault();
+      apply();
+      btn.classList.add('holding');
+      holdTimer = setTimeout(() => {
+        acceleratedTimer = setInterval(apply, 80);
+      }, 500);
+    };
+    const endHold = () => {
+      btn.classList.remove('holding');
+      if (holdTimer) clearTimeout(holdTimer);
+      if (acceleratedTimer) clearInterval(acceleratedTimer);
+      holdTimer = null;
+      acceleratedTimer = null;
+    };
+
+    btn.addEventListener('touchstart', startHold, { passive: false });
+    btn.addEventListener('touchend', endHold);
+    btn.addEventListener('touchcancel', endHold);
+    btn.addEventListener('mousedown', startHold);
+    btn.addEventListener('mouseup', endHold);
+    btn.addEventListener('mouseleave', endHold);
+  });
+}
+
+// ════════════════════════════════════════════
+//   阶段过渡仪式 (1.5s 全屏)
+// ════════════════════════════════════════════
+
+// 计算指定阶段的副标题 (X 个动作 / X 分钟)
+function _stageSubtitle(stage) {
+  if (!workoutState.exercises) return '';
+  const stageList = workoutState.exercises.filter(ex => _stageOfExercise(ex) === stage);
+  if (stage === 'strength') {
+    let totalSets = 0;
+    stageList.forEach(e => totalSets += (e.sets || 1));
+    return `${stageList.length} 个动作 · ${totalSets} 组`;
+  }
+  if (stage === 'warmup' || stage === 'cooldown') {
+    return `${stageList.length} 个动作`;
+  }
+  if (stage === 'finisher' || stage === 'cardio') {
+    // 取动作 spec 解析分钟
+    if (stageList.length > 0) {
+      const ex = stageList[0];
+      const mins = _parseMinutesDuration(ex.spec || '');
+      if (mins > 0) return `Zone 2 · ${mins} 分钟`;
+    }
+    return 'Zone 2 心率';
+  }
+  return '';
+}
+
+// 弹阶段过渡仪式, callback 在淡出后调用 (用户进准备页/训练态)
+function showStageTransition(stage, callback) {
+  const info = STAGE_INFO[stage];
+  if (!info) {
+    if (callback) callback();
+    return;
+  }
+  const overlay = document.getElementById('stageTransitionOverlay');
+  const iconEl = document.getElementById('stIcon');
+  const nameEl = document.getElementById('stName');
+  const subEl = document.getElementById('stSub');
+  if (!overlay) {
+    if (callback) callback();
+    return;
+  }
+
+  iconEl.innerHTML = `<svg><use href="#${info.iconId}"/></svg>`;
+  nameEl.textContent = info.name;
+  subEl.textContent = _stageSubtitle(stage);
+
+  // 重置动画 (重排触发)
+  overlay.classList.remove('active');
+  void overlay.offsetWidth;
+  overlay.classList.add('active');
+
+  // 2s 后回调 + 隐藏 (总动画时长 2s)
+  setTimeout(() => {
+    overlay.classList.remove('active');
+    if (callback) callback();
+  }, 2000);
+
+  if (navigator.vibrate) navigator.vibrate(30);
+}
+
+// 检测从 fromIdx 推进到 toIdx 是否跨阶段
+// 返回新阶段 (需要弹仪式) 或 null (同阶段, 不弹)
+function _detectStageChange(fromIdx, toIdx) {
+  const exercises = workoutState.exercises;
+  if (!exercises || fromIdx < 0 || toIdx >= exercises.length) return null;
+  const fromEx = exercises[fromIdx];
+  const toEx = exercises[toIdx];
+  if (!fromEx || !toEx) return null;
+  const fromStage = _stageOfExercise(fromEx);
+  const toStage = _stageOfExercise(toEx);
+  if (fromStage === toStage) return null;
+  return toStage;
+}
+
+// ════════════════════════════════════════════
+//   Header 阶段化渲染 (按训练阶段分别填充进度)
+//   - strength: N 段 (每 main 一段, 按组数比例)
+//   - warmup/cooldown: 单段进度条, 按动作数推进
+//   - finisher: 单段进度条, 按倒计时填充
+//   - cardio 整日: 不分段, 用倒计时填充
+//   - morning: 不分段
+// ════════════════════════════════════════════
+
+// 5 大阶段定义 (映射 ex.category 到 stage)
+const STAGE_INFO = {
+  warmup:   { name: '热 身',     iconId: 'ic-strength' },  // 主项目无 ic-warmup, 用 strength 占位
+  strength: { name: '力 量 训 练', iconId: 'ic-strength' },
+  cooldown: { name: '拉 伸 放 松', iconId: 'ic-recovery' },
+  finisher: { name: '有 氧 燃 脂', iconId: 'ic-cardio'   },
+  cardio:   { name: 'Z O N E   2', iconId: 'ic-cardio'   },
+  morning:  { name: '晨 间 体 态', iconId: 'ic-recovery' }
+};
+
+// 判断给定动作所属阶段
+function _stageOfExercise(ex) {
+  if (workoutState.isMorningPosture) return 'morning';
+  if (!ex) return 'strength';
+  const c = ex.category;
+  if (c === 'warmup') return 'warmup';
+  if (c === 'cooldown') return 'cooldown';
+  if (c === 'finisher') return 'finisher';
+  if (c === 'main' || c === 'corrective') return 'strength';
+  // 整日 cardio (户外快走 / 单车 / 跑步机 / 自由泳) 走 cardio 阶段
+  // 这种节点 NODES.category === 'cardio', 整个训练就一个动作
+  const node = NODES[workoutState.nodeId];
+  if (node && node.category === 'cardio') return 'cardio';
+  return 'strength';  // 兜底
+}
+
+// 当前阶段的动作列表 (按 exercises 顺序连续筛同阶段动作)
+function _exercisesInCurrentStage() {
+  const { exercises, currentIdx } = workoutState;
+  if (!exercises || !exercises[currentIdx]) return [];
+  const stage = _stageOfExercise(exercises[currentIdx]);
+  return exercises
+    .map((ex, i) => ({ ex, i }))
+    .filter(({ ex }) => _stageOfExercise(ex) === stage);
+}
+
+// 渲染 header 进度 (主标题 + 副标题 + 分段进度条)
+function _renderWorkoutSegments() {
+  const { exercises, currentIdx, setsDone, nodeId } = workoutState;
+  if (!exercises || !exercises[currentIdx]) return;
+
+  const ex = exercises[currentIdx];
+  const stage = _stageOfExercise(ex);
+  const stageInfo = STAGE_INFO[stage];
+
+  // 主标题: 动作日名 (从 NODES 取)
+  // 副标题: 阶段名
+  const titleEl = document.getElementById('whTitle');
+  const node = NODES[nodeId];
+  const dayName = node ? node.name : '';
+  if (titleEl) {
+    if (workoutState.isMorningPosture) {
+      // 晨间保持原样 (在 renderWorkoutPage 里设置)
+    } else {
+      titleEl.innerHTML = `
+        <div class="wh-day-name">${dayName}</div>
+        <div class="wh-stage-name">${stageInfo.name}</div>
+      `;
+    }
+  }
+
+  // 分段渲染
+  const segEl = document.getElementById('whSegments');
+  if (!segEl) return;
+  segEl.innerHTML = '';
+
+  // 计数显示 (右上角)
+  const cnt = document.getElementById('whProgressCount');
+
+  if (stage === 'strength') {
+    // 力量阶段: 每个 main 动作一段, 按组数比例填充
+    const stageList = _exercisesInCurrentStage();
+    const curIdxInStage = stageList.findIndex(({ i }) => i === currentIdx);
+    let totalSets = 0, doneSets = 0;
+    stageList.forEach(({ ex: e, i }, idx) => {
+      const sets = e.sets || 1;
+      totalSets += sets;
+      const arr = setsDone[i] || [];
+      const doneInThis = arr.filter(x => x).length;
+      if (idx < curIdxInStage) doneSets += sets;
+      else if (idx === curIdxInStage) doneSets += doneInThis;
+
+      const seg = document.createElement('div');
+      seg.className = 'wh-seg';
+      const fill = document.createElement('div');
+      fill.className = 'wh-seg-fill';
+      if (idx < curIdxInStage) {
+        seg.classList.add('done');
+        fill.style.width = '100%';
+      } else if (idx === curIdxInStage) {
+        seg.classList.add('current');
+        fill.style.width = (doneInThis / sets * 100) + '%';
+      }
+      seg.appendChild(fill);
+      segEl.appendChild(seg);
+    });
+    if (cnt) cnt.textContent = `${doneSets} / ${totalSets}`;
+  } else if (stage === 'warmup' || stage === 'cooldown') {
+    // 热身/拉伸: 单段进度条, 按动作数推进
+    const stageList = _exercisesInCurrentStage();
+    const curIdxInStage = stageList.findIndex(({ i }) => i === currentIdx);
+    const total = stageList.length;
+    // 已完成 = 当前动作之前的; 当前动作算半段 (避免一直 0% 直到完成跳到下一个)
+    const completed = curIdxInStage;
+    const pct = total > 0 ? (completed / total * 100) : 0;
+    const seg = document.createElement('div');
+    seg.className = 'wh-seg current';
+    const fill = document.createElement('div');
+    fill.className = 'wh-seg-fill';
+    fill.style.width = pct + '%';
+    seg.appendChild(fill);
+    segEl.appendChild(seg);
+    if (cnt) cnt.textContent = `${completed} / ${total}`;
+  } else if (stage === 'finisher' || stage === 'cardio') {
+    // finisher / cardio 整日: 按倒计时进度填充 (单段)
+    // 主项目倒计时数据在 workoutState.activeCountdown
+    const ct = workoutState.activeCountdown;
+    let pct = 0;
+    if (ct && ct.totalSec && ct.remainSec != null) {
+      pct = (1 - ct.remainSec / ct.totalSec) * 100;
+    }
+    const seg = document.createElement('div');
+    seg.className = 'wh-seg current';
+    const fill = document.createElement('div');
+    fill.className = 'wh-seg-fill';
+    fill.style.width = pct + '%';
+    seg.appendChild(fill);
+    segEl.appendChild(seg);
+    // 倒计时进行中: 显示 mm:ss 剩余; 否则显示总时长
+    if (cnt) {
+      if (ct && ct.remainSec != null) {
+        const mm = Math.floor(ct.remainSec / 60);
+        const ss = ct.remainSec % 60;
+        cnt.textContent = `${mm}:${String(ss).padStart(2, '0')}`;
+      } else {
+        cnt.textContent = '';
+      }
+    }
+  } else {
+    // morning / 兜底: 不显示分段
+    if (cnt) cnt.textContent = '';
+  }
+}
+
+// ════════════════════════════════════════════
+//   Phase 3.3: 准备页 helper
+// ════════════════════════════════════════════
+
+// 判断当前动作是否需要走准备页 (只 main 类 + 非晨间)
+function _shouldShowPrepFor(ex) {
+  if (!ex) return false;
+  if (workoutState.isMorningPosture) return false;
+  if (ex.category !== 'main') return false;
+  return true;
+}
+
+// 进入准备页 - 返回 true 表示成功进入, false 表示不需要 prep
+function enterPrep() {
+  const { exercises, currentIdx } = workoutState;
+  const ex = exercises[currentIdx];
+  if (!_shouldShowPrepFor(ex)) return false;
+  if (workoutState.currentSet !== 0) return false;
+
+  workoutState.inPrep = true;
+  document.getElementById('workoutOverlay').classList.add('prep-mode');
+  // 进 prep 时也清反馈态 (保险)
+  hideWorkoutBarFeedback();
+  // 更新 header 分段进度
+  _renderWorkoutSegments();
+
+  // eyebrow
+  const isFirstEx = currentIdx === 0;
+  document.getElementById('prepEyebrow').textContent = isFirstEx ? '第 一 个 动 作' : '下 一 个 动 作';
+  document.getElementById('prepName').textContent = ex.name;
+
+  // 动作要点 (tips 数组优先, 用列表展示; 没 tips 就隐藏整个 section)
+  const cueEl = document.getElementById('prepCue');
+  const cueSection = cueEl.parentElement;  // .prep-section
+  if (ex.tips && Array.isArray(ex.tips) && ex.tips.length > 0) {
+    cueEl.innerHTML = ex.tips.map(t => `<div class="prep-cue-item">· ${t}</div>`).join('');
+    cueSection.style.display = '';
+  } else if (ex.tips && typeof ex.tips === 'string' && ex.tips.trim()) {
+    // 主项目部分动作 tips 是字符串 (单条)
+    cueEl.innerHTML = `<div class="prep-cue-item">· ${ex.tips}</div>`;
+    cueSection.style.display = '';
+  } else {
+    // 没 tips - 隐藏整个动作要点 section (保持简洁)
+    cueSection.style.display = 'none';
+  }
+
+  // 上次记录
+  const histEl = document.getElementById('prepHistory');
+  histEl.classList.remove('no-history');
+  const lastEntry = _getLastExerciseEntry(ex.key);
+  const isBodyweightEx = _isBodyweight(ex);
+  if (lastEntry && lastEntry.sets && lastEntry.sets.length > 0) {
+    const first = lastEntry.sets[0];
+    const daysAgo = Math.max(1, Math.floor((new Date(todayStr()) - new Date(lastEntry.date)) / 86400000));
+    // 自重动作: 只显示次数; 其他: kg × 次数
+    const mainText = isBodyweightEx
+      ? `${first.reps} 次`
+      : `${first.weight} kg × ${first.reps}`;
+    histEl.innerHTML = `
+      <span class="prep-history-main">${mainText}</span>
+      <span class="prep-history-dot">·</span>
+      <span class="prep-history-sub">${daysAgo} 天前</span>
+    `;
+  } else {
+    histEl.classList.add('no-history');
+    histEl.innerHTML = `<span class="prep-history-sub">第一次做这个动作</span>`;
+  }
+
+  // 组数圆点
+  const dotsEl = document.getElementById('prepSetsDots');
+  dotsEl.innerHTML = '';
+  const totalSets = ex.sets || 1;
+  for (let i = 0; i < totalSets; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'prep-set-dot';
+    dot.textContent = i + 1;
+    dotsEl.appendChild(dot);
+  }
+
+  // 底栏 CTA
+  const mainBtn = document.getElementById('workoutMainBtn');
+  const skipBtn = document.getElementById('workoutSkipBtn');
+  if (mainBtn) {
+    mainBtn.innerHTML = '开始第 1 组 →';
+    mainBtn.disabled = false;
+    mainBtn.classList.remove('locked');
+  }
+  if (skipBtn) {
+    skipBtn.textContent = '跳过';
+    skipBtn.disabled = false;
+  }
+
+  return true;
+}
+
+function endPrep() {
+  workoutState.inPrep = false;
+  document.getElementById('workoutOverlay').classList.remove('prep-mode');
+  renderWorkoutPage();
+}
+
 function renderWorkoutPage() {
+  // 重新渲染时清反馈态 (保险, 防止状态泄漏到下一组)
+  hideWorkoutBarFeedback();
+  // Phase 3.3: 清 prep 状态 (保险, 进入正常训练态意味着退出 prep)
+  workoutState.inPrep = false;
+  document.getElementById('workoutOverlay').classList.remove('prep-mode');
+
   const { exercises, currentIdx, currentSet, setsDone } = workoutState;
   const ex = exercises[currentIdx];
   if (!ex) {
@@ -15277,25 +16346,20 @@ function renderWorkoutPage() {
     return;
   }
 
-  // 晨间模式有自己的 header 标题
+  // 晨间模式有自己的 header 标题 (走简化路径, 不阶段化)
   if (workoutState.isMorningPosture) {
     document.getElementById('whTitle').innerHTML = `<svg style="width:14px;height:14px;stroke:var(--muted);stroke-width:1.8;fill:none;margin-right:6px;vertical-align:-2px;opacity:0.7;" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="2"/><path d="M12 8v8M8 12h8M9 22l3-6 3 6"/></svg>晨间体态 · 6 分钟`;
-  } else {
-    const node = NODES[workoutState.nodeId];
-    // 低压版: 加 chip 标签让用户清楚知道当前在低压模式 (避免"是不是没生效"的困惑)
-    const todayRecord = state.records[todayStr()] || {};
-    const isLowPressure = todayRecord.todayAnswers && todayRecord.todayAnswers.lowPressure;
-    const lowPressureBadge = isLowPressure
-      ? `<span class="wh-low-pressure">低压版</span>`
-      : '';
-    document.getElementById('whTitle').innerHTML = `<svg style="width:14px;height:14px;stroke:var(--muted);stroke-width:1.8;fill:none;margin-right:6px;vertical-align:-2px;opacity:0.7;"><use href="#${node.iconId}"/></svg>Day ${workoutState.dayNum} · ${node.name}${lowPressureBadge}`;
   }
+  // 非晨间: 标题由 _renderWorkoutSegments 渲染 (主标题=动作日名, 副标题=阶段名)
+  // 低压版徽章先暂时不显 - 阶段化 header 视觉为主, 低压可以放底栏或别处提醒
+  // (后续若需要可以单独加回)
 
   const total = exercises.length;
   const done = workoutState.finishedCount;
   const pct = Math.round(done / total * 100);
   document.getElementById('whProgressFill').style.width = pct + '%';
-  document.getElementById('whProgressCount').textContent = `${done} / ${total}`;
+  // 渲染分段进度 + 计数
+  _renderWorkoutSegments();
   document.getElementById('allExCount').textContent = `(${done}/${total})`;
 
   const totalSets = ex.sets || 1;
@@ -15417,30 +16481,78 @@ function renderWorkoutPage() {
 
   // 5. 进度区 - 按 displayType 分化
   let progressHtml = '';
+  let stepperHtml = '';
+  // Phase 3.1+对齐 demo: 力量主训练 (main + reps) 走 demo 模板
+  const isStrengthFlow = (displayType === 'reps') && (ex.category === 'main') && !workoutState.isMorningPosture;
+
   if (displayType === 'reps') {
-    // 力量: 大字 "第 N 组 / 共 M 组" + 圆点
-    if (totalSets > 1) {
-      let dotsHtml = '<div class="set-dots">';
+    if (isStrengthFlow) {
+      // demo 风格大圆点 (50px, 数字, 三态: idle/current/done)
+      let dotsHtml = '<div class="wt-sets">';
       for (let i = 0; i < totalSets; i++) {
         const sDone = setsDone[currentIdx][i];
         const current = i === currentSet && !sDone;
         const cls = sDone ? 'done' : (current ? 'current' : '');
-        dotsHtml += `<div class="set-dot ${cls}"></div>`;
+        dotsHtml += `<div class="wt-set-dot ${cls}">${i + 1}</div>`;
       }
       dotsHtml += '</div>';
+      progressHtml = dotsHtml;
 
-      progressHtml = `
-        <div class="ex-progress-reps">
-          <div class="epr-big">第 ${currentSet + 1} 组 <span class="epr-sep">/</span> 共 ${totalSets} 组</div>
-          ${dotsHtml}
+      // 步进器
+      const initVals = _resolveStepperDefaults(ex);
+      if (workoutState.stepperWeight == null) workoutState.stepperWeight = initVals.weight;
+      if (workoutState.stepperReps == null) workoutState.stepperReps = initVals.reps;
+      const w = workoutState.stepperWeight;
+      const r = workoutState.stepperReps;
+      const isBodyweight = _isBodyweight(ex);
+
+      // 自重动作: 只显示次数行 (没有外加重量)
+      const weightRow = isBodyweight ? '' : `
+          <div class="wt-step-row">
+            <span class="wt-step-label">重量</span>
+            <button class="wt-step-btn" data-step="weight" data-delta="-0.5">−</button>
+            <span class="wt-step-value" id="stepWeight">${Number(w).toFixed(1)}</span>
+            <span class="wt-step-unit">kg</span>
+            <button class="wt-step-btn" data-step="weight" data-delta="0.5">+</button>
+          </div>`;
+
+      stepperHtml = `
+        <div class="wt-stepper${isBodyweight ? ' bodyweight' : ''}">
+          ${weightRow}
+          <div class="wt-step-row">
+            <span class="wt-step-label">次数</span>
+            <button class="wt-step-btn" data-step="reps" data-delta="-1">−</button>
+            <span class="wt-step-value" id="stepReps">${r}</span>
+            <button class="wt-step-btn" data-step="reps" data-delta="1">+</button>
+          </div>
         </div>
+        <div class="wt-step-tips">${isBodyweight ? '自重动作 · 记录实际完成次数' : '做组前 · 做组后皆可调整, 记录实际数据'}</div>
       `;
     } else {
-      progressHtml = `
-        <div class="ex-progress-reps">
-          <div class="epr-single">${ex.spec}</div>
-        </div>
-      `;
+      // 非力量主训 (拉伸 reps / 矫正 reps 等): 保持原文字 + 旧小圆点
+      if (totalSets > 1) {
+        let dotsHtml = '<div class="set-dots">';
+        for (let i = 0; i < totalSets; i++) {
+          const sDone = setsDone[currentIdx][i];
+          const current = i === currentSet && !sDone;
+          const cls = sDone ? 'done' : (current ? 'current' : '');
+          dotsHtml += `<div class="set-dot ${cls}"></div>`;
+        }
+        dotsHtml += '</div>';
+
+        progressHtml = `
+          <div class="ex-progress-reps">
+            <div class="epr-big">第 ${currentSet + 1} 组 <span class="epr-sep">/</span> 共 ${totalSets} 组</div>
+            ${dotsHtml}
+          </div>
+        `;
+      } else {
+        progressHtml = `
+          <div class="ex-progress-reps">
+            <div class="epr-single">${ex.spec}</div>
+          </div>
+        `;
+      }
     }
   } else if (displayType === 'time') {
     // 计时型 (秒): 可点击大数字, 点了进入倒计时
@@ -15489,31 +16601,7 @@ function renderWorkoutPage() {
     }
   }
 
-  // 6. 详情按钮 (只有 desc/cautions 才需要二级页, tips 已经在主页显示)
-  const hasDeepDetails = ex.desc || ex.cautions;
-  const detailsHtml = hasDeepDetails ? `
-    <button class="btn-toggle-details" onclick="openDetailsModal()">
-      <span>详 细 要 点</span>
-      <span class="details-arrow">→</span>
-    </button>
-  ` : '';
-
-  // 7. 下一个动作预告
-  const nextEx = exercises[currentIdx + 1];
-  const nextHtml = nextEx ? `
-    <div class="next-preview">
-      <span class="next-preview-label">下一个</span>
-      <span class="next-preview-name">${nextEx.name}</span>
-      <span class="next-preview-arrow">→</span>
-    </div>
-  ` : (currentIdx === exercises.length - 1 ? `
-    <div class="next-preview" style="border-color:var(--accent);background:var(--accent-lt);">
-      <span class="next-preview-label" style="color:var(--accent);">最后一个!</span>
-      <span class="next-preview-name">加油完成它</span>
-    </div>
-  ` : '');
-
-  // 8. 主按钮文案
+  // 6. 主按钮文案
   let btnText, btnIcon = '';
   if (allSetsDone && currentIdx === exercises.length - 1) {
     btnText = '完成训练';
@@ -15524,33 +16612,71 @@ function renderWorkoutPage() {
     btnText = currentSet === totalSets - 1 ? '最后一组完成' : '完成本组';
   } else if (displayType === 'duration') {
     btnText = '完成';
+  } else if (isStrengthFlow) {
+    btnText = '完成本组';
   } else if (currentSet === totalSets - 1) {
     btnText = '最后一组';
   } else {
     btnText = '完成';
   }
 
-  // 9. 渲染
-  const body = `
-    ${demoHtml}
+  // 7. 渲染 - 力量主训走 demo 模板, 其他保持原结构
+  let body;
+  if (isStrengthFlow) {
+    // demo 模板: 顶部业务标签 + 演示卡 + 居中心流区 (动作名/cue/步进器/圆点)
+    // 标签行 (role + type + muscle, 紧凑 chip)
+    const stripChips = (tagsHtml || musclesRow) ? `
+      <div class="wt-chip-strip">
+        ${tagsHtml || ''}
+        ${musclesRow || ''}
+      </div>
+    ` : '';
+    // cue: 仅用 tips[0] (健身产品角度: 做组瞬间核心提醒). 没有就不显示.
+    const displayCue = (ex.tips && ex.tips.length > 0) ? ex.tips[0] : '';
+    body = `
+      ${demoHtml}
+      ${stripChips}
+      <div class="wt-stage">
+        <div class="wt-stage-inner">
+          <div class="wt-ex-name">${ex.name}</div>
+          ${displayCue ? `<div class="wt-ex-cue">${displayCue}</div>` : ''}
+          ${stepperHtml}
+          ${progressHtml}
+        </div>
+      </div>
+    `;
+  } else {
+    // 非力量主训: 拉伸/热身/计时型, 保留原模板 (info-block + progress + 详情按钮)
+    // 砍掉: 下一动作预告 (有准备页了, 不需要)
+    const hasDeepDetails = ex.desc || ex.cautions;
+    const detailsHtml = hasDeepDetails ? `
+      <button class="btn-toggle-details" onclick="openDetailsModal()">
+        <span>详 细 要 点</span>
+        <span class="details-arrow">→</span>
+      </button>
+    ` : '';
+    body = `
+      ${demoHtml}
 
-    <div class="ex-info-block">
-      <div class="exercise-category">${categoryDisplay}</div>
-      <div class="exercise-name">${ex.name}</div>
-      ${tagsRow}
-      ${musclesRow}
-      ${tipHtml}
-    </div>
+      <div class="ex-info-block">
+        <div class="exercise-category">${categoryDisplay}</div>
+        <div class="exercise-name">${ex.name}</div>
+        ${tagsRow}
+        ${musclesRow}
+        ${tipHtml}
+      </div>
 
-    ${progressHtml}
+      ${progressHtml}
 
-    <div class="ex-actions-row">
-      ${detailsHtml}
-      ${nextHtml}
-    </div>
-  `;
+      <div class="ex-actions-row">
+        ${detailsHtml}
+      </div>
+    `;
+  }
 
   document.getElementById('workoutBody').innerHTML = body;
+  // Phase 3.1: 步进器事件绑定 (innerHTML 重建后必须重绑)
+  if (stepperHtml) _bindStepperEvents();
 
   document.getElementById('workoutMainBtn').innerHTML = `${btnIcon}${btnText}`;
   const skipBtn = document.getElementById('workoutSkipBtn');
@@ -15844,57 +16970,107 @@ function detectExercisePR(ex, currentSet, history) {
   return null;
 }
 
-// PR Toast: 1.8 秒淡入淡出, 不需要用户点确认 (训练中断越少越好)
+// PR Toast: 已被 PR 仪式页替代, 保留 noop 占位 (避免老代码调用报错)
 function showPRToast(pr, exerciseName) {
-  if (!pr) return;
-  let icon, title, body;
-  if (pr.type === 'first_record') {
-    icon = '📌';
-    title = '起点已记录';
-    body = pr.current.weight > 0
-      ? `${pr.current.weight}kg × ${pr.current.reps}`
-      : `${pr.current.reps} 次 (自重)`;
-  } else if (pr.type === 'weight_pr') {
-    icon = '💪';
-    title = '新重量 PR';
-    body = `${pr.current.weight}kg × ${pr.current.reps} · 上次最高 ${pr.previous.weight}kg`;
-  } else if (pr.type === 'reps_pr') {
-    icon = '💪';
-    title = '同重量多做了';
-    if (pr.current.weight > 0) {
-      body = `${pr.current.weight}kg × ${pr.current.reps} · 上次最多 × ${pr.previous.reps}`;
-    } else {
-      body = `${pr.current.reps} 次 · 上次最多 ${pr.previous.reps} 次`;
-    }
-  } else {
+  // 由 enterPR 接管, 这里仅做兼容
+  return;
+}
+
+// PR 仪式页 (demo 风格, 主体内嵌)
+// 触发: _commitStrengthSet 检测到 PR -> 跳过反馈条 -> 直接进 PR 仪式
+// 离开: 用户点底栏 CTA "继续训练 →" -> endPR -> 走原本的下一步
+function enterPR(pr, exerciseName, nextAction) {
+  if (!pr) {
+    if (nextAction) nextAction();
     return;
   }
 
-  // 找/建 toast 容器
-  let toast = document.getElementById('prToast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'prToast';
-    toast.className = 'pr-toast';
-    document.body.appendChild(toast);
+  // 暂存离开 PR 时要走的下一步 (休息 / 切动作 / finale)
+  workoutState._prNextAction = nextAction || null;
+
+  // 按 PR 类型决定文案 + detail
+  let headline, detail;
+  if (pr.type === 'first_record') {
+    headline = '起点已记录';
+    if (pr.current.weight > 0) {
+      detail = `<span class="pr-to">${pr.current.weight}kg × ${pr.current.reps}</span>`;
+    } else {
+      detail = `<span class="pr-to">${pr.current.reps} 次</span>`;
+    }
+  } else if (pr.type === 'weight_pr') {
+    headline = '你刚刚突破了!';
+    detail = `<span class="pr-from">${pr.previous.weight}kg</span>` +
+             `<span class="pr-arrow">→</span>` +
+             `<span class="pr-to">${pr.current.weight}kg × ${pr.current.reps}</span>`;
+  } else if (pr.type === 'reps_pr') {
+    headline = '次数突破!';
+    if (pr.current.weight > 0) {
+      detail = `<span class="pr-from">${pr.current.weight}kg × ${pr.previous.reps}</span>` +
+               `<span class="pr-arrow">→</span>` +
+               `<span class="pr-to">${pr.current.weight}kg × ${pr.current.reps}</span>`;
+    } else {
+      // 自重: 只比次数
+      detail = `<span class="pr-from">${pr.previous.reps} 次</span>` +
+               `<span class="pr-arrow">→</span>` +
+               `<span class="pr-to">${pr.current.reps} 次</span>`;
+    }
+  } else {
+    if (nextAction) nextAction();
+    return;
   }
-  toast.innerHTML = `
-    <div class="pr-toast-icon">${icon}</div>
-    <div class="pr-toast-content">
-      <div class="pr-toast-title">${title}</div>
-      ${body ? `<div class="pr-toast-body">${body}</div>` : ''}
-      <div class="pr-toast-exercise">${exerciseName || ''}</div>
-    </div>
-  `;
-  // 触发动画
-  toast.classList.remove('show');
-  void toast.offsetWidth;  // reflow
-  toast.classList.add('show');
-  // 1.8s 后消失
-  clearTimeout(toast._hideTimer);
-  toast._hideTimer = setTimeout(() => {
-    toast.classList.remove('show');
-  }, 1800);
+
+  document.getElementById('prHeadline').textContent = headline;
+  document.getElementById('prDetail').innerHTML = detail;
+  document.getElementById('prExercise').textContent = exerciseName || '';
+
+  // 重置星星动画 (避免重复触发不动)
+  const star = document.querySelector('.pr-star');
+  if (star) {
+    star.style.animation = 'none';
+    void star.offsetWidth;
+    star.style.animation = '';
+  }
+
+  // 切到 PR mode (清掉其他 mode 防冲突)
+  const wo = document.getElementById('workoutOverlay');
+  wo.classList.remove('rest-mode');
+  wo.classList.remove('prep-mode');
+  wo.classList.add('pr-mode');
+  // 进 PR 时清反馈态
+  hideWorkoutBarFeedback();
+
+  // 底栏 CTA 文案: "继续训练 →"
+  const mainBtn = document.getElementById('workoutMainBtn');
+  const skipBtn = document.getElementById('workoutSkipBtn');
+  if (mainBtn) {
+    mainBtn.innerHTML = '继 续 训 练 →';
+    mainBtn.disabled = false;
+    mainBtn.classList.remove('locked');
+  }
+  if (skipBtn) {
+    skipBtn.style.display = 'none';  // PR 仪式不允许跳过
+  }
+
+  // 触觉强连击 (5 段, 仪式感)
+  if (navigator.vibrate) navigator.vibrate([60, 100, 80, 100, 120]);
+}
+
+// 用户点底栏 "继续训练 →" 离开 PR 仪式
+function endPR() {
+  const wo = document.getElementById('workoutOverlay');
+  wo.classList.remove('pr-mode');
+  // 恢复 skipBtn
+  const skipBtn = document.getElementById('workoutSkipBtn');
+  if (skipBtn) skipBtn.style.display = '';
+
+  // 执行离开 PR 时记的下一步
+  const nextAction = workoutState._prNextAction;
+  workoutState._prNextAction = null;
+  if (nextAction) {
+    nextAction();
+  } else {
+    renderWorkoutPage();
+  }
 }
 
 // 动作详情「你的进步」(v0.2.4)
@@ -16026,6 +17202,22 @@ function _epcDateLabel(dateStr) {
 
 function completeCurrentSet() {
   _markInteraction();
+  // Phase 3.3: prep-mode 下"开始第 1 组" -> 退 prep, 进训练态
+  if (workoutState.inPrep) {
+    endPrep();
+    return;
+  }
+  // pr-mode 下"继续训练 →" -> 退 PR 仪式, 走 nextStep
+  if (document.getElementById('workoutOverlay').classList.contains('pr-mode')) {
+    endPR();
+    return;
+  }
+  // Phase 3.2: rest-mode 下"完成"按钮文案是"开始下一组 →"
+  // 实际行为是 endRest (跳过休息)
+  if (document.getElementById('workoutOverlay').classList.contains('rest-mode')) {
+    restSkip();
+    return;
+  }
   const { exercises, currentIdx, currentSet, setsDone } = workoutState;
   const ex = exercises[currentIdx];
   const totalSets = ex.sets || 1;
@@ -16043,12 +17235,12 @@ function completeCurrentSet() {
     return;
   }
 
-  // 主训练 + reps 类型 -> 弹录入抽屉, 完成后再正式标记
+  // Phase 3.1: 主训练 + reps -> 直接读步进器值写入 (不再开抽屉)
   const displayType = _inferDisplayType(ex);
-  const needsInput = (ex.category === 'main') && (displayType === 'reps');
+  const isStrength = (ex.category === 'main') && (displayType === 'reps');
 
-  if (needsInput) {
-    openSetInput();  // 打开抽屉, saveSetInput / skipSetInput 会回到 _commitCurrentSet
+  if (isStrength) {
+    _commitStrengthSet();
     return;
   }
 
@@ -16056,8 +17248,43 @@ function completeCurrentSet() {
   _commitCurrentSet();
 }
 
+// Phase 3.1: 力量类组完成 - 读步进器值, 写入 exerciseLog + PR 检测, 然后走 _commitCurrentSet
+function _commitStrengthSet() {
+  const { exercises, currentIdx } = workoutState;
+  const ex = exercises[currentIdx];
+  const today = todayStr();
+
+  const w = workoutState.stepperWeight;
+  const r = workoutState.stepperReps;
+  // 自重动作: weight 强制 0
+  const isBodyweight = _isBodyweight(ex);
+  // 守卫: 步进器值必须有 (按理 renderWorkoutPage 已经初始化, 兜底 0/10)
+  let safeW = (w == null || isNaN(w) || w < 0) ? 0 : w;
+  if (isBodyweight) safeW = 0;
+  const safeR = (r == null || isNaN(r) || r <= 0) ? 10 : r;
+
+  // PR 检测 (写入前)
+  if (!state.exerciseLog) state.exerciseLog = {};
+  const history = state.exerciseLog[ex.key] || [];
+  const pr = detectExercisePR(ex, { weight: safeW, reps: safeR }, history);
+
+  // 写入 exerciseLog
+  if (!state.exerciseLog[ex.key]) state.exerciseLog[ex.key] = [];
+  let todayEntry = state.exerciseLog[ex.key].find(e => e.date === today);
+  if (!todayEntry) {
+    todayEntry = { date: today, sets: [] };
+    state.exerciseLog[ex.key].push(todayEntry);
+  }
+  todayEntry.sets.push({ weight: safeW, reps: safeR });
+  saveState();
+
+  // PR 信息传给 _commitCurrentSet (有 PR 就跳过反馈条, 直接进仪式)
+  _commitCurrentSet(pr ? { pr, exerciseName: ex.name } : null);
+}
+
 // 实际标记当前组完成 (从录入抽屉或直接路径调用)
-function _commitCurrentSet() {
+// prInfo: { pr, exerciseName } 有值则跳过反馈条直接进 PR 仪式
+function _commitCurrentSet(prInfo) {
   // 完成一组时, 清掉可能在跑的倒计时
   _clearCountdownOnExit();
 
@@ -16066,32 +17293,114 @@ function _commitCurrentSet() {
   const totalSets = ex.sets || 1;
 
   setsDone[currentIdx][currentSet] = true;
-  showEncouragement();
   saveWorkoutProgress();
 
   const isLastSet = currentSet === totalSets - 1;
 
+  // 触觉反馈 (跟 demo 一致: 完成组立即一次轻震). PR 时由 enterPR 自己强连击, 这里就轻震
+  if (navigator.vibrate) navigator.vibrate(15);
+
+  // demo 风格圆点 pulse 动画 (current → done 过渡)
+  const dots = document.querySelectorAll('.wt-set-dot');
+  const currentDot = dots[currentSet];
+  if (currentDot) {
+    currentDot.classList.add('pulse');
+    setTimeout(() => {
+      currentDot.classList.remove('pulse', 'current');
+      currentDot.classList.add('done');
+    }, 300);
+  }
+
+  // 决定下一步动作 (PR 仪式后 / 反馈条后, 都走这个)
+  let nextStep;
   if (isLastSet) {
-    showExerciseDoneToast(ex.name);
     workoutState.finishedCount++;
-    setTimeout(() => moveToNextExercise(), 800);
+    nextStep = () => moveToNextExercise();
   } else {
     workoutState.currentSet++;
-    // 晨间模式不强制休息
     if (workoutState.isMorningPosture) {
-      renderWorkoutPage();
-      return;
-    }
-    const restDur = getRestSeconds(ex);
-    if (restDur > 0) {
-      startRest(restDur);
+      nextStep = () => renderWorkoutPage();
     } else {
-      renderWorkoutPage();
+      const restDur = getRestSeconds(ex);
+      nextStep = restDur > 0
+        ? () => startRest(restDur)
+        : () => renderWorkoutPage();
     }
+  }
+
+  // PR 优先: 跳过反馈条, 直接进 PR 仪式; 用户点 "继续训练 →" 后走 nextStep
+  if (prInfo && prInfo.pr) {
+    // 圆点动画跑完 (300ms) 再进仪式, 避免抢镜
+    setTimeout(() => {
+      enterPR(prInfo.pr, prInfo.exerciseName, nextStep);
+    }, 350);
+    return;
+  }
+
+  // 非 PR: 走反馈条
+  if (isLastSet) {
+    showWorkoutBarFeedback(EXERCISE_DONE_TEXTS[0], nextStep);
+  } else if (workoutState.isMorningPosture) {
+    nextStep();  // 晨间不弹反馈条
+  } else {
+    const text = ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
+    showWorkoutBarFeedback(text, nextStep);
   }
 }
 
+// 底栏反馈态 (demo 风格: 整栏变绿 + 文案 + 继续按钮)
+let _workoutPendingNext = null;
+let _workoutContinueLocked = false;
+
+function showWorkoutBarFeedback(text, nextAction) {
+  const bottom = document.getElementById('workoutBottom');
+  if (!bottom) {
+    // fallback (理论不会, 但兜底)
+    if (nextAction) nextAction();
+    return;
+  }
+  document.getElementById('wbFbIcon').textContent = '✓';
+  document.getElementById('wbFbText').textContent = text;
+  bottom.classList.add('feedback-mode');
+  _workoutPendingNext = nextAction;
+  _workoutContinueLocked = false;
+}
+
+function hideWorkoutBarFeedback() {
+  const bottom = document.getElementById('workoutBottom');
+  if (bottom) bottom.classList.remove('feedback-mode');
+  _workoutPendingNext = null;
+}
+
+function onWorkoutContinueClick() {
+  if (_workoutContinueLocked) return;
+  if (!_workoutPendingNext) return;
+  _workoutContinueLocked = true;
+
+  const action = _workoutPendingNext;
+  _workoutPendingNext = null;
+  hideWorkoutBarFeedback();
+  if (action) action();
+
+  setTimeout(() => { _workoutContinueLocked = false; }, 200);
+}
+
+// 旧 API 保留兼容 (晨间模式可能调到, 但已改成静默 noop)
+function showEncouragement() {
+  // 已废弃: 反馈走底栏, 这里不做事 (避免误触发飘字)
+}
+function showExerciseDoneToast(name) {
+  // 已废弃: 反馈走底栏
+}
+
 function moveToNextExercise() {
+  // Phase 3.1: 切动作时清步进器值, 让下个动作的 _resolveStepperDefaults 重新初始化
+  workoutState.stepperWeight = null;
+  workoutState.stepperReps = null;
+  // Phase 3.3: 切动作时清 prep 状态 (新动作如果是 main 会重新进 prep)
+  workoutState.inPrep = false;
+  document.getElementById('workoutOverlay').classList.remove('prep-mode');
+
   const { exercises, currentIdx } = workoutState;
   if (currentIdx >= exercises.length - 1) {
     // 全部完成
@@ -16132,11 +17441,20 @@ function moveToNextExercise() {
     workoutState.exercises = exercises.filter(e => e.category !== 'finisher');
     // currentIdx 保持不变 — 下一个就是 cooldown
     saveWorkoutProgress();
+    const fromIdxA = workoutState.currentIdx;
     workoutState.currentIdx++;
     workoutState.currentSet = 0;
     workoutState.detailsExpanded = false;
     workoutState.demoExpandedOverride = null;
-    renderWorkoutPage();
+    // 跨阶段 → 弹过渡, 完成后进 prep / render
+    const newStageA = _detectStageChange(fromIdxA, workoutState.currentIdx);
+    if (newStageA) {
+      showStageTransition(newStageA, () => {
+        if (!enterPrep()) renderWorkoutPage();
+      });
+    } else {
+      if (!enterPrep()) renderWorkoutPage();
+    }
     return;
   }
 
@@ -16145,12 +17463,21 @@ function moveToNextExercise() {
     document.getElementById('workoutOverlay').classList.remove('in-finisher');
   }
 
+  const fromIdxB = workoutState.currentIdx;
   workoutState.currentIdx++;
   workoutState.currentSet = 0;
   workoutState.detailsExpanded = false;
   workoutState.demoExpandedOverride = null;  // 切动作 -> 重置演示折叠状态
   saveWorkoutProgress();
-  renderWorkoutPage();
+  // 跨阶段 → 弹过渡, 完成后进 prep / render
+  const newStageB = _detectStageChange(fromIdxB, workoutState.currentIdx);
+  if (newStageB) {
+    showStageTransition(newStageB, () => {
+      if (!enterPrep()) renderWorkoutPage();
+    });
+  } else {
+    if (!enterPrep()) renderWorkoutPage();
+  }
 }
 
 // finisher gate: 永远是询问式 (不再因 duration 自动决定)
@@ -16228,31 +17555,16 @@ function toggleDemo(expand) {
 
 function skipCurrentExercise() {
   _markInteraction();
+  // Phase 3.2: rest-mode 下副按钮变成 +30s
+  if (document.getElementById('workoutOverlay').classList.contains('rest-mode')) {
+    restAdd30();
+    return;
+  }
   // 跳过 = 标记为完成(但组保持未勾)
   const { currentIdx, setsDone } = workoutState;
   // 不填组,只推进
   saveWorkoutProgress();
   moveToNextExercise();
-}
-
-function showEncouragement() {
-  const text = ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
-  const div = document.createElement('div');
-  div.className = 'encouragement';
-  div.textContent = text;
-  document.body.appendChild(div);
-  // 轻振动
-  if (navigator.vibrate) navigator.vibrate(20);
-  setTimeout(() => div.remove(), 1400);
-}
-
-function showExerciseDoneToast(name) {
-  const div = document.createElement('div');
-  div.className = 'exercise-done-toast';
-  div.innerHTML = `✓ <span>${name} 完成</span>`;
-  document.body.appendChild(div);
-  if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
-  setTimeout(() => div.remove(), 1600);
 }
 
 function saveWorkoutProgress() {
@@ -16298,16 +17610,24 @@ function confirmExit() {
 // 实际执行退出 (用于晨间和主训共用)
 function _doExitWorkout() {
   _clearCountdownOnExit();  // 退出时清倒计时
+  hideWorkoutBarFeedback();  // 清底栏反馈态
+  workoutState.inPrep = false;  // Phase 3.3: 清 prep 态
+  workoutState._prNextAction = null;  // 清 PR 残留 callback
   const wo = document.getElementById('workoutOverlay');
   wo.classList.remove('active');
   wo.classList.remove('in-finisher');
   wo.classList.remove('is-morning');
+  wo.classList.remove('rest-mode');  // Phase 3.2: 清休息态
+  wo.classList.remove('prep-mode');  // Phase 3.3: 清准备态
+  wo.classList.remove('pr-mode');    // 清 PR 仪式态
   if (workoutState.restTimer) {
     clearInterval(workoutState.restTimer);
     workoutState.restTimer = null;
   }
-  document.getElementById('restOverlay').classList.remove('active');
   document.getElementById('finisherGateOverlay').classList.remove('active');
+  // 清阶段过渡 overlay (防退出时还在弹)
+  const stOv = document.getElementById('stageTransitionOverlay');
+  if (stOv) stOv.classList.remove('active');
   if (workoutState.isMorningPosture) {
     workoutState.isMorningPosture = false;
     _morningStartedAt = null;
@@ -16368,7 +17688,11 @@ function _computeWorkoutSummary(opts) {
     });
   });
 
-  // PR 检测: 今天某动作的最大单组 weight × reps > 历史最高
+  // PR 检测: 识别两种类型 (跟训练当下仪式逻辑一致)
+  //   weight_pr: 今天最高 weight > 历史最高 weight
+  //   reps_pr:   今天最高 weight === 历史最高 weight, 且同重量下次数 > 历史
+  //   first_record (第一次做这个动作) 不在 finale 显示, 避免每个新动作都算 PR
+  // 自重动作 (weight 始终 = 0) 只走 reps_pr 通路
   const prs = [];
   exercises.forEach(ex => {
     if (ex.category !== 'main') return;
@@ -16376,25 +17700,58 @@ function _computeWorkoutSummary(opts) {
     if (!log) return;
     const todayEntry = log.find(e => e.date === recDate);
     if (!todayEntry || todayEntry.sets.length === 0) return;
-    // 今天的最大单组 (按 weight × reps)
-    let todayMax = { weight: 0, reps: 0, vol: 0 };
-    todayEntry.sets.forEach(s => {
-      const v = s.weight * s.reps;
-      if (v > todayMax.vol) todayMax = { weight: s.weight, reps: s.reps, vol: v };
-    });
-    if (todayMax.vol === 0) return;
-    // 历史最大 (今天之前所有训练)
-    let historyMax = 0;
+
+    // 历史记录 (今天之前): 最高 weight + 同最高 weight 下的最高 reps
+    let historyMaxWeight = 0;
+    let historyMaxRepsAtHeaviest = 0;
+    let hasHistory = false;
     log.filter(e => e.date < recDate).forEach(e => {
       e.sets.forEach(s => {
-        const v = s.weight * s.reps;
-        if (v > historyMax) historyMax = v;
+        if (s.reps <= 0) return;  // 跳过空组
+        hasHistory = true;
+        if (s.weight > historyMaxWeight) {
+          historyMaxWeight = s.weight;
+          historyMaxRepsAtHeaviest = s.reps;
+        } else if (s.weight === historyMaxWeight && s.reps > historyMaxRepsAtHeaviest) {
+          historyMaxRepsAtHeaviest = s.reps;
+        }
       });
     });
-    if (todayMax.vol > historyMax && historyMax > 0) {
-      prs.push({ name: ex.name, weight: todayMax.weight, reps: todayMax.reps });
-    } else if (historyMax === 0) {
-      // 第一次有记录, 不算 PR (避免每个新动作都算)
+    if (!hasHistory) return;  // 第一次做这个动作, 不算 PR (避免新动作误报)
+
+    // 今天: 最高 weight + 同最高 weight 下的最高 reps
+    let todayMaxWeight = 0;
+    let todayMaxRepsAtHeaviest = 0;
+    todayEntry.sets.forEach(s => {
+      if (s.reps <= 0) return;
+      if (s.weight > todayMaxWeight) {
+        todayMaxWeight = s.weight;
+        todayMaxRepsAtHeaviest = s.reps;
+      } else if (s.weight === todayMaxWeight && s.reps > todayMaxRepsAtHeaviest) {
+        todayMaxRepsAtHeaviest = s.reps;
+      }
+    });
+    if (todayMaxRepsAtHeaviest === 0) return;  // 今天没成功完成的组
+
+    // 判断 PR 类型
+    if (todayMaxWeight > historyMaxWeight) {
+      // weight_pr: 重量突破
+      prs.push({
+        type: 'weight_pr',
+        name: ex.name,
+        weight: todayMaxWeight,
+        reps: todayMaxRepsAtHeaviest,
+        fromWeight: historyMaxWeight
+      });
+    } else if (todayMaxWeight === historyMaxWeight && todayMaxRepsAtHeaviest > historyMaxRepsAtHeaviest) {
+      // reps_pr: 同重量下次数突破 (自重也走这路)
+      prs.push({
+        type: 'reps_pr',
+        name: ex.name,
+        weight: todayMaxWeight,
+        reps: todayMaxRepsAtHeaviest,
+        fromReps: historyMaxRepsAtHeaviest
+      });
     }
   });
 
@@ -16770,114 +18127,83 @@ function _renderFinishOverlay(rec, opts) {
   // opts: { recDate, ws } - 历史回放场景才传, 实时完成场景不传
   const s = _computeWorkoutSummary(opts ? Object.assign({ rec }, opts) : null);
 
-  // 时长大字
-  const timeNum = s.totalMin > 0
-    ? `${s.totalMin}<span style="font-size:36px;color:var(--muted);">:${String(s.remainSec).padStart(2,'0')}</span>`
-    : `${s.remainSec}<span style="font-size:36px;color:var(--muted);"> 秒</span>`;
-  // 上面那个其实想要 mm:ss 格式但分大字秒小字的对比效果
+  // 时长格式化 (mm:ss)
   const totalSecs = s.totalMin * 60 + s.remainSec;
   const m = Math.floor(totalSecs / 60);
   const ss = totalSecs % 60;
-  const timeBig = `${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+  const timeStr = `${m}:${String(ss).padStart(2,'0')}`;
 
-  // PR 区块
+  // 3 列统计 (时长 / 组数 / 训练量)
+  // 训练量没有 (全徒手) 时降级为"完成组数"
+  const volumeStat = s.totalVolume > 0
+    ? { num: s.totalVolume.toLocaleString(), label: '训练量 KG' }
+    : { num: s.bodyweightSets || s.totalSets, label: '徒手组数' };
+
+  // PR 卡 (demo 风格: 动作名灰 + 数据放大高亮 from→to)
+  // 支持 2 种类型:
+  //   weight_pr: 重量突破 -> "20kg → 25kg × 10"
+  //   reps_pr:   同重量次数突破 -> "25kg × 8 → 25kg × 10" (自重: "8 次 → 12 次")
   let prsHtml = '';
   if (s.prs.length > 0) {
+    const prsItems = s.prs.map(p => {
+      let dataHtml = '';
+      if (p.type === 'reps_pr') {
+        if (p.weight > 0) {
+          // 重量动作的次数突破: "25kg × 8 → 25kg × 10"
+          dataHtml = `<span class="pr-from">${p.weight}kg × ${p.fromReps}</span><span class="pr-arrow">→</span><span class="pr-to">${p.weight}kg × ${p.reps}</span>`;
+        } else {
+          // 自重动作: "8 次 → 12 次"
+          dataHtml = `<span class="pr-from">${p.fromReps} 次</span><span class="pr-arrow">→</span><span class="pr-to">${p.reps} 次</span>`;
+        }
+      } else {
+        // weight_pr: "20kg → 25kg × 10"
+        dataHtml = (p.fromWeight != null && p.fromWeight !== p.weight)
+          ? `<span class="pr-from">${p.fromWeight}kg</span><span class="pr-arrow">→</span><span class="pr-to">${p.weight}kg × ${p.reps}</span>`
+          : `<span class="pr-to">${p.weight}kg × ${p.reps}</span>`;
+      }
+      return `
+        <div class="finish-pr-item">
+          <span class="finish-pr-name">${p.name}</span>
+          <span class="finish-pr-data">${dataHtml}</span>
+        </div>
+      `;
+    }).join('');
     prsHtml = `
       <div class="finish-prs">
-        <div class="finish-prs-title">今天创了 ${s.prs.length} 个个人最佳</div>
-        ${s.prs.map(p => `
-          <div class="finish-pr-item">
-            <span class="pr-name">${p.name}</span>
-            <span class="pr-data">${p.weight} kg × ${p.reps}</span>
-          </div>
-        `).join('')}
+        <div class="finish-prs-eyebrow">今 日 突 破</div>
+        ${prsItems}
       </div>
     `;
-  }
-
-  // 总训练量行 + 对比行
-  let volumeRow = '';
-  if (s.totalVolume > 0) {
-    volumeRow = `
-      <div class="finish-stat-row">
-        <div class="fst-label">总训练量</div>
-        <div class="fst-value">${s.totalVolume.toLocaleString()}<span class="fst-unit">kg</span></div>
-      </div>
-    `;
-  }
-  let deltaRow = '';
-  if (s.volumeDelta != null) {
-    const cls = s.volumeDelta >= 0 ? 'delta-pos' : 'delta-neg';
-    const sign = s.volumeDelta >= 0 ? '+' : '';
-    deltaRow = `
-      <div class="finish-stat-row">
-        <div class="fst-label">比上次</div>
-        <div class="fst-value ${cls}">${sign}${s.volumeDelta.toFixed(1)}<span class="fst-unit">%</span></div>
-      </div>
-    `;
-  }
-  // 徒手动作组数
-  let bwRow = '';
-  if (s.bodyweightSets > 0) {
-    bwRow = `
-      <div class="finish-stat-row">
-        <div class="fst-label">徒手动作</div>
-        <div class="fst-value">${s.bodyweightSets}<span class="fst-unit">组</span></div>
-      </div>
-    `;
-  }
-
-  // 文案 (按完成度差异化)
-  let messageHtml;
-  const completeRatio = s.exDone / s.exTotal;
-  if (completeRatio === 1) {
-    messageHtml = `你今天确实来了。<br>明天还来吗?`;
-  } else if (completeRatio >= 0.5) {
-    messageHtml = `做了 ${s.exDone} 件,跳过 ${s.exSkipped} 件。<br>明天的契约还在等你。`;
-  } else {
-    messageHtml = `没全做完,但你来了。<br>来了,就比没来强。`;
   }
 
   document.getElementById('finishBody').innerHTML = `
-    <div class="finish-tag">完  成</div>
-
-    <div class="finish-time">
-      <div class="finish-time-num">${timeBig}</div>
-      <div class="finish-time-label">总  训  练  时  长</div>
-    </div>
-
-    <div class="finish-divider"></div>
-
-    <div class="finish-meta">
-      <div class="finish-meta-name">${s.nodeName}</div>
-      <div class="finish-meta-day">DAY ${s.dayNum}</div>
-    </div>
+    <div class="finish-star">★</div>
+    <div class="finish-eyebrow">训 练 完 成</div>
+    <div class="finish-title">${s.nodeName}</div>
 
     <div class="finish-stats">
-      <div class="finish-stat-row">
-        <div class="fst-label">完成动作</div>
-        <div class="fst-value">${s.exDone}<span class="fst-unit">/ ${s.exTotal}</span></div>
+      <div class="finish-stat">
+        <div class="finish-stat-num">${timeStr}</div>
+        <div class="finish-stat-label">总时长</div>
       </div>
-      <div class="finish-stat-row">
-        <div class="fst-label">完成组数</div>
-        <div class="fst-value">${s.totalSets}<span class="fst-unit">组</span></div>
+      <div class="finish-stat">
+        <div class="finish-stat-num">${s.totalSets}</div>
+        <div class="finish-stat-label">完成组数</div>
       </div>
-      ${volumeRow}
-      ${deltaRow}
-      ${bwRow}
+      <div class="finish-stat">
+        <div class="finish-stat-num">${volumeStat.num}</div>
+        <div class="finish-stat-label">${volumeStat.label}</div>
+      </div>
     </div>
 
     ${prsHtml}
-
-    <div class="finish-message">${messageHtml}</div>
   `;
 
   document.getElementById('finishBody').scrollTop = 0;
   document.getElementById('finishOverlay').classList.add('active');
 
   // 庆祝振动 (符合"高潮时刻")
-  if (navigator.vibrate) navigator.vibrate([100, 60, 100]);
+  if (navigator.vibrate) navigator.vibrate([40, 80, 40, 80, 60]);
 }
 
 function closeFinishOverlay() {
@@ -16918,6 +18244,11 @@ function finishWorkout() {
   const wo = document.getElementById('workoutOverlay');
   wo.classList.remove('active');
   wo.classList.remove('in-finisher');  // 清橙色主题
+  wo.classList.remove('rest-mode');    // Phase 3.2: 清休息态
+  wo.classList.remove('prep-mode');    // Phase 3.3: 清准备态
+  wo.classList.remove('pr-mode');      // 清 PR 仪式态
+  workoutState.inPrep = false;
+  workoutState._prNextAction = null;
 
   // 弹完成页 (替代以前的 alert)
   _renderFinishOverlay(r);
@@ -16980,16 +18311,27 @@ function _clearCountdownOnExit() {
 }
 
 function startRest(seconds) {
+  // 进入休息时清掉底栏反馈态 (反馈条已经被用户点继续触发了, 这是保险)
+  hideWorkoutBarFeedback();
+
   workoutState.restSecondsLeft = seconds;
   workoutState.restTotalSecs = seconds;  // 记总时长 - 跳过锁按 50% 算
   updateRestDisplay();
-  document.getElementById('restOverlay').classList.add('active');
-  
+
+  // Phase 3.2: 主体切到 rest-mode (不再 overlay 全屏)
+  // Phase 3.3: 同时清 prep-mode (保险)
+  const wo = document.getElementById('workoutOverlay');
+  wo.classList.remove('prep-mode');
+  workoutState.inPrep = false;
+  wo.classList.add('rest-mode');
+  // 更新 header 分段进度
+  _renderWorkoutSegments();
+
   // 显示下一组信息
   const ex = workoutState.exercises[workoutState.currentIdx];
   document.getElementById('restNextName').textContent = ex.name;
   document.getElementById('restNextSpec').textContent = `第 ${workoutState.currentSet + 1} 组`;
-  
+
   if (workoutState.restTimer) clearInterval(workoutState.restTimer);
   workoutState.restTimer = setInterval(() => {
     workoutState.restSecondsLeft--;
@@ -17008,25 +18350,35 @@ function updateRestDisplay() {
   const secs = Math.max(0, workoutState.restSecondsLeft);
   const total = workoutState.restTotalSecs || secs;
   const cd = document.getElementById('restCountdown');
-  cd.textContent = String(secs).padStart(2, '0');
-  if (secs <= 10) cd.classList.add('urgent');
-  else cd.classList.remove('urgent');
-
-  // 跳过按钮 - 总时长 50% 锁: 前一半灰着, 后一半亮起
-  const skipBtn = document.getElementById('restSkipBtn');
-  if (skipBtn) {
-    const unlockAt = Math.ceil(total / 2);  // 剩余 ≤ 总时长一半 -> 解锁
-    if (secs > unlockAt) {
-      const waitFor = secs - unlockAt;
-      skipBtn.textContent = `跳过 ${waitFor}s`;
-      skipBtn.classList.add('locked');
-      skipBtn.disabled = true;
-    } else {
-      skipBtn.textContent = '跳过';
-      skipBtn.classList.remove('locked');
-      skipBtn.disabled = false;
-    }
+  if (cd) {
+    cd.textContent = String(secs).padStart(2, '0');
+    if (secs <= 10) cd.classList.add('urgent');
+    else cd.classList.remove('urgent');
   }
+
+  // Phase 3.2: 跳过锁挪到底栏 CTA - 总时长 50% 锁
+  // 锁定态: "休息中 · 还需 Xs" disabled
+  // 解锁态: "开始下一组 →"
+  const mainBtn = document.getElementById('workoutMainBtn');
+  const skipBtn = document.getElementById('workoutSkipBtn');
+  if (!mainBtn || !skipBtn) return;
+  // 仅在 rest-mode 改写 CTA
+  if (!document.getElementById('workoutOverlay').classList.contains('rest-mode')) return;
+
+  const unlockAt = Math.ceil(total / 2);
+  if (secs > unlockAt) {
+    const waitFor = secs - unlockAt;
+    mainBtn.textContent = `休息中 · 还需 ${waitFor}s`;
+    mainBtn.disabled = true;
+    mainBtn.classList.add('locked');
+  } else {
+    mainBtn.textContent = '开始下一组 →';
+    mainBtn.disabled = false;
+    mainBtn.classList.remove('locked');
+  }
+  // 副按钮: +30s
+  skipBtn.textContent = '+30s';
+  skipBtn.disabled = false;
 }
 
 function endRest() {
@@ -17034,9 +18386,16 @@ function endRest() {
     clearInterval(workoutState.restTimer);
     workoutState.restTimer = null;
   }
-  document.getElementById('restOverlay').classList.remove('active');
-  
-  // 自动推进 (如果设置打开)
+  // Phase 3.2: 退出 rest-mode
+  document.getElementById('workoutOverlay').classList.remove('rest-mode');
+
+  // 清掉 rest 期间的 CTA 文案 (renderWorkoutPage 会重新设置)
+  const mainBtn = document.getElementById('workoutMainBtn');
+  if (mainBtn) {
+    mainBtn.classList.remove('locked');
+    mainBtn.disabled = false;
+  }
+
   if (state.preferences.autoAdvanceRest !== false) {
     renderWorkoutPage();
     if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
@@ -17147,8 +18506,12 @@ function jumpToExercise(idx) {
   const firstUndone = setsDoneArr.findIndex(s => !s);
   workoutState.currentSet = firstUndone >= 0 ? firstUndone : 0;
   workoutState.detailsExpanded = false;
+  // Phase 3.1: 步进器值重新初始化
+  workoutState.stepperWeight = null;
+  workoutState.stepperReps = null;
   closeModal();
-  renderWorkoutPage();
+  // Phase 3.3: 新动作是 main 且 currentSet=0 走 prep
+  if (!enterPrep()) renderWorkoutPage();
 }
 
 function openThemeModal() {
@@ -19330,6 +20693,96 @@ function _devJumpToEnd() {
   _devAdvanceDays(state.config.stageWeeks * 7);
 }
 
+// --- Tool 6: 预览 finish overlay (用 mock 数据直接弹出, 便于测试视觉) ---
+function _devPreviewFinish() {
+  // 构造一个 mock workoutState (模拟刚训完背肌)
+  const mockExercises = [
+    { key: 'mock-1', name: '坐姿划船', category: 'main', sets: 3, reps: 10 },
+    { key: 'mock-2', name: '高位下拉', category: 'main', sets: 3, reps: 10 },
+    { key: 'mock-3', name: '俯身划船', category: 'main', sets: 3, reps: 12 },
+    { key: 'mock-4', name: '面拉',     category: 'main', sets: 3, reps: 15 },
+  ];
+  const mockWs = {
+    exercises: mockExercises,
+    setsDone: [
+      [true,true,true],
+      [true,true,true],
+      [true,true,true],
+      [true,true,true],
+    ],
+  };
+  const mockRec = {
+    nodeId: 'rest_day',  // 任意 nodeId, 我们覆盖 nodeName
+    activeMs: 41 * 60 * 1000,
+    duration: 41,
+  };
+  const today = todayStr();
+  const yesterday = addDays(today, -5);  // 5 天前的历史
+
+  // 注入 mock 训练日志: 今天 + 5 天前
+  const origLog = state.exerciseLog;
+  state.exerciseLog = {
+    'mock-1': [
+      { date: yesterday, sets: [
+        { weight: 22, reps: 10 }, { weight: 22, reps: 10 }, { weight: 22, reps: 10 }
+      ]},  // 历史 22kg
+      { date: today, sets: [
+        { weight: 25, reps: 10 }, { weight: 25, reps: 10 }, { weight: 25, reps: 10 }
+      ]},  // 今天 25kg → PR
+    ],
+    'mock-2': [{ date: today, sets: [
+      { weight: 30, reps: 10 }, { weight: 30, reps: 10 }, { weight: 30, reps: 10 }
+    ]}],
+    'mock-3': [{ date: today, sets: [
+      { weight: 20, reps: 12 }, { weight: 20, reps: 12 }, { weight: 20, reps: 12 }
+    ]}],
+    'mock-4': [{ date: today, sets: [
+      { weight: 12, reps: 15 }, { weight: 12, reps: 15 }, { weight: 12, reps: 15 }
+    ]}],
+  };
+
+  // 临时 patch NODES 让 nodeName 显示 "背肌训练"
+  const origNode = NODES[mockRec.nodeId];
+  NODES[mockRec.nodeId] = { name: '背肌训练', iconId: 'icon-back' };
+
+  _renderFinishOverlay(mockRec, { recDate: today, ws: mockWs });
+
+  // 关闭时恢复
+  setTimeout(() => {
+    const oldClose = window.closeFinishOverlay;
+    window.closeFinishOverlay = function() {
+      state.exerciseLog = origLog;
+      if (origNode) NODES[mockRec.nodeId] = origNode;
+      else delete NODES[mockRec.nodeId];
+      window.closeFinishOverlay = oldClose;
+      oldClose();
+    };
+  }, 100);
+}
+
+// --- Tool 7: 强制开始指定力量训练日 (绕过 SEQUENCE 日期决定) ---
+// nodeId: 1=胸 / 3=背 / 5=腿臀 / 6=肩臂
+function _devStartStrength(nodeId) {
+  const today = todayStr();
+  // 写入 record 让 getPlannedNodeForDay 取到指定 nodeId
+  // (它的逻辑是: 优先用 record.nodeId, 否则按日期算)
+  if (!state.records[today]) state.records[today] = {};
+  state.records[today].nodeId = nodeId;
+  // 清掉可能存在的进度 (避免恢复到上次中断的状态)
+  delete state.records[today].inProgress;
+  delete state.records[today].exerciseProgress;
+  delete state.records[today].completed;
+  delete state.records[today].startTime;
+  saveState();
+
+  // 用伪 dayNum (从 startDate 算) - enterWorkoutPage 会显示在 header
+  const absDay = state.config.startDate
+    ? daysBetween(state.config.startDate, today) + 1
+    : 1;
+
+  enterWorkoutPage(absDay);
+}
+
 // 工具栏 UI
 (function _injectDevToolbar() {
   // 容器 - 折叠状态只显示一个小按钮
@@ -19418,6 +20871,18 @@ function _devJumpToEnd() {
   panel.appendChild(makeTool('MOCK 14D TRAIN',   () => _devMockTraining(14, 0.15)));
   panel.appendChild(makeTool('MOCK 21D TRAIN',   () => _devMockTraining(21, 0.18)));
   panel.appendChild(makeTool('MOCK WEIGHTS',     _devMockWeights, '#c8f135'));
+  panel.appendChild(makeTool('PREVIEW FINISH',   _devPreviewFinish, '#c8f135'));
+
+  // 分隔: 力量训练快捷入口
+  const sepStrength = document.createElement('div');
+  sepStrength.style.cssText = 'height:1px;background:rgba(255,255,255,0.08);margin:3px 0;';
+  panel.appendChild(sepStrength);
+
+  // 力量训练快捷入口 (绕过 SEQUENCE, 直接进指定日)
+  panel.appendChild(makeTool('▶ PUSH (胸)',     () => _devStartStrength(1), '#7dd3fc'));
+  panel.appendChild(makeTool('▶ PULL (背)',     () => _devStartStrength(3), '#7dd3fc'));
+  panel.appendChild(makeTool('▶ LEGS (腿臀)',   () => _devStartStrength(5), '#7dd3fc'));
+  panel.appendChild(makeTool('▶ SHOULDER (肩臂)',() => _devStartStrength(6), '#7dd3fc'));
 
   // 分隔
   const sep = document.createElement('div');
