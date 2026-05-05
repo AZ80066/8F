@@ -2658,21 +2658,22 @@ body{
 }
 
 /* future - 透明底 + 类型色边 (轻) + 类型色字 */
+/* v0.2.20.1: 亮度整体调暗一档 (用户反馈"未来 7 天看起来跟过去差不多亮") */
 .wt-ov-cell.future{
   background:rgba(255,255,255,0.025);
 }
 .wt-ov-cell.future.type-strength{
-  border:1px solid rgba(200,241,53,0.25);
+  border:1px solid rgba(200,241,53,0.15);
 }
-.wt-ov-cell.future.type-strength .wt-ov-letter{color:rgba(200,241,53,0.7);}
+.wt-ov-cell.future.type-strength .wt-ov-letter{color:rgba(200,241,53,0.4);}
 .wt-ov-cell.future.type-cardio{
-  border:1px solid rgba(96,165,250,0.3);
+  border:1px solid rgba(96,165,250,0.18);
 }
-.wt-ov-cell.future.type-cardio .wt-ov-letter{color:rgba(96,165,250,0.85);}
+.wt-ov-cell.future.type-cardio .wt-ov-letter{color:rgba(96,165,250,0.5);}
 .wt-ov-cell.future.type-rest{
-  border:1px solid rgba(167,139,250,0.3);
+  border:1px solid rgba(167,139,250,0.18);
 }
-.wt-ov-cell.future.type-rest .wt-ov-letter{color:rgba(167,139,250,0.85);}
+.wt-ov-cell.future.type-rest .wt-ov-letter{color:rgba(167,139,250,0.5);}
 
 /* done - 实心 accent + glow + 黑字 */
 .wt-ov-cell.done{
@@ -11539,6 +11540,12 @@ body{
       <div id="profileAchievementCard"></div>
     </div>
 
+    <!-- v0.2.20.1: 跨契约训练分布雷达 (身份视角 - 长程训练习惯) - 区别于训练 Tab 的当前契约视角 -->
+    <div class="profile-section" id="profileMuscleRadarSection" style="display:none;">
+      <div class="profile-section-title">训练分布</div>
+      <div id="profileMuscleRadarCard"></div>
+    </div>
+
     <!-- v0.2.19.7: 删除「训练分布」雷达 - 完全交给训练 Tab (当前契约视角已在那里) -->
 
     <!-- 训练历史 (单次训练颗粒度, 跨契约 - 跟日历 Tab 互补) -->
@@ -11584,7 +11591,7 @@ body{
     </div>
 
     <div class="profile-footer">
-      <div class="profile-footer-version">v0.2.19.12.2 · 雷达图 fallback (按 plan 估算)</div>
+      <div class="profile-footer-version">v0.2.20.1 · dogfood 8/9 修复 (体态卡/文案/全景/雷达门槛/换长锁 4 组/松解 timer/sticky 遮挡)</div>
       <div class="profile-footer-tagline">4 周契约</div>
     </div>
   </div>
@@ -14650,7 +14657,15 @@ function _adjustHeroPadding() {
       scrollEl = document.querySelector(scrollSel);
     }
     if (!scrollEl) return;
-    const h = hero.offsetHeight + 8;  // 8px 缓冲
+    // v0.2.20.1: 按 expanded 态高度算 padding (避免滚动后回顶时 hero 遮挡状态卡)
+    //   原因: hero compact <-> expanded 高度差 ~70px. 若只按当前 offsetHeight 算,
+    //         compact 态测得小值, 滚回顶时 hero 展开会盖住下方内容.
+    //   方案: 同帧 remove compact → 测 expanded → 立即恢复. transition 不触发因为同帧切换.
+    const wasCompact = hero.classList.contains('compact');
+    if (wasCompact) hero.classList.remove('compact');
+    const expandedHeight = hero.offsetHeight;
+    if (wasCompact) hero.classList.add('compact');
+    const h = expandedHeight + 8;  // 8px 缓冲
     scrollEl.style.paddingTop = h + 'px';
   });
 }
@@ -14796,7 +14811,9 @@ function getHomeFeedCards(ctx) {
     if (ctx.hasStrengthEvidence) cards.push('strengthEvidence');
     cards.push('weightTrend');
     cards.push('recent7Days');
-    if (ctx.postureCompleted) cards.push('posture');          // 体态完成态沉底
+    // v0.2.20.1: 体态卡无条件展示 (训练完成不影响体态契约存在感, Tab 各司其职)
+    //   _renderPostureCard 内部按 active/done/due/无契约 自己渲染对应状态
+    cards.push('posture');
   } else if (ctx.todayAdjustedRest) {
     // 状态: 今日主动休息 → 已经做出选择, 给恢复支持
     cards.push('todayDone');                                  // 显示主动休息状态
@@ -15788,7 +15805,7 @@ function _renderTodayCard() {
     return `
       <div class="today-card done">
         <div class="today-card-done-icon">✓</div>
-        <div class="today-card-done-text">${isLight ? '今天用低压版完成了' : '今天已经守住'}</div>
+        <div class="today-card-done-text">${isLight ? '今 天 选 了 低 压 版' : '今 天 练 完 了'}</div>
         <div class="today-card-done-sub">训练 ${dur} 分钟 · 明天接上</div>
       </div>
     `;
@@ -16601,7 +16618,6 @@ function _renderRecentLogCard() {
   return `
     <div class="recent-log-card">
       <div class="rl-card-title">14  天  全  景</div>
-      <div class="rl-section-title">过  去  7  天</div>
       <div class="rl-grid past">${pastCellsHtml}</div>
       ${futureSection}
       ${tmrSection}
@@ -19024,12 +19040,17 @@ function adjustExercises(exercises, answers) {
       return e;
     });
   } else if (answers.energy === 'full') {
-    result = result.map(e => {
-      if (e.category === 'main' && (e.role === 'primary' || e.role === 'secondary')) {
-        return { ...e, sets: Math.min(4, (e.sets || 1) + 1) };
-      }
-      return e;
-    });
+    // v0.2.20.1: 仅在 ≥45 分钟时长预算时, full 能量才加组
+    //   原因: 用户选 30 分钟 = 期望节奏紧凑, full + 短时间不该叠加组数变 4 组
+    //   保留产品意图: 长时间 + full 能量仍可挑战更多组数
+    if (targetMin >= 45) {
+      result = result.map(e => {
+        if (e.category === 'main' && (e.role === 'primary' || e.role === 'secondary')) {
+          return { ...e, sets: Math.min(4, (e.sets || 1) + 1) };
+        }
+        return e;
+      });
+    }
   }
 
   // 3. 时间预算驱动 - 这是核心
@@ -19125,8 +19146,9 @@ function _inferDisplayType(ex) {
     }
     return 'duration';
   }
-  // time: 含"秒/sec/s/min"且非 reps 类 (松解/静态拉伸/平板等)
-  if (/秒|sec|\bs\b|min/i.test(spec) && !/次|reps?/i.test(spec)) return 'time';
+  // time: 含"秒/sec/30s/min"且非 reps 类 (松解/静态拉伸/平板等)
+  // v0.2.20.1: \bs\b 不匹配 "30s" (因 0/s 都是 word char, 没 boundary), 改为 \d+\s*s\b
+  if (/秒|sec|\d+\s*s\b|min/i.test(spec) && !/次|reps?/i.test(spec)) return 'time';
   // 默认: 组×次
   return 'reps';
 }
@@ -22300,6 +22322,9 @@ function _renderWorkoutRadar() {
     if (rec.completed) completedCount++;
   }
 
+  // v0.2.20.1: 10 次完成训练前不显示雷达 (前期数据稀疏雷达图意义不大, dogfood 反馈)
+  if (completedCount < 10) return '';
+
   const radarSvg = _renderMuscleRadar(dist, { size: 220 });
 
   // v0.2.19.12: 找最强 / 最弱部位
@@ -23994,8 +24019,10 @@ function _triggerPostureD28Review() {
 function renderProfileSummary() {
   // v0.2.19.7: 删除 renderProfileActiveCard / renderProfileMuscle 调用
   //   当前契约视图 + 雷达图都交给训练 Tab (Tab 各司其职)
+  // v0.2.20.1: 跨契约训练分布雷达加回 (身份视角 - 长程训练习惯, 区别于训练 Tab 的当前契约视角)
   renderProfileWeight();
   renderProfileAchievement();
+  renderProfileMuscleRadar();
   renderProfileTraining();
   renderProfileHistory();
   renderProfileFeedback();
@@ -24463,7 +24490,6 @@ function renderProfileAchievement() {
   const allRecords = _collectAllTrainingRecords();
   const completed = allRecords.filter(r => r.completed);
   const totalSessions = completed.length;
-
   // 跨契约累计 - PR 总数
   let totalPRs = 0;
   completed.forEach(rec => {
@@ -24500,6 +24526,71 @@ function renderProfileAchievement() {
         <div class="pa-stat-label">完 成 契 约</div>
         <div class="pa-stat-unit">份</div>
       </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════
+//   v0.2.20.1: 「我的」 tab - 跨契约训练分布雷达 (身份视角)
+//   - 区别于训练 Tab 的当前契约视角
+//   - 数据源: 全部历史 exerciseLog (startDate=1970 包含所有 entry)
+//   - 解锁门槛: 真实录入 sets ≥10 (前期数据少不显示, dogfood 反馈一致门槛)
+//   - 不走 fallback: 跨契约视角更看重真实录入精度, 不用 plan 估算
+// ═══════════════════════════════════════════
+function renderProfileMuscleRadar() {
+  const section = document.getElementById('profileMuscleRadarSection');
+  const container = document.getElementById('profileMuscleRadarCard');
+  if (!section || !container) return;
+  if (typeof _computeMuscleDistribution !== 'function' || typeof _renderMuscleRadar !== 'function') {
+    section.style.display = 'none';
+    return;
+  }
+
+  const dist = _computeMuscleDistribution({ startDate: '1970-01-01', endDate: todayStr() });
+  // 真实 sets <10 不显示 (跟训练 Tab 10 次完成日的门槛维度不同, 但都是 dogfood 一致解锁逻辑)
+  if (!dist || !dist.hasData || dist.totalSets < 10) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = '';
+
+  const radarSvg = _renderMuscleRadar(dist, { size: 220 });
+
+  const sorted = MUSCLE_REGIONS
+    .map(r => ({ region: r, value: dist.values[r] || 0 }))
+    .sort((a, b) => b.value - a.value);
+  const strongest = sorted[0];
+  const weakest = sorted[sorted.length - 1];
+
+  // 计算跨契约力量训练总次数 (records.completed=true 的 strength 日)
+  const allRecords = _collectAllTrainingRecords();
+  let strengthCount = 0;
+  allRecords.forEach(r => {
+    if (!r.completed || !r.nodeId) return;
+    if (typeof _nodeIdToType === 'function' && _nodeIdToType(r.nodeId) === 'strength') {
+      strengthCount++;
+    } else if (typeof r.nodeId === 'number') {
+      // 兜底: nodeId 是数字 = 力量节点
+      strengthCount++;
+    }
+  });
+
+  container.innerHTML = `
+    <div class="wt-radar">
+      <div class="wt-radar-svg">${radarSvg}</div>
+      <div class="wt-radar-summary">
+        <div class="wt-radar-sum-item">
+          <div class="wt-radar-sum-label">最 强</div>
+          <div class="wt-radar-sum-value strong">${strongest.region}</div>
+        </div>
+        <div class="wt-radar-sum-divider"></div>
+        <div class="wt-radar-sum-item">
+          <div class="wt-radar-sum-label">最 弱</div>
+          <div class="wt-radar-sum-value weak">${weakest.region}</div>
+        </div>
+      </div>
+      <div class="wt-radar-meta">基于跨契约累计 ${strengthCount} 次力量训练 · ${dist.totalSets} 组真实记录</div>
     </div>
   `;
 }
