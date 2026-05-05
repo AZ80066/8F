@@ -59,6 +59,9 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
 html,body{overscroll-behavior-y:contain;}
+/* v0.2.18.15: 全局滚动条隐藏 (修"白色拉杆条"问题, 所有滚动容器统一无形滚动) */
+*{scrollbar-width:none;-ms-overflow-style:none;}
+*::-webkit-scrollbar{display:none;width:0;height:0;}
 
 body{
   background:var(--bg);
@@ -291,6 +294,9 @@ body{
 /* 滚动后压缩态: 只保留小号 BODYTRACK */
 .home-hero.compact{
   padding:10px 20px 10px;
+  /* v0.2.19.12.1: shadow blur 16 → 6 (降低滚动重绘成本); border 加深维持 sticky 视觉 */
+  border-bottom-color:rgba(255,255,255,0.10);
+  box-shadow:0 2px 6px rgba(0,0,0,0.4);
 }
 .home-hero.compact .hh-eyebrow{
   max-height:0;
@@ -310,11 +316,14 @@ body{
 .home-feed{
   position:absolute;
   inset:0;
-  padding-top:116px;  /* v0.2.14.1: hero 展开态 (1 行 meta) 实测 ~113px, 留 3px 缓冲 */
+  padding-top:128px;
   padding-bottom:30px;
   overflow-y:auto;
   overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
+  /* v0.2.19.12.1: GPU layer 提升, 减少滚动卡顿 */
+  transform:translateZ(0);
+  backface-visibility:hidden;
 }
 .home-feed::-webkit-scrollbar{display:none;}
 
@@ -986,6 +995,12 @@ body{
   background:rgba(74,222,128,0.04);
   border-color:rgba(74,222,128,0.30);
 }
+/* v0.2.19.12: emoji (跟日历 cal-cell-readi-emoji 对齐) */
+.rc-opt-emoji{
+  font-size:22px;
+  line-height:1;
+  margin-bottom:8px;
+}
 .rc-opt-label{
   font-size:14px;
   font-weight:700;
@@ -1492,98 +1507,81 @@ body{
 
 .recent-log-card{
   margin:14px 16px 0;
-  padding:14px 16px 14px;
+  padding:18px 16px 16px;
   background:var(--surface);
   border:1px solid var(--border);
   border-radius:14px;
-  cursor:pointer;
-  transition:transform 0.1s;
+  /* v0.2.19.10: 删除整卡 onclick - 不再需要 cursor / 缩放 */
 }
-.recent-log-card:active{transform:scale(0.997);}
-.rl-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:baseline;
-  margin-bottom:10px;
-}
-.rl-title{
-  font-size:12px;
-  letter-spacing:1px;
-  color:var(--muted);
+/* v0.2.19.10: 卡顶大标题 (替代原 head 行) */
+.rl-card-title{
+  font-size:13px;
+  letter-spacing:3px;
+  color:var(--text);
   text-transform:uppercase;
   font-weight:600;
+  text-align:left;
+  margin-bottom:14px;
 }
-.rl-arrow{
-  font-size:11px;
-  color:var(--muted);
-}
-.rl-cells{
-  display:grid;
-  grid-template-columns:repeat(7, 1fr);
-  gap:5px;
-  /* v0.2.14.1: 大分辨率下限制整体宽度避免 cell 巨化 */
-  max-width:420px;
-  margin-left:auto;
-  margin-right:auto;
-}
-.rl-cell{
-  aspect-ratio:1;
-  border-radius:50%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-  background:var(--card);
-  /* v0.2.14.1: 单 cell 最大尺寸 */
-  max-width:60px;
-  max-height:60px;
-  margin:0 auto;
-  width:100%;
-}
-.rl-cell-day{
-  font-size:11px;
+.rl-section-title{
+  font-size:10px;
+  letter-spacing:2.5px;
   color:var(--muted2);
   font-weight:500;
-  line-height:1;
+  margin:14px 0 8px;
+  text-align:left;
 }
-.rl-cell-label{
-  font-size:9px;
-  margin-top:2px;
+.rl-section-title:first-of-type{margin-top:0;}
+
+/* v0.2.19.10: 14 天全景网格 - 方块字母 (跟训练 Tab 28 天全景统一) */
+.rl-grid{
+  display:grid;
+  grid-template-columns:repeat(7, 1fr);
+  gap:6px;
+  padding:2px 0;
+  /* mobile 紧凑: cell 自动分配宽度 */
+  max-width:340px;
+  margin:0 auto;
+}
+
+/* cell 直接复用 .wt-ov-cell + .wt-ov-letter, 无需重复定义 */
+
+/* v0.2.19.10: 可点击 cell 视觉反馈 */
+.wt-ov-cell.clickable{
+  cursor:pointer;
+}
+.wt-ov-cell.clickable:active{
+  transform:scale(0.94);
+}
+
+/* v0.2.19.9: 明日预告信息条 (浓缩自原 tomorrow-card) */
+.rl-tmr-bar{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:0 8px;
+  font-size:11px;
+  letter-spacing:1px;
+}
+.rl-tmr-label{
+  color:var(--accent);
   font-weight:600;
+  letter-spacing:2px;
 }
-.rl-cell.main{
-  background:rgba(74,222,128,0.18);
-  border:1px solid rgba(74,222,128,0.4);
+.rl-tmr-divider{
+  color:var(--muted2);
+  opacity:0.5;
 }
-.rl-cell.main .rl-cell-day{color:var(--accent);}
-.rl-cell.main .rl-cell-label{color:var(--accent);}
-.rl-cell.cardio{
-  background:rgba(96,165,250,0.15);
-  border:1px solid rgba(96,165,250,0.3);
+.rl-tmr-name{
+  color:var(--text);
+  font-weight:500;
 }
-.rl-cell.cardio .rl-cell-day{color:#60a5fa;}
-.rl-cell.cardio .rl-cell-label{color:#60a5fa;}
-.rl-cell.rest{
-  background:rgba(167,139,250,0.12);
-  border:1px solid rgba(167,139,250,0.30);
-}
-.rl-cell.rest .rl-cell-day{color:#a78bfa;}
-.rl-cell.rest .rl-cell-label{color:#a78bfa;}
-.rl-cell.missed{
-  background:rgba(255,140,90,0.08);
-  border:1px solid rgba(255,140,90,0.25);
-}
-.rl-cell.missed .rl-cell-day{color:#ff8c5a;}
-.rl-cell.missed .rl-cell-label{color:#ff8c5a;}
-.rl-cell.today{
-  background:transparent;
-  border:1.5px solid var(--accent);
-}
-.rl-cell.today .rl-cell-day{color:var(--accent);font-weight:700;}
-.rl-cell.today .rl-cell-label{color:var(--accent);}
-.rl-cell.outside{
-  opacity:0.3;
+.rl-tmr-dur{
+  color:var(--muted);
 }
 
 /* === 减重目标卡 (主卡, Liftoff 风格) === */
@@ -2173,41 +2171,23 @@ body{
 #panel-workout{
   position:relative;
   height:calc(100vh - 100px);
+  height:calc(100dvh - 100px);  /* v0.2.19.3: dvh fallback (修 mobile URL bar 遮挡) */
   min-height:calc(100vh - 100px);
   overflow:hidden;
 }
 #panel-workout.active{display:block;}
-.workout-tab-container{
-  position:absolute;
-  inset:0;
-}
-.workout-tab-topbar{
-  position:absolute;
-  top:0;left:0;right:0;
-  z-index:30;
-  background:rgba(10,10,10,0.85);
-  backdrop-filter:blur(16px) saturate(180%);
-  -webkit-backdrop-filter:blur(16px) saturate(180%);
-  padding:14px 20px;
-  border-bottom:1px solid rgba(255,255,255,0.06);
-}
-.wt-title{
-  font-size:15px;
-  font-weight:700;
-  color:var(--text);
-  letter-spacing:0.5px;
-}
-.wt-sub{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:2px;
-}
+/* v0.2.19.3: workout-tab-container 已删除 (hero 抬到 panel 直接子级 sticky) */
 .workout-tab-scroll{
   position:absolute;
   inset:0;
-  padding:62px 16px 30px;
+  padding:128px 16px 30px;
   overflow-y:auto;
+  overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  /* v0.2.19.12.1: GPU layer */
+  transform:translateZ(0);
+  backface-visibility:hidden;
 }
 .workout-tab-scroll::-webkit-scrollbar{display:none;}
 
@@ -2232,7 +2212,7 @@ body{
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;
 }
-.rr-icon-wrap.rr-strength{background:rgba(74,222,128,0.13);}
+.rr-icon-wrap.rr-strength{background:rgba(200,241,53,0.13);}
 .rr-icon-wrap.rr-cardio{background:rgba(96,165,250,0.13);}
 .rr-icon-wrap.rr-rest{background:rgba(167,139,250,0.13);}
 .rr-icon-letter{
@@ -2274,7 +2254,7 @@ body{
   background:var(--card);
   color:var(--muted);
 }
-.routine-tag.strength{background:rgba(74,222,128,0.13);color:var(--accent);}
+.routine-tag.strength{background:rgba(200,241,53,0.13);color:var(--accent);}
 .routine-tag.cardio{background:rgba(96,165,250,0.13);color:#60a5fa;}
 .routine-tag.rest{background:rgba(167,139,250,0.13);color:#a78bfa;}
 
@@ -2537,12 +2517,448 @@ body{
    训练 Tab 摘要卡 (v0.2.13) - 心智修正
    只回答: 目标 / 结构 / 当前位置 → 完整方案在 Sheet
    ═══════════════════════════════════════════ */
-.wt-plan-summary{
-  margin:14px 16px 18px;
-  padding:18px 20px 14px;
-  background:linear-gradient(180deg, rgba(74,222,128,0.05) 0%, var(--surface) 100%);
-  border:1px solid rgba(74,222,128,0.18);
+/* ════════════════════════════════════════════
+   v0.2.19.1: 训练 Tab 视觉重塑 (主色对齐 + Hero + Today + Overview + 完成态)
+   哲学 #24: Hero 给情绪与品牌, 列表给数据, 按钮给行动
+   ════════════════════════════════════════════ */
+
+/* v0.2.19.11 dead: .wt-hero / .wt-hh-* 全部被统一 .home-hero 替代 */
+
+/* === 今日训练 Hero 卡 === */
+.wt-today{
+  margin:0 16px 22px;
+  padding:18px 20px;
+  background:var(--surface);
+  border:1px solid var(--accent);
   border-radius:14px;
+  box-shadow:0 0 24px rgba(200,241,53,0.12);
+}
+.wt-today.done{
+  border-color:var(--border);
+  box-shadow:none;
+  opacity:0.75;
+}
+.wt-today-tag{
+  font-size:10px;
+  letter-spacing:5px;
+  color:var(--accent);
+  font-weight:600;
+  margin-bottom:14px;
+  font-family:'Bebas Neue', sans-serif;
+}
+.wt-today.done .wt-today-tag{color:var(--muted);}
+.wt-today-main{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:16px;
+}
+.wt-today-letter{
+  width:52px;height:52px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:600;
+  flex-shrink:0;
+  letter-spacing:1px;
+}
+.wt-today-letter.wtl-strength{
+  background:rgba(200,241,53,0.16);
+  color:var(--accent);
+}
+.wt-today-letter.wtl-cardio{
+  background:rgba(96,165,250,0.13);
+  color:#60a5fa;
+}
+.wt-today-letter.wtl-rest{
+  background:rgba(167,139,250,0.13);
+  color:#a78bfa;
+}
+.wt-today-info{flex:1;min-width:0;text-align:left;}
+.wt-today-name{
+  font-size:18px;
+  font-weight:700;
+  color:var(--text);
+  letter-spacing:0.3px;
+  margin-bottom:3px;
+}
+.wt-today-tag-line{
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:0.3px;
+}
+.wth-today-cta{
+  width:100%;
+  background:var(--accent);
+  color:#0a1a14;
+  border:none;
+  padding:14px;
+  border-radius:12px;
+  cursor:pointer;
+  font-family:inherit;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  transition:transform 0.15s, box-shadow 0.2s;
+}
+.wth-today-cta:active{transform:scale(0.99);}
+.wth-today-cta.done{
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--muted);
+  cursor:default;
+}
+.wthtc-text{
+  font-size:14px;
+  letter-spacing:6px;
+  font-weight:600;
+}
+.wthtc-meta{
+  font-size:11px;
+  letter-spacing:0.5px;
+  color:rgba(10,26,20,0.7);
+  font-weight:500;
+}
+
+/* === Section 标题 (本期 / 全景 共用) === */
+.wt-section-title{
+  font-size:11px;
+  letter-spacing:5px;
+  color:var(--muted);
+  font-weight:500;
+  margin:0 16px 12px;
+  padding:0 4px;
+}
+
+/* === 4 周全景网格 (方块 + 字母, 9 态视觉) === */
+.wt-overview-grid{
+  display:grid;
+  grid-template-columns:repeat(7, 1fr);
+  gap:6px;
+  margin:0 16px 24px;
+  padding:4px 0;
+}
+.wt-ov-cell{
+  aspect-ratio:1;
+  border-radius:6px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform 0.2s, box-shadow 0.2s;
+  position:relative;
+}
+.wt-ov-letter{
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:0;
+  line-height:1;
+}
+
+/* future - 透明底 + 类型色边 (轻) + 类型色字 */
+.wt-ov-cell.future{
+  background:rgba(255,255,255,0.025);
+}
+.wt-ov-cell.future.type-strength{
+  border:1px solid rgba(200,241,53,0.25);
+}
+.wt-ov-cell.future.type-strength .wt-ov-letter{color:rgba(200,241,53,0.7);}
+.wt-ov-cell.future.type-cardio{
+  border:1px solid rgba(96,165,250,0.3);
+}
+.wt-ov-cell.future.type-cardio .wt-ov-letter{color:rgba(96,165,250,0.85);}
+.wt-ov-cell.future.type-rest{
+  border:1px solid rgba(167,139,250,0.3);
+}
+.wt-ov-cell.future.type-rest .wt-ov-letter{color:rgba(167,139,250,0.85);}
+
+/* done - 实心 accent + glow + 黑字 */
+.wt-ov-cell.done{
+  background:var(--accent);
+  border:1px solid var(--accent);
+  box-shadow:0 0 12px rgba(200,241,53,0.35), inset 0 0 6px rgba(255,255,255,0.15);
+}
+.wt-ov-cell.done .wt-ov-letter{
+  color:#0a1a14;
+  font-weight:700;
+}
+
+/* missed - 灰底 + muted 字 */
+.wt-ov-cell.missed{
+  background:rgba(85,85,85,0.3);
+  border:1px solid rgba(85,85,85,0.5);
+}
+.wt-ov-cell.missed .wt-ov-letter{
+  color:var(--muted2);
+}
+
+/* today - accent 实边 + 黄绿底 + 黑字 + 脉动 */
+.wt-ov-cell.today{
+  background:rgba(200,241,53,0.18);
+  border:1.5px solid var(--accent);
+  z-index:1;
+  animation:wtOvTodayPulse 1.8s ease-in-out infinite;
+}
+.wt-ov-cell.today .wt-ov-letter{
+  color:var(--accent);
+  font-weight:700;
+}
+/* today + done 叠加 (已完成的今天) */
+.wt-ov-cell.today.done{
+  background:var(--accent);
+  border:1.5px solid var(--accent);
+  animation:wtOvTodayDonePulse 1.8s ease-in-out infinite;
+}
+.wt-ov-cell.today.done .wt-ov-letter{
+  color:#0a1a14;
+}
+@keyframes wtOvTodayPulse {
+  0%, 100% { box-shadow:0 0 0 0 rgba(200,241,53,0.5); }
+  50% { box-shadow:0 0 0 4px rgba(200,241,53,0); }
+}
+@keyframes wtOvTodayDonePulse {
+  0%, 100% { box-shadow:0 0 12px rgba(200,241,53,0.4), 0 0 0 0 rgba(200,241,53,0.5); }
+  50% { box-shadow:0 0 12px rgba(200,241,53,0.4), 0 0 0 6px rgba(200,241,53,0); }
+}
+
+/* (v0.2.19.3 后 dead: rr-progress / rrp-sep / rrp-unit / rr-progress.all-done — progress 已合并到 3 环 fulfillment 视图) */
+
+/* === 契约履约 - 3 环并排 (v0.2.19.4: Whoop 真实风格 - 3 个独立环) === */
+.wt-fulfill{
+  margin:0 16px 28px;
+  padding:24px 16px 22px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+}
+/* v0.2.19.11.2: ambient hero 模式 (加渐变 + 微光 + 视觉张力) */
+.wt-fulfill.hero{
+  position:relative;
+  padding:28px 18px 22px;
+  background:#0c0e0d;
+  background-image:
+    radial-gradient(ellipse 70% 80% at 100% 0%, rgba(200,241,53,0.10) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 60% at 0% 100%, rgba(200,241,53,0.05) 0%, transparent 50%),
+    linear-gradient(180deg, #0d100e 0%, #0a0a0a 100%);
+  border:1px solid rgba(200,241,53,0.18);
+  box-shadow:0 0 32px rgba(200,241,53,0.04), inset 0 1px 0 rgba(255,255,255,0.04);
+  overflow:hidden;
+}
+/* hero 卡顶部微光高亮线 */
+.wt-fulfill.hero::before{
+  content:'';
+  position:absolute;
+  top:0;left:10%;right:10%;
+  height:1px;
+  background:linear-gradient(90deg, transparent 0%, rgba(200,241,53,0.5) 50%, transparent 100%);
+  pointer-events:none;
+}
+
+/* v0.2.19.12: caption 改为"目标"声明 (履约关注的是契约目标, 非时间进度) */
+.wtfh-caption{
+  text-align:center;
+  margin-bottom:24px;
+  font-size:12px;
+  letter-spacing:2px;
+  font-weight:600;
+  display:flex;
+  align-items:baseline;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:0 8px;
+}
+.wtfhc-label{
+  color:rgba(255,255,255,0.45);
+  font-size:11px;
+  letter-spacing:3px;
+  font-weight:500;
+}
+.wtfhc-goal{
+  color:var(--accent);
+  font-family:'Bebas Neue', sans-serif;
+  font-size:18px;
+  letter-spacing:1.5px;
+}
+.wtfhc-divider{
+  color:rgba(255,255,255,0.2);
+  font-weight:400;
+}
+.wt-fulfill-rings{
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-start;
+  gap:8px;
+}
+.wtf-ring-block{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+  flex:1;
+  min-width:0;
+}
+.wtf-ring-wrap{
+  position:relative;
+  width:96px;
+  height:96px;
+}
+.wtf-svg{
+  display:block;
+  width:96px;
+  height:96px;
+  overflow:visible;
+}
+.wtf-ring-bg{
+  fill:none;
+  stroke:rgba(255,255,255,0.06);
+  stroke-width:9;
+}
+.wtf-ring{
+  fill:none;
+  stroke-width:9;
+  stroke-linecap:round;
+  /* 入场动画通过 JS 在 _animateFulfillRings 中触发 transition 写入 */
+}
+.wtf-strength{
+  stroke:var(--accent);
+  filter:drop-shadow(0 0 6px rgba(200,241,53,0.55));
+}
+.wtf-cardio{
+  stroke:#60a5fa;
+  filter:drop-shadow(0 0 6px rgba(96,165,250,0.55));
+}
+.wtf-rest{
+  stroke:#a78bfa;
+  filter:drop-shadow(0 0 6px rgba(167,139,250,0.5));
+}
+.wtf-ring-center{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  line-height:1;
+}
+.wtf-rc-num{
+  font-family:'Bebas Neue', sans-serif;
+  font-size:30px;  /* v0.2.19.11.3: 26 → 30 (3 环 hero 化, 中心数字突出) */
+  letter-spacing:0;
+  color:var(--text);
+  line-height:1;
+  font-weight:500;
+}
+.wtf-rc-total{
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:0.5px;
+  margin-top:4px;
+  font-family:'Bebas Neue', sans-serif;
+}
+.wtf-ring-label{
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:3px;
+  font-weight:500;
+}
+/* 各环 label 上的色点 - 用 ::before 避免额外 DOM */
+.wtf-ring-block.strength .wtf-ring-label{color:var(--accent);}
+.wtf-ring-block.cardio   .wtf-ring-label{color:#60a5fa;}
+.wtf-ring-block.rest     .wtf-ring-label{color:#a78bfa;}
+
+/* v0.2.19.6: 3 环卡底部"查看完整方案"link */
+.wt-fulfill-link{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  width:100%;
+  margin-top:22px;
+  padding:14px 0 6px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  background:transparent;
+  border-left:none;border-right:none;border-bottom:none;
+  font-size:12.5px;
+  color:var(--accent);
+  font-weight:600;
+  letter-spacing:0.4px;
+  cursor:pointer;
+  font-family:inherit;
+}
+.wt-fulfill-link svg{width:13px;height:13px;margin-top:1px;}
+.wt-fulfill-link:active{opacity:0.65;}
+/* v0.2.19.11.2: ambient hero 卡内的 link, 边框透明度调整 */
+.wt-fulfill.hero .wt-fulfill-link{
+  border-top-color:rgba(200,241,53,0.10);
+}
+
+/* === 体重趋势卡 (v0.2.19.6: 复用「我的」Tab 的 .profile-weight-card 样式) === */
+.wt-weight-wrap{
+  margin:0 16px 28px !important;  /* 覆盖 .profile-weight-card 的默认 margin */
+}
+
+/* === 训练分布雷达图卡 (v0.2.19.5) === */
+.wt-radar{
+  margin:0 16px 28px;
+  padding:18px 16px 16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+.wt-radar-svg{
+  width:220px;
+  height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+/* v0.2.19.12: 雷达图最强/最弱 (跟「我的」Tab muscle-summary 视觉对齐) */
+.wt-radar-summary{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:24px;
+  width:100%;
+  padding:14px 0 6px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  margin-top:6px;
+}
+.wt-radar-sum-item{
+  text-align:center;
+  flex:1;
+  max-width:120px;
+}
+.wt-radar-sum-label{
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:2.5px;
+  margin-bottom:4px;
+  font-weight:500;
+}
+.wt-radar-sum-value{
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:1px;
+}
+.wt-radar-sum-value.strong{color:var(--accent);}
+.wt-radar-sum-value.weak{color:#ff8c5a;}
+.wt-radar-sum-divider{
+  width:1px;
+  height:32px;
+  background:rgba(255,255,255,0.08);
+}
+.wt-radar-meta{
+  font-size:11px;
+  color:var(--muted2);
+  letter-spacing:1px;
+  text-align:center;
 }
 .wt-ps-eyebrow{
   font-size:10.5px;
@@ -2620,6 +3036,7 @@ body{
 #panel-log{
   position:relative;
   height:calc(100vh - 100px);
+  height:calc(100dvh - 100px);  /* v0.2.19.11: dvh 适配 mobile */
   min-height:calc(100vh - 100px);
   overflow:hidden;
 }
@@ -2628,15 +3045,9 @@ body{
   position:absolute;
   inset:0;
 }
+/* v0.2.19.11 dead: .log-topbar 已被统一 home-hero 替代 */
 .log-topbar{
-  position:absolute;
-  top:0;left:0;right:0;
-  z-index:30;
-  background:rgba(10,10,10,0.85);
-  backdrop-filter:blur(16px) saturate(180%);
-  -webkit-backdrop-filter:blur(16px) saturate(180%);
-  padding:14px 20px;
-  border-bottom:1px solid rgba(255,255,255,0.06);
+  display:none;
 }
 .log-title{
   font-size:15px;
@@ -2662,10 +3073,13 @@ body{
 .cal-scroll{
   position:absolute;
   inset:0;
-  padding-top:62px;
+  padding-top:128px;
   padding-bottom:30px;
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
+  /* v0.2.19.12.1: GPU layer */
+  transform:translateZ(0);
+  backface-visibility:hidden;
 }
 .cal-scroll::-webkit-scrollbar{display:none;}
 
@@ -2885,20 +3299,8 @@ body{
 }
 .cal-cell.today .cal-cell-num{font-weight:800;opacity:1;}
 
-/* 契约起止外环 */
-.cal-cell.contract-start{
-  box-shadow:0 0 0 2px var(--accent);
-}
-.cal-cell.contract-end{
-  box-shadow:0 0 0 2px #fbbf24;
-}
-.cal-cell.today.contract-start{box-shadow:0 0 0 2px var(--accent);}
-.cal-cell.today.contract-end{box-shadow:0 0 0 2px #fbbf24;}
-
-.cal-cell.contract-start::after,
-.cal-cell.contract-end::after{
-  display:none;
-}
+/* v0.2.19.5: 删除 cal-cell.contract-start / contract-end 边界外环
+   日历是历史维度沉淀, 契约期视图归训练 Tab (28 天全景) */
 
 /* 选中态: 加亮边 */
 .cal-cell.selected{
@@ -4059,9 +4461,27 @@ body{
 /* ═══════════════════════════════════════════
    「我的」 tab - 重构
    ═══════════════════════════════════════════ */
-.profile-container{
-  padding:20px 16px 32px;
+/* v0.2.19.11: profile-container 改造为 absolute scroll 容器 (适配统一 sticky hero) */
+#panel-profile{
+  position:relative;
+  height:calc(100vh - 100px);
+  height:calc(100dvh - 100px);
+  min-height:calc(100vh - 100px);
+  overflow:hidden;
 }
+.profile-container{
+  position:absolute;
+  inset:0;
+  padding:128px 16px 32px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  /* v0.2.19.12.1: GPU layer */
+  transform:translateZ(0);
+  backface-visibility:hidden;
+}
+.profile-container::-webkit-scrollbar{display:none;}
 
 .profile-section{margin-bottom:24px;}
 .profile-section-title{
@@ -4310,6 +4730,78 @@ body{
   font-weight:500;
 }
 .profile-section-action:active{background:var(--card);}
+
+/* v0.2.19.7: 跨契约累计 delta 行 (仅 ≥2 份契约时显示) */
+.weight-lifetime{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+}
+.wl-text{
+  font-size:13px;
+  letter-spacing:3px;
+  font-weight:500;
+}
+.weight-lifetime.lose .wl-text{color:var(--accent);}
+.weight-lifetime.gain .wl-text{color:#fbbf24;}
+.weight-lifetime.zero .wl-text{color:var(--muted);}
+.wl-meta{
+  font-size:10.5px;
+  color:var(--muted2);
+  letter-spacing:1.5px;
+  font-weight:400;
+}
+
+/* v0.2.19.7: 训练成就卡 (跨契约累计 3 数字) */
+.profile-achievement-card{
+  display:flex;
+  align-items:stretch;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px 6px;
+  gap:0;
+}
+.pa-stat{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  text-align:center;
+}
+.pa-stat-num{
+  font-family:'Bebas Neue', sans-serif;
+  font-size:32px;
+  letter-spacing:0;
+  color:var(--text);
+  line-height:1;
+  font-weight:500;
+}
+.pa-stat-label{
+  font-size:10px;
+  color:var(--muted);
+  letter-spacing:2.5px;
+  font-weight:500;
+  margin-top:6px;
+}
+.pa-stat-unit{
+  font-size:9px;
+  color:var(--accent);
+  letter-spacing:1.5px;
+  font-family:'Bebas Neue', sans-serif;
+  font-weight:500;
+  opacity:0.85;
+}
+.pa-stat-divider{
+  width:1px;
+  background:rgba(255,255,255,0.08);
+  margin:8px 0;
+}
 
 .profile-weight-card{
   background:var(--card);
@@ -7547,7 +8039,8 @@ body{
    体态 Tab (独立模块)
    ═══════════════════════════════════════════ */
 #panel-posture{
-  height:calc(100vh - 60px);
+  height:calc(100vh - 60px);   /* fallback for older browsers */
+  height:calc(100dvh - 60px);  /* v0.2.18.15: 用 dvh 修 mobile 浏览器 URL bar 遮挡底部内容的 bug */
   overflow-y:auto;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;            /* Firefox */
@@ -8008,6 +8501,9 @@ body{
   grid-template-columns:repeat(7, 1fr);
   gap:6px;
   padding:4px 0;
+  /* v0.2.19.8: 限制最大宽度让方块视觉更紧凑 (用户反馈方块太大) */
+  max-width:280px;
+  margin:0 auto;
 }
 .tune-grid-cell{
   aspect-ratio:1;
@@ -8015,10 +8511,10 @@ body{
   transition:transform 0.2s, box-shadow 0.2s;
   position:relative;
 }
-/* pending - 默认: 透明底 + 1px muted2 边 */
+/* pending - 默认: 淡底 + 实线边 (跟 future 视觉一致, 因为体态契约里 pending 极少出现 - 仅 today 当天未做但 today 类会覆盖) */
 .tune-grid-cell{
-  background:rgba(255,255,255,0.02);
-  border:1px solid rgba(255,255,255,0.08);
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(255,255,255,0.18);
 }
 /* done - 实心 accent + 微 glow (草坪主视觉) */
 .tune-grid-cell.done{
@@ -8031,11 +8527,11 @@ body{
   background:rgba(85,85,85,0.3);
   border:1px solid rgba(85,85,85,0.5);
 }
-/* future - 透明 + 虚线边 (未发生, 视觉权重最低) */
+/* future - 透明 + 实线边 (未发生, 视觉权重弱但清晰可见) */
 .tune-grid-cell.future{
-  background:transparent;
-  border:1px dashed rgba(255,255,255,0.08);
-  opacity:0.55;
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(255,255,255,0.18);
+  opacity:1;
 }
 /* today - accent 边 + 1.5× scale + 脉动 */
 .tune-grid-cell.today{
@@ -8492,12 +8988,20 @@ body{
   color:var(--text);
   font-weight:700;
   letter-spacing:0.3px;
-  margin-bottom:14px;
+  margin-bottom:6px;  /* v0.2.19.8: 配合 epr-spec 增加 14→6 */
 }
 .epr-big .epr-sep{
   color:var(--muted2);
   font-weight:400;
   margin:0 6px;
+}
+/* v0.2.19.8: 体态/拉伸/矫正多组动作的 spec 显示 (每组多少次) */
+.epr-spec{
+  font-size:13px;
+  color:var(--accent);
+  letter-spacing:0.5px;
+  margin-bottom:14px;
+  font-weight:500;
 }
 .epr-single{
   font-size:18px;
@@ -9343,12 +9847,14 @@ body{
   font-family:inherit;
   transition:all 0.15s;
   position:relative;
+  z-index:2;  /* v0.2.19.8: 防御性提升 z-index, 修文案右侧难点 bug (可能被 sibling 元素覆盖) */
   overflow:hidden;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:6px;
   line-height:1;
+  min-width:0;
 }
 /* Phase 3.2: 休息态锁定时的视觉 (disabled) */
 .workout-main-btn:disabled{
@@ -10950,13 +11456,18 @@ body{
 
 <!-- Log Panel: 行动日历 (旧地图改造) -->
 <div class="panel" id="panel-log">
-  <div class="log-container">
-    <!-- 顶栏 -->
-    <div class="log-topbar">
-      <div class="log-title">行动日历</div>
-      <div class="log-sub" id="logSub">已发生的轨迹</div>
+  <!-- v0.2.19.11: 统一 home-hero (4 个 Tab 共用) -->
+  <div class="home-hero" id="logHero">
+    <div class="hh-eyebrow">6 个月蜕变计划</div>
+    <div class="hh-title">
+      <span class="hh-title-main">BODY</span><span class="hh-title-accent">TRACK</span>
     </div>
+    <div class="hh-meta" id="logHeroMeta">
+      <!-- 注入 (跟 hhMeta 同源) -->
+    </div>
+  </div>
 
+  <div class="log-container">
     <!-- 日历滚动区 -->
     <div class="cal-scroll" id="logScroll">
       <div id="calContent"></div>
@@ -10968,14 +11479,18 @@ body{
 
 <!-- Workout Panel: 训练库 (Liftoff routine 风格) -->
 <div class="panel" id="panel-workout">
-  <div class="workout-tab-container">
-    <div class="workout-tab-topbar">
-      <div class="wt-title">训练</div>
-      <div class="wt-sub">这份契约的所有训练</div>
+  <!-- v0.2.19.11: 统一 home-hero 替代原 wt-hero -->
+  <div class="home-hero" id="workoutHero">
+    <div class="hh-eyebrow">6 个月蜕变计划</div>
+    <div class="hh-title">
+      <span class="hh-title-main">BODY</span><span class="hh-title-accent">TRACK</span>
     </div>
-    <div class="workout-tab-scroll" id="workoutTabContent">
-      <!-- renderWorkoutTab 注入 -->
+    <div class="hh-meta" id="workoutHeroMeta">
+      <!-- 注入 -->
     </div>
+  </div>
+  <div class="workout-tab-scroll" id="workoutTabContent">
+    <!-- renderWorkoutTab 注入 -->
   </div>
 </div>
 
@@ -10993,32 +11508,40 @@ body{
       <!-- renderPosturePanel 注入 -->
     </div>
 
-    <div style="height:24px;"></div>
+    <div style="height:40px;"></div>
   </div>
 </div>
 
 <!-- 我的 Panel -->
 <div class="panel" id="panel-profile">
-  <div class="profile-container">
-    <!-- 当前契约卡 -->
-    <div class="profile-section" id="profileActiveSection">
-      <div class="profile-section-title">当前契约</div>
-      <div id="profileActiveCard"></div>
+  <!-- v0.2.19.11: 统一 home-hero -->
+  <div class="home-hero" id="profileHero">
+    <div class="hh-eyebrow">6 个月蜕变计划</div>
+    <div class="hh-title">
+      <span class="hh-title-main">BODY</span><span class="hh-title-accent">TRACK</span>
     </div>
+    <div class="hh-meta" id="profileHeroMeta">
+      <!-- 注入 -->
+    </div>
+  </div>
+  <div class="profile-container">
+    <!-- v0.2.19.7: 删除「当前契约」section - 完全交给训练 Tab (Tab 各司其职) -->
 
-    <!-- 身体档案 (v0.2.14.1: 体重完整档案 - 复用已写好但未挂载的 renderProfileWeight) -->
+    <!-- 身体档案 (v0.2.14.1: 体重档案 / v0.2.19.7: 加跨契约累计 delta) -->
     <div class="profile-section" id="profileBodyArchiveSection">
       <div class="profile-section-title">身体档案</div>
       <div id="profileWeightCard"></div>
     </div>
 
-    <!-- 训练分布雷达图 (v0.2.17.3: 当前契约整段聚合) -->
-    <div class="profile-section" id="profileMuscleSection" style="display:none;">
-      <div class="profile-section-title">训练分布</div>
-      <div id="profileMuscleCard"></div>
+    <!-- v0.2.19.7: 训练成就 (跨契约累计 3 数字, 区别于训练 Tab 的当前契约视角) -->
+    <div class="profile-section" id="profileAchievementSection" style="display:none;">
+      <div class="profile-section-title">训练成就</div>
+      <div id="profileAchievementCard"></div>
     </div>
 
-    <!-- 训练历史 (最近 N 次训练) -->
+    <!-- v0.2.19.7: 删除「训练分布」雷达 - 完全交给训练 Tab (当前契约视角已在那里) -->
+
+    <!-- 训练历史 (单次训练颗粒度, 跨契约 - 跟日历 Tab 互补) -->
     <div class="profile-section" id="profileTrainingSection" style="display:none;">
       <div class="profile-section-title">
         训练历史
@@ -11061,7 +11584,7 @@ body{
     </div>
 
     <div class="profile-footer">
-      <div class="profile-footer-version">v0.2.18.14 · dead CSS 清理</div>
+      <div class="profile-footer-version">v0.2.19.12.2 · 雷达图 fallback (按 plan 估算)</div>
       <div class="profile-footer-tagline">4 周契约</div>
     </div>
   </div>
@@ -14041,52 +14564,95 @@ function renderHomePanel() {
   if (sealedOverlay) sealedOverlay.classList.remove('show');
   if (hero) hero.style.display = '';
 
-  // Hero meta 行 (v0.2.9): 按状态切换 - missed / completed / default
-  const cfg = state.config;
-  const hhMeta = document.getElementById('hhMeta');
-  if (hhMeta) {
-    if (!sealed && cfg.startWeight && cfg.targetWeight) {
-      // 默认: 形态目标 (静态)
-      const startW = _fmtWeight(cfg.startWeight);
-      const targetW = _fmtWeight(cfg.targetWeight);
-      const formGoals = ['铠甲胸', '倒三角', '腹肌'];   // 硬编码 - 等 v0.3 setup 输入
-
-      // 状态判断 - 看今天是否完成 / 昨天是否 missed
-      const today = todayStr();
-      const todayRec = state.records[today] || {};
-      const todayDone = !!todayRec.completed;
-      const todayAbsDay = homeTodayDay();
-      let yesterdayMissed = false;
-      if (todayAbsDay >= 2) {
-        const yStatus = homeDayStatus(todayAbsDay - 1);
-        yesterdayMissed = yStatus === 'missed';
-      }
-
-      let metaText;
-      if (yesterdayMissed && !todayDone) {
-        // 昨天断了, 今天还没练 → 接回文案
-        metaText = `<span class="hh-meta-soft">昨天断了一下,不是结束。今天接上,契约还活着。</span>`;
-      } else if (todayDone) {
-        // 今天已完成 → 庆祝
-        metaText = `<span class="hh-meta-soft hh-meta-done">今天守住了。继续往那个 ${targetW}kg 的你推进。</span>`;
-      } else {
-        // 默认: 形态目标
-        metaText =
-          `从 ${startW}kg 到 ${targetW}kg` +
-          `<span class="hh-meta-divider">·</span>` +
-          formGoals.join('<span class="hh-meta-divider">·</span>');
-      }
-      hhMeta.innerHTML = metaText;
-    } else {
-      hhMeta.textContent = '上一份契约';
-    }
-  }
+  // v0.2.19.11: hero meta 统一注入到所有 4 个 Tab
+  _updateAllAppHeroMeta(sealed);
 
   // Feed 内容
   renderHomeFeed();
 
   // 滚动 > 30px 时 hero 进入 compact 态 (只剩小号 BODYTRACK)
   _bindHomeHeroScrollObserver();
+
+  // v0.2.19.11.2: 动态测 hero 高度防遮挡
+  setTimeout(_adjustHeroPadding, 50);
+}
+
+// v0.2.19.12: hero meta 固定显示用户目标 (删除 yesterdayMissed / todayDone 状态切换)
+//   用户反馈: "这类状态变化不要了。一直显示用户目标即可。"
+function _computeAppHeroMetaHtml(sealed) {
+  const cfg = state.config;
+  if (sealed || !cfg.startWeight || !cfg.targetWeight) {
+    return { html: '上一份契约', isText: true };
+  }
+  const startW = _fmtWeight(cfg.startWeight);
+  const targetW = _fmtWeight(cfg.targetWeight);
+  const formGoals = ['铠甲胸', '倒三角', '腹肌'];
+
+  const metaText =
+    `从 ${startW}kg 到 ${targetW}kg` +
+    `<span class="hh-meta-divider">·</span>` +
+    formGoals.join('<span class="hh-meta-divider">·</span>');
+  return { html: metaText, isText: false };
+}
+
+// v0.2.19.11: 统一注入到所有 4 个 Tab 的 hero meta
+function _updateAllAppHeroMeta(sealed) {
+  if (sealed === undefined) {
+    const c = getActiveContract();
+    sealed = !c || c.status !== 'active' || !state.config.setupCompleted;
+  }
+  const meta = _computeAppHeroMetaHtml(sealed);
+  ['hhMeta', 'logHeroMeta', 'workoutHeroMeta', 'profileHeroMeta'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (meta.isText) el.textContent = meta.html;
+    else el.innerHTML = meta.html;
+  });
+}
+
+// v0.2.19.11: 通用 hero scroll observer (替代各 Tab 单独的 observer)
+// v0.2.19.12.1: 回退 v0.2.19.12 的 padding 同步逻辑 (滚动卡顿根因 — 每次状态切换触发 reflow)
+//   现在: 仅 toggle compact class, padding 在 switchTab 时一次性算定
+function _bindAppHeroScrollObserver(scrollEl, hero) {
+  if (!scrollEl || !hero) return;
+  if (scrollEl._heroScrollBound) return;
+  scrollEl._heroScrollBound = true;
+  let wasCompact = false;
+  const onScroll = () => {
+    const isCompact = scrollEl.scrollTop > 30;
+    if (isCompact !== wasCompact) {
+      if (isCompact) hero.classList.add('compact');
+      else hero.classList.remove('compact');
+      wasCompact = isCompact;
+    }
+  };
+  scrollEl.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
+// v0.2.19.11.2: 动态测量 hero 高度, 给对应 scroll 容器设 padding-top
+//   静态 padding 在 mobile 字体渲染差异下可能不够 → 用 JS 测量保证 100% 不遮挡
+function _adjustHeroPadding() {
+  const pairs = [
+    { heroId: 'homeHero',    scrollSel: '#homeFeed' },
+    { heroId: 'logHero',     scrollSel: '#logScroll .cal-scroll, #logScroll' },  // 防御 fallback
+    { heroId: 'workoutHero', scrollSel: '#workoutTabContent' },
+    { heroId: 'profileHero', scrollSel: '#panel-profile .profile-container' }
+  ];
+  pairs.forEach(({ heroId, scrollSel }) => {
+    const hero = document.getElementById(heroId);
+    if (!hero || hero.offsetHeight === 0) return;
+    let scrollEl;
+    if (heroId === 'logHero') {
+      // panel-log 实际滚动容器是 .cal-scroll
+      scrollEl = document.querySelector('#panel-log .cal-scroll');
+    } else {
+      scrollEl = document.querySelector(scrollSel);
+    }
+    if (!scrollEl) return;
+    const h = hero.offsetHeight + 8;  // 8px 缓冲
+    scrollEl.style.paddingTop = h + 'px';
+  });
 }
 
 // hero 滚动压缩监听 (幂等 - 重复调用安全)
@@ -14096,9 +14662,15 @@ function _bindHomeHeroScrollObserver() {
   if (!feed || !hero) return;
   if (feed._heroScrollBound) return;  // 已绑定不重复
   feed._heroScrollBound = true;
+  let wasCompact = false;
   const onScroll = () => {
-    if (feed.scrollTop > 30) hero.classList.add('compact');
-    else hero.classList.remove('compact');
+    const isCompact = feed.scrollTop > 30;
+    if (isCompact !== wasCompact) {
+      if (isCompact) hero.classList.add('compact');
+      else hero.classList.remove('compact');
+      wasCompact = isCompact;
+      // v0.2.19.12.1: 不再同步 padding (避免滚动 reflow 卡顿)
+    }
   };
   feed.addEventListener('scroll', onScroll, { passive: true });
   // 初始判断 (从其他 tab 切回时可能已滚)
@@ -14217,18 +14789,17 @@ function getHomeFeedCards(ctx) {
   if (showReadinessCard) cards.push('readiness');
 
   // 主体编排: 按今日状态分支
+  // v0.2.19.9: tomorrowPreview 合并到 recent7Days (7 天全景卡), 不再单独 push
   if (ctx.todayCompleted) {
     // 状态 B: 今日已完成 → 切换到"奖励 + 期待"
     cards.push('todayDone');                                  // 完成反馈 (替代今日训练卡)
     if (ctx.hasStrengthEvidence) cards.push('strengthEvidence');
-    cards.push('tomorrowPreview');
     cards.push('weightTrend');
     cards.push('recent7Days');
     if (ctx.postureCompleted) cards.push('posture');          // 体态完成态沉底
   } else if (ctx.todayAdjustedRest) {
     // 状态: 今日主动休息 → 已经做出选择, 给恢复支持
     cards.push('todayDone');                                  // 显示主动休息状态
-    cards.push('tomorrowPreview');                            // 明天接上
     if (ctx.hasStrengthEvidence) cards.push('strengthEvidence');
     cards.push('weightTrend');
     cards.push('recent7Days');
@@ -14241,7 +14812,6 @@ function getHomeFeedCards(ctx) {
     // 体重停滞 + 有 PR: 力量证据上提到体重前 (对冲焦虑)
     if (ctx.hasStrengthEvidence) cards.push('strengthEvidence');
     cards.push('weightTrend');
-    cards.push('tomorrowPreview');                            // 未完成时弱化, 后置
     cards.push('recent7Days');
     if (ctx.postureCompleted) cards.push('posture');
   }
@@ -14339,8 +14909,8 @@ function _renderPostureCard() {
             <svg class="pc-icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
           <div class="pc-info">
-            <div class="pc-title-done">今天 Tune 已完成</div>
-            <div class="pc-sub-done">D ${dayNCap} / 28${streak >= 2 ? ` · 连续 ${streak} 天` : ''}</div>
+            <div class="pc-title-done">今 日 体 态 改 善 已 完 成</div>
+            <div class="pc-sub-done">D ${dayNCap} / 28${streak >= 2 ? ` · 连续 ${streak} 天` : ''} · 明 天 继 续 坚 持 哦</div>
           </div>
           <div class="pc-arrow">›</div>
         </div>
@@ -14884,13 +15454,28 @@ function _toggleGoalCard() {
 }
 
 // v0.2.14.1: 跳转到「我的」Tab 的身体档案
+// v0.2.19.8: 跳训练 Tab 的体重趋势卡 (契约内视角)
+//   兜底: 没有 active 契约 / 没设目标体重 → 跳「我的」Tab 长程身份视图
 function _goToWeightArchive() {
-  switchTab('profile');
-  // 滚到身体档案 section
-  setTimeout(() => {
-    const el = document.getElementById('profileBodyArchiveSection');
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
+  const c = getActiveContract();
+  const hasActive = c && c.status === 'active' && state.config.startDate && state.config.setupCompleted;
+  const hasWeightGoal = state.config.startWeight && state.config.targetWeight && state.config.startWeight !== state.config.targetWeight;
+
+  if (hasActive && hasWeightGoal) {
+    // 主路径: 训练 Tab 体重趋势卡 (当前契约视角)
+    switchTab('workout');
+    setTimeout(() => {
+      const el = document.getElementById('workoutWeightSection');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  } else {
+    // 兜底: 「我的」Tab 身体档案 (长程视角)
+    switchTab('profile');
+    setTimeout(() => {
+      const el = document.getElementById('profileBodyArchiveSection');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
 }
 
 // 极简 mini sparkline: 7-10 个点, 无坐标轴
@@ -15144,21 +15729,24 @@ function _renderReadinessCard() {
     `;
   }
 
-  // 未确认: 3 选 1
+  // 未确认: 3 选 1 (v0.2.19.12: 加 emoji 跟日历对齐)
   return `
     <div class="readiness-card">
       <div class="rc-eyebrow">今 日 状 态</div>
       <div class="rc-question">今天身体状态如何?</div>
       <div class="rc-options">
         <button class="rc-option" onclick="setReadiness('low')">
+          <div class="rc-opt-emoji">😔</div>
           <div class="rc-opt-label">不太好</div>
           <div class="rc-opt-desc">疲惫 / 压力大</div>
         </button>
         <button class="rc-option rc-opt-default" onclick="setReadiness('normal')">
+          <div class="rc-opt-emoji">🙂</div>
           <div class="rc-opt-label">还可以</div>
           <div class="rc-opt-desc">能练 · 不宜 push</div>
         </button>
         <button class="rc-option" onclick="setReadiness('high')">
+          <div class="rc-opt-emoji">😄</div>
           <div class="rc-opt-label">很有精神</div>
           <div class="rc-opt-desc">恢复好 · 可推进</div>
         </button>
@@ -15646,7 +16234,7 @@ function _recommendForToday(absDay) {
       meta: '让身体修复,明天再练',
       reason: '休息是训练的一部分。肌肉的成长发生在休息时,不是训练时。',
       cta: '查看明天',
-      action: 'alert("明天继续 →")'
+      action: 'openFuturePlanSheet()'
     };
   }
 
@@ -15872,68 +16460,151 @@ function _renderStrengthEvidenceCard() {
   `;
 }
 
+// v0.2.19.10: 14 天全景卡 (沿用训练 Tab 28 天全景的方块字母视觉)
+//   - 标题: 「14 天全景」(用户反馈, 不叫 7 天)
+//   - 视觉: 方块 + 字母 (复用 wt-ov-cell), 不再用圆圈
+//   - 入口拆分: 过去 7 天 cell → 跳日历 / 未来 7 天 cell → 弹 future-plan-sheet
+//   - 删除整卡 onclick + 「查看完整日历」link (用户反馈无必要)
 function _renderRecentLogCard() {
   const today = todayStr();
   const cfg = state.config;
+  const todayDay = homeTodayDay();
+  const totalDays = (cfg.stageWeeks || 4) * 7;
+  const hasContract = !!cfg.startDate;
 
-  // 取最近 7 天 (D-6 ... D0)
-  let cellsHtml = '';
+  // 单 cell 渲染 helper
+  function renderCell(opts) {
+    const { stateCls, type, letter, onclick } = opts;
+    const clickAttr = onclick ? `onclick="${onclick}"` : '';
+    const clickableCls = onclick ? ' clickable' : '';
+    return `<div class="wt-ov-cell ${stateCls} type-${type}${clickableCls}" ${clickAttr}><span class="wt-ov-letter">${letter}</span></div>`;
+  }
+
+  // ── 上半: 过去 7 天 (D-6 ~ D0) ──
+  let pastCellsHtml = '';
   for (let i = 6; i >= 0; i--) {
     const date = addDays(today, -i);
     const rec = state.records[date] || {};
     const isToday = i === 0;
 
-    // 状态识别
-    let cls = 'pending';
-    let label = '';
-    if (rec.completed) {
-      // 看 nodeId 分类
-      const nid = rec.nodeId;
-      if (nid === 22) {
-        cls = 'rest';
-        label = '休';
-      } else if (CARDIO_NODE_IDS.includes(nid)) {
-        cls = 'cardio';
-        label = '氧';
-      } else {
-        cls = 'main';
-        // 主训练显示节点简写
-        const node = NODES[nid];
-        label = node ? _calTypeAbbr(node) : '✓';
+    let stateCls, type, letter;
+
+    // 计算节点 (优先实际 rec.nodeId, 否则 sequence)
+    let rawNode = rec.nodeId;
+    if (!rawNode && hasContract && date >= cfg.startDate) {
+      const absDay = daysBetween(cfg.startDate, date) + 1;
+      if (absDay >= 1 && absDay <= totalDays) {
+        rawNode = getSequenceRaw(absDay);
       }
-    } else if (rec.adjusted === 'rest') {
-      // 主动改休息 (受 P0 修复保护)
-      cls = 'rest';
-      label = '休';
-    } else if (date < today) {
-      // 未训练但在契约期内
-      if (cfg.startDate && date >= cfg.startDate) {
-        cls = 'missed';
-        label = '·';
-      } else {
-        cls = 'outside';
-      }
-    } else if (isToday) {
-      cls = 'today';
-      label = '今';
     }
 
-    const dayNum = parseInt(date.split('-')[2]);
-    cellsHtml += `
-      <div class="rl-cell ${cls}">
-        <span class="rl-cell-day">${dayNum}</span>
-        ${label ? `<span class="rl-cell-label">${label}</span>` : ''}
-      </div>
-    `;
+    if (!hasContract || (date < cfg.startDate)) {
+      // 契约前 - outside
+      stateCls = 'future';  // 复用 future 视觉的弱化态
+      type = 'rest';
+      letter = '·';
+    } else if (rec.completed) {
+      stateCls = isToday ? 'today done' : 'done';
+      type = _nodeIdToType(rec.nodeId);
+      letter = _nodeIdToShortName(rec.nodeId);
+    } else if (rec.adjusted === 'rest') {
+      stateCls = isToday ? 'today done' : 'done';
+      type = 'rest';
+      letter = '休';
+    } else if (isToday) {
+      stateCls = 'today';
+      type = rawNode ? _nodeIdToType(rawNode) : 'strength';
+      letter = rawNode ? _nodeIdToShortName(rawNode) : '今';
+    } else {
+      // 未训练 + 在契约期内 = missed
+      stateCls = 'missed';
+      type = rawNode ? _nodeIdToType(rawNode) : 'strength';
+      letter = rawNode ? _nodeIdToShortName(rawNode) : '·';
+    }
+
+    pastCellsHtml += renderCell({
+      stateCls,
+      type,
+      letter,
+      onclick: `switchTab('log')`
+    });
   }
 
+  // ── 下半: 未来 7 天 (D+1 ~ D+7) ──
+  let futureCellsHtml = '';
+  let tomorrowMetaText = '';
+  if (hasContract && todayDay >= 1 && todayDay < totalDays) {
+    for (let i = 1; i <= 7; i++) {
+      const absDay = todayDay + i;
+      const inContract = absDay <= totalDays;
+
+      let stateCls, type, letter;
+      if (!inContract) {
+        stateCls = 'future';
+        type = 'rest';
+        letter = '·';
+      } else {
+        const seq = getSequenceRaw(absDay);
+        stateCls = 'future';
+        type = _nodeIdToType(seq);
+        letter = _nodeIdToShortName(seq);
+      }
+
+      futureCellsHtml += renderCell({
+        stateCls,
+        type,
+        letter,
+        onclick: inContract ? `openFuturePlanSheet()` : null
+      });
+    }
+
+    // 明日预告信息条
+    const tomorrowSeq = getSequenceRaw(todayDay + 1);
+    let tmrLabel, tmrDuration;
+    if (tomorrowSeq === 'cardio') {
+      tmrLabel = '有 氧 · Zone 2';
+      tmrDuration = '30-40 分钟';
+    } else if (tomorrowSeq === 22) {
+      tmrLabel = '完 全 休 息';
+      tmrDuration = '让身体修复一天';
+    } else if (typeof tomorrowSeq === 'number') {
+      const node = NODES[tomorrowSeq];
+      const focusMap = {
+        1: { label: '力 量 · 胸 + 肩 稳 定', duration: '30-45 分钟' },
+        3: { label: '力 量 · 背 阔 + 抗 驼 背', duration: '30-45 分钟' },
+        5: { label: '力 量 · 臀 腿 + 核 心',   duration: '30-45 分钟' },
+        6: { label: '力 量 · 肩 稳 定 + 手 臂', duration: '25-35 分钟' }
+      };
+      const m = focusMap[tomorrowSeq];
+      if (m) {
+        tmrLabel = m.label;
+        tmrDuration = m.duration;
+      } else if (node) {
+        tmrLabel = '力 量 · ' + node.name;
+        tmrDuration = '30-45 分钟';
+      }
+    }
+    if (tmrLabel) {
+      tomorrowMetaText = `<span class="rl-tmr-label">明 日</span><span class="rl-tmr-divider">·</span><span class="rl-tmr-name">${tmrLabel}</span><span class="rl-tmr-divider">·</span><span class="rl-tmr-dur">${tmrDuration}</span>`;
+    }
+  }
+
+  // ── 装配 ──
+  const futureSection = futureCellsHtml ? `
+      <div class="rl-section-title">未  来  7  天</div>
+      <div class="rl-grid future">${futureCellsHtml}</div>
+  ` : '';
+  const tmrSection = tomorrowMetaText ? `
+      <div class="rl-tmr-bar">${tomorrowMetaText}</div>
+  ` : '';
+
   return `
-    <div class="recent-log-card" onclick="switchTab('log')">
-      <div class="rl-head">
-        <div class="rl-title">最近 7 天</div>
-        <div class="rl-arrow">查看日历 ›</div>
-      </div>
-      <div class="rl-cells">${cellsHtml}</div>
+    <div class="recent-log-card">
+      <div class="rl-card-title">14  天  全  景</div>
+      <div class="rl-section-title">过  去  7  天</div>
+      <div class="rl-grid past">${pastCellsHtml}</div>
+      ${futureSection}
+      ${tmrSection}
     </div>
   `;
 }
@@ -19203,7 +19874,7 @@ function renderWorkoutPage() {
         <div class="wt-step-tips">${isBodyweight ? '自重动作 · 记录实际完成次数' : '做组前 · 做组后皆可调整, 记录实际数据'}</div>
       `;
     } else {
-      // 非力量主训 (拉伸 reps / 矫正 reps 等): 保持原文字 + 旧小圆点
+      // 非力量主训 (拉伸 reps / 矫正 reps / 体态 reps 等): 显示组数 + spec (v0.2.19.8 修 bug)
       if (totalSets > 1) {
         let dotsHtml = '<div class="set-dots">';
         for (let i = 0; i < totalSets; i++) {
@@ -19217,6 +19888,7 @@ function renderWorkoutPage() {
         progressHtml = `
           <div class="ex-progress-reps">
             <div class="epr-big">第 ${currentSet + 1} 组 <span class="epr-sep">/</span> 共 ${totalSets} 组</div>
+            <div class="epr-spec">${ex.spec}</div>
             ${dotsHtml}
           </div>
         `;
@@ -19241,10 +19913,14 @@ function renderWorkoutPage() {
         </div>
       `;
     } else {
+      // v0.2.19.8: 多组时同时显示组数 + spec (单组直接显示 spec)
+      const labelText = totalSets > 1
+        ? `第 ${currentSet + 1} 组 / 共 ${totalSets} 组 · ${ex.spec}`
+        : ex.spec;
       progressHtml = `
         <div class="ex-progress-time clickable" onclick="_startCountdown(${seconds})">
           <div class="ept-num">${seconds}<span class="ept-unit">秒</span></div>
-          <div class="ept-label">${totalSets > 1 ? `第 ${currentSet + 1} 组 / 共 ${totalSets} 组` : ex.spec}</div>
+          <div class="ept-label">${labelText}</div>
           <div class="ept-cta">点击开始计时</div>
         </div>
       `;
@@ -19379,7 +20055,7 @@ function openDetailsModal() {
     </div>`;
   
   document.getElementById('detailsModalTitle').textContent = ex.name;
-  document.getElementById('detailsModalSpec').textContent = ex.spec;
+  document.getElementById('detailsModalSpec').textContent = _formatExerciseSpec(ex);
   document.getElementById('detailsModalContent').innerHTML = html;
   document.getElementById('modalDetails').classList.add('active');
 }
@@ -21301,6 +21977,25 @@ function switchTab(name) {
   if (name === 'profile') renderProfileSummary();
   if (name === 'posture') renderPosturePanel();
   window.scrollTo(0, 0);
+
+  // v0.2.19.11: 切到主 4 个 Tab 时, 同步统一 hero meta + bind scroll observer
+  if (name === 'log' || name === 'workout' || name === 'profile') {
+    _updateAllAppHeroMeta();
+    const heroId = name === 'log' ? 'logHero' : (name === 'workout' ? 'workoutHero' : 'profileHero');
+    const scrollId = name === 'log' ? 'logScroll' : (name === 'workout' ? 'workoutTabContent' : null);
+    const hero = document.getElementById(heroId);
+    let scrollEl;
+    if (name === 'log') {
+      scrollEl = document.querySelector('#panel-log .cal-scroll');
+    } else if (scrollId) {
+      scrollEl = document.getElementById(scrollId);
+    } else if (name === 'profile') {
+      scrollEl = document.querySelector('#panel-profile .profile-container');
+    }
+    if (hero && scrollEl) _bindAppHeroScrollObserver(scrollEl, hero);
+  }
+  // v0.2.19.11.2: 动态测 hero 高度防遮挡 (DOM render 后再算)
+  setTimeout(_adjustHeroPadding, 50);
 }
 
 // ═══════════════════════════════════════════
@@ -21324,18 +22019,36 @@ const WORKOUT_ROUTINES = [
   { nodeId: 22, name: '完全休息', type: 'rest',     tag: '恢复' }
 ];
 
+// v0.2.19.1: nodeId / sequence raw → 短名 (单字, 用于 28 天网格)
+function _nodeIdToShortName(raw) {
+  if (raw === 'cardio' || raw === 14) return '心';
+  if (raw === 1) return '胸';
+  if (raw === 3) return '背';
+  if (raw === 5) return '腿';
+  if (raw === 6) return '肩';
+  if (raw === 22) return '休';
+  return '?';
+}
+
+// v0.2.19.1: nodeId / sequence raw → routine 类型
+function _nodeIdToType(raw) {
+  if (raw === 'cardio' || raw === 14) return 'cardio';
+  if (raw === 22) return 'rest';
+  return 'strength';
+}
+
 function renderWorkoutTab() {
   const container = document.getElementById('workoutTabContent');
   if (!container) return;
-
   const c = getActiveContract();
   const hasActive = c && c.status === 'active' && state.config.startDate && state.config.setupCompleted;
+  // v0.2.19.11: hero 是统一顶部, 不再控制显隐 / padding (CSS 写死 116px)
 
   if (!hasActive) {
     container.innerHTML = `
       <div class="workout-tab-empty">
         <div class="workout-tab-empty-icon">🏋️</div>
-        <div>签下一份契约,<br>这里会列出你这 4 周的所有训练。</div>
+        <div>签下一份契约,<br>这里会列出你这 28 天的所有训练。</div>
       </div>
     `;
     return;
@@ -21344,10 +22057,14 @@ function renderWorkoutTab() {
   if (_workoutTabView.mode === 'detail') {
     container.innerHTML = _renderRoutineDetail(_workoutTabView.selectedNodeId);
   } else {
-    // v0.2.13 训练 Tab 心智修正:
-    //   摘要卡 (本期方案) + 列表 (本期训练内容)
-    //   让用户进 Tab 第一眼知道"这是本期计划", 不是普通课程库
-    const summaryCard = _renderWorkoutPlanSummary();
+    // v0.2.19.11: 统一顶部之后, 信息架构:
+    //   home-hero (统一顶部, BODYTRACK 品牌位)
+    //   3 环 fulfillment (内置 D N / 28 + 第 X/4 周 · 减重 5 kg, 替代原 wt-section-title「契约履约」)
+    //   weight progress / muscle radar / 28 天全景 / routine 列表
+    const fulfillBlock = _renderContractFulfillment();
+    const weightBlock = _renderWeightProgress();
+    const radarBlock = _renderWorkoutRadar();
+    const overviewBlock = _renderWorkoutOverview();
     const listHeader = `
       <div class="wt-list-header">
         <div class="wt-list-title">本期训练内容</div>
@@ -21355,61 +22072,365 @@ function renderWorkoutTab() {
       </div>
     `;
     container.innerHTML =
-      summaryCard +
+      fulfillBlock +
+      weightBlock +
+      radarBlock +
+      overviewBlock +
       listHeader +
       WORKOUT_ROUTINES.map(_renderRoutineRow).join('');
-  }
 
-  // 调整顶栏文案
-  const sub = document.querySelector('.wt-sub');
-  if (sub) {
-    sub.textContent = _workoutTabView.mode === 'detail'
-      ? '点左上角返回'
-      : '本期契约 · 训练内容';
+    // v0.2.19.11: 触发 3 环入场动画 (hero meta + scroll observer 已在 switchTab 处理)
+    _animateFulfillRings();
   }
 }
 
-// ────── 训练 Tab 顶部摘要卡 (v0.2.13) ──────
-// 只回答 3 件事: 目标 / 结构 / 当前位置
-// 详细方案在 ContractPlan Sheet 里 (复用)
-function _renderWorkoutPlanSummary() {
+// v0.2.19.11 dead: _bindWorkoutHeroScrollObserver - 已被通用 _bindAppHeroScrollObserver 替代
+// v0.2.19.11 dead: _updateWorkoutHeroMeta - 内容已整合到 _renderContractFulfillment 的 hero 行
+
+// v0.2.19.3: 3 环入场动画 (stroke-dashoffset 从 circumference → target, 错位 0.2s)
+function _animateFulfillRings() {
+  const rings = document.querySelectorAll('.wtf-ring');
+  rings.forEach((ring, idx) => {
+    const cs = getComputedStyle(ring);
+    const circ = parseFloat(cs.getPropertyValue('--circumference')) || 0;
+    const target = parseFloat(cs.getPropertyValue('--target-offset')) || 0;
+    // 起始: 完全空 (offset = circumference)
+    ring.style.transition = 'none';
+    ring.style.strokeDashoffset = circ;
+    // 强制 reflow
+    void ring.getBoundingClientRect();
+    // 入场: 错位填充
+    setTimeout(() => {
+      ring.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(0.16, 1, 0.3, 1)';
+      ring.style.strokeDashoffset = target;
+    }, 100 + idx * 200);
+  });
+}
+
+// ────── 训练 Tab 顶部 Hero (v0.2.19.3: sticky 仿首页 hero, 内容更新到外层) ──────
+// 不再返回 HTML, 只更新 sticky hero 的 meta 文案
+function _updateWorkoutHeroMeta() {
+  // v0.2.19.11 dead: 内容已迁移到 _renderContractFulfillment 的 hero 行
+  // 保留空函数避免遗留调用报错
+}
+
+// ────── 3 环 Whoop 视图: 力量/有氧/休息 履约可视化 (v0.2.19.3) ──────
+function _renderContractFulfillment() {
+  const cfg = state.config;
+  if (!cfg.startDate) return '';
+  const stageWeeks = cfg.stageWeeks || 4;
+  const totalDays = stageWeeks * 7;
+
+  // 统计三类的 done / planned
+  let strengthDone = 0, strengthPlanned = 0;
+  let cardioDone = 0,   cardioPlanned = 0;
+  let restDone = 0,     restPlanned = 0;
+  for (let i = 1; i <= totalDays; i++) {
+    const dateStr = addDays(cfg.startDate, i - 1);
+    const rec = state.records[dateStr] || {};
+    const planned = getPlannedNodeForDay(i, rec);
+    const type = _nodeIdToType(planned);
+    if (type === 'strength') {
+      strengthPlanned++;
+      if (rec.completed) strengthDone++;
+    } else if (type === 'cardio') {
+      cardioPlanned++;
+      if (rec.completed) cardioDone++;
+    } else if (type === 'rest') {
+      restPlanned++;
+      if (rec.completed) restDone++;
+    }
+  }
+
+  // v0.2.19.11.3: SVG 放大 88 → 96, R 保持 38 适配 + stroke-width 8 → 9 (更厚环, hero 主角)
+  const R = 38;
+  const C = 2 * Math.PI * R;
+  const renderRing = (label, type, done, planned) => {
+    const p = planned > 0 ? done / planned : 0;
+    const targetOffset = C * (1 - p);
+    return `
+      <div class="wtf-ring-block ${type}">
+        <div class="wtf-ring-wrap">
+          <svg class="wtf-svg" viewBox="0 0 96 96" width="96" height="96">
+            <circle class="wtf-ring-bg" cx="48" cy="48" r="${R}" />
+            <circle class="wtf-ring wtf-${type}" cx="48" cy="48" r="${R}"
+              stroke-dasharray="${C.toFixed(2)}"
+              style="--target-offset:${targetOffset.toFixed(2)}; --circumference:${C.toFixed(2)};"
+              transform="rotate(-90 48 48)" />
+          </svg>
+          <div class="wtf-ring-center">
+            <div class="wtf-rc-num">${done}</div>
+            <div class="wtf-rc-total">/ ${planned}</div>
+          </div>
+        </div>
+        <div class="wtf-ring-label">${label}</div>
+      </div>
+    `;
+  };
+
+  // v0.2.19.11: 整合原 wt-hero 的契约元数据到 3 环卡 hero 行
+  const todayDay = homeTodayDay();
+  const week = Math.max(1, Math.min(getCurrentStageWeek(), stageWeeks));
+  let goalText = '';
+  if (cfg.startWeight && cfg.targetWeight && cfg.startWeight !== cfg.targetWeight) {
+    const delta = Math.abs(parseFloat(cfg.targetWeight) - parseFloat(cfg.startWeight));
+    const isReduce = parseFloat(cfg.targetWeight) < parseFloat(cfg.startWeight);
+    goalText = `${isReduce ? '减重' : '增重'} ${delta.toFixed(0)} kg`;
+  } else {
+    goalText = '体态塑形';
+  }
+
+  // v0.2.19.12: caption 强调"契约目标", 而非时间进度 (用户反馈: 履约关注的是契约目标)
+  return `
+    <div class="wt-fulfill hero">
+      <div class="wtfh-caption">
+        <span class="wtfhc-label">目  标</span>
+        <span class="wtfhc-divider">·</span>
+        <span class="wtfhc-goal">${goalText}</span>
+      </div>
+      <div class="wt-fulfill-rings">
+        ${renderRing('力 量', 'strength', strengthDone, strengthPlanned)}
+        ${renderRing('有 氧', 'cardio', cardioDone, cardioPlanned)}
+        ${renderRing('休 息', 'rest', restDone, restPlanned)}
+      </div>
+      <button class="wt-fulfill-link" onclick="openContractPlanSheet()">
+        <span>查看完整方案</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  `;
+}
+
+// ────── 体重趋势卡 (v0.2.19.6: 改用「我的」Tab 样式 - 复用 _renderWeightChart) ──────
+function _renderWeightProgress() {
+  const cfg = state.config;
+  const startWeight = parseFloat(cfg.startWeight);
+  const targetWeight = parseFloat(cfg.targetWeight);
+  if (!startWeight || !targetWeight || startWeight === targetWeight) return '';
+
+  const weights = state.weights || {};
+  const dates = Object.keys(weights).sort();
+
+  // 拼接所有点 (跟「我的」Tab 同口径: startWeight + setup 后录入)
+  const allPoints = [];
+  if (startWeight && cfg.startDate) {
+    allPoints.push({ date: cfg.startDate, weight: startWeight, isStart: true });
+  }
+  dates.forEach(d => {
+    const existing = allPoints.findIndex(p => p.date === d);
+    if (existing >= 0) {
+      allPoints[existing] = { date: d, weight: parseFloat(weights[d]) };
+    } else {
+      allPoints.push({ date: d, weight: parseFloat(weights[d]) });
+    }
+  });
+  allPoints.sort((a, b) => a.date.localeCompare(b.date));
+
+  if (allPoints.length === 0) return '';
+
+  const latest = allPoints[allPoints.length - 1];
+  const first = allPoints[0];
+  const delta = latest.weight - first.weight;
+  const latestDateStr = (typeof _fmtDateShort === 'function') ? _fmtDateShort(latest.date) : latest.date;
+
+  let deltaCls, deltaSign, deltaLabel;
+  if (Math.abs(delta) < 0.05) {
+    deltaCls = 'zero'; deltaSign = '0'; deltaLabel = '维持';
+  } else if (delta < 0) {
+    deltaCls = 'lose'; deltaSign = delta.toFixed(1); deltaLabel = '累计变化';
+  } else {
+    deltaCls = 'gain'; deltaSign = '+' + delta.toFixed(1); deltaLabel = '累计变化';
+  }
+
+  // 复用「我的」Tab 的折线图组件
+  const chartHtml = (typeof _renderWeightChart === 'function') ? _renderWeightChart(allPoints, targetWeight) : '';
+
+  const progressHtml = `
+    <div class="weight-progress-row">
+      <div class="weight-progress-item">
+        <div class="weight-progress-num start">${startWeight}</div>
+        <div class="weight-progress-label">起 点</div>
+      </div>
+      <div class="weight-progress-item">
+        <div class="weight-progress-num">${latest.weight.toFixed(1)}</div>
+        <div class="weight-progress-label">当 前</div>
+      </div>
+      <div class="weight-progress-item">
+        <div class="weight-progress-num target">${targetWeight}</div>
+        <div class="weight-progress-label">目 标</div>
+      </div>
+    </div>
+  `;
+
+  return `
+    <div class="wt-section-title" id="workoutWeightSection">体  重  趋  势</div>
+    <div class="profile-weight-card wt-weight-wrap">
+      <div class="weight-summary-row">
+        <div class="weight-current">
+          <span class="weight-current-num">${latest.weight.toFixed(1)}</span>
+          <span class="weight-current-unit">kg</span>
+          <span class="weight-current-date">· ${latestDateStr}</span>
+        </div>
+        <div class="weight-delta">
+          <div class="weight-delta-num ${deltaCls}">${deltaSign}${Math.abs(delta) > 0 ? ' kg' : ''}</div>
+          <div class="weight-delta-label">${deltaLabel}</div>
+        </div>
+      </div>
+      ${chartHtml}
+      ${progressHtml}
+    </div>
+  `;
+}
+
+// ────── 训练分布雷达图 (v0.2.19.6: 删除 D7/5 次门槛, 仅看 dist.hasData) ──────
+// v0.2.19.12: 加最强/最弱部位 (复用 renderProfileMuscle 风格)
+function _renderWorkoutRadar() {
+  const cfg = state.config;
+  if (!cfg.startDate) return '';
+  if (typeof _computeMuscleDistribution !== 'function' || typeof _renderMuscleRadar !== 'function') return '';
+  const dist = _computeMuscleDistribution({ startDate: cfg.startDate, endDate: todayStr() });
+  if (!dist || !dist.hasData) return '';
+
+  const todayDay = homeTodayDay();
+  const totalDays = (cfg.stageWeeks || 4) * 7;
+  let completedCount = 0;
+  for (let i = 1; i <= todayDay && i <= totalDays; i++) {
+    const dateStr = addDays(cfg.startDate, i - 1);
+    const rec = state.records[dateStr] || {};
+    if (rec.completed) completedCount++;
+  }
+
+  const radarSvg = _renderMuscleRadar(dist, { size: 220 });
+
+  // v0.2.19.12: 找最强 / 最弱部位
+  const sorted = MUSCLE_REGIONS
+    .map(r => ({ region: r, value: dist.values[r] || 0 }))
+    .sort((a, b) => b.value - a.value);
+  const strongest = sorted[0];
+  const weakest = sorted[sorted.length - 1];
+
+  // v0.2.19.12.2: fallback 模式 (基于 plan 估算, 非真实 sets) 文案区分
+  const metaText = dist.isFallback
+    ? `按计划估算 · 完成 ${completedCount} 次训练 · 录入实际重量后更准`
+    : `基于契约期内完成的 ${completedCount} 次训练`;
+
+  return `
+    <div class="wt-section-title">训  练  分  布</div>
+    <div class="wt-radar">
+      <div class="wt-radar-svg">${radarSvg}</div>
+      <div class="wt-radar-summary">
+        <div class="wt-radar-sum-item">
+          <div class="wt-radar-sum-label">最 强</div>
+          <div class="wt-radar-sum-value strong">${strongest.region}</div>
+        </div>
+        <div class="wt-radar-sum-divider"></div>
+        <div class="wt-radar-sum-item">
+          <div class="wt-radar-sum-label">最 弱</div>
+          <div class="wt-radar-sum-value weak">${weakest.region}</div>
+        </div>
+      </div>
+      <div class="wt-radar-meta">${metaText}</div>
+    </div>
+  `;
+}
+
+// ────── 今日训练 Hero (v0.2.19.5 已弃用 — 跟首页今日训练卡冲突) ──────
+function _renderTodayTrainingHero() {
+  const cfg = state.config;
+  const totalDays = (cfg.stageWeeks || 4) * 7;
+  const todayDay = homeTodayDay();
+  if (todayDay < 1 || todayDay > totalDays) return '';
+  const todayStrV = todayStr();
+  const rec = state.records[todayStrV] || {};
+  const isDone = !!rec.completed;
+  const rawNode = getPlannedNodeForDay(todayDay, rec);
+  const shortName = _nodeIdToShortName(rawNode);
+  const type = _nodeIdToType(rawNode);
+
+  // 找 routine 信息
+  let routine, name, tag;
+  if (rawNode === 'cardio' || rawNode === 14) {
+    routine = WORKOUT_ROUTINES.find(r => r.nodeId === 14);
+  } else {
+    routine = WORKOUT_ROUTINES.find(r => r.nodeId === rawNode);
+  }
+  if (routine) {
+    name = routine.name;
+    tag = routine.tag;
+  } else {
+    name = '今日训练';
+    tag = '';
+  }
+
+  // 算摘要
+  let summary = '';
+  if (type === 'cardio') {
+    summary = '4 选 1 · 30-45 分钟';
+  } else if (type === 'rest') {
+    summary = '不安排训练';
+  } else {
+    const exerciseKeys = NODE_EXERCISES[rawNode] || [];
+    const mains = exerciseKeys.map(k => EXERCISE_LIBRARY[k]).filter(e => e && e.category === 'main');
+    const totalSets = mains.reduce((sum, e) => sum + (e.sets || 1), 0);
+    summary = `${mains.length} 个主训 · ${totalSets} 组`;
+  }
+
+  // 完成态 vs 未完成
+  const targetNode = (rawNode === 'cardio') ? 14 : rawNode;
+  const ctaHtml = isDone
+    ? `<button class="wth-today-cta done" disabled><span class="wthtc-text">✓  今  天  已  完  成</span></button>`
+    : `<button class="wth-today-cta" onclick="_openRoutineDetail(${targetNode})"><span class="wthtc-text">查  看  训  练</span><span class="wthtc-meta">${summary}</span></button>`;
+
+  return `
+    <div class="wt-today ${isDone ? 'done' : ''}">
+      <div class="wt-today-tag">今   日   训   练</div>
+      <div class="wt-today-main">
+        <div class="wt-today-letter wtl-${type}">${shortName}</div>
+        <div class="wt-today-info">
+          <div class="wt-today-name">${name}</div>
+          <div class="wt-today-tag-line">${tag}</div>
+        </div>
+      </div>
+      ${ctaHtml}
+    </div>
+  `;
+}
+
+// ────── 4 周训练全景 (v0.2.19.1: 方块草坪 + 字母标识 9 态视觉) ──────
+function _renderWorkoutOverview() {
   const cfg = state.config;
   const stageWeeks = cfg.stageWeeks || 4;
   const totalDays = stageWeeks * 7;
   const todayDay = homeTodayDay();
-  const week = Math.max(1, Math.min(getCurrentStageWeek(), stageWeeks));
+  if (!cfg.startDate) return '';
 
-  // 目标行
-  let goalText;
-  if (cfg.startWeight && cfg.targetWeight) {
-    const delta = (cfg.targetWeight - cfg.startWeight).toFixed(1);
-    const direction = cfg.targetWeight < cfg.startWeight ? '减重' : '增重';
-    goalText = `建立训练节奏 + ${direction} ${Math.abs(delta)} kg`;
-  } else {
-    goalText = '建立训练节奏 + 体态塑形';
-  }
-
-  return `
-    <div class="wt-plan-summary">
-      <div class="wt-ps-eyebrow">本期训练方案</div>
-      <div class="wt-ps-row">
-        <div class="wt-ps-label">目标</div>
-        <div class="wt-ps-value">${goalText}</div>
-      </div>
-      <div class="wt-ps-row">
-        <div class="wt-ps-label">结构</div>
-        <div class="wt-ps-value">每周 4 力量 · 2 有氧 · 1 休息</div>
-      </div>
-      <div class="wt-ps-row">
-        <div class="wt-ps-label">当前</div>
-        <div class="wt-ps-value">第 ${week} 周 / 共 ${stageWeeks} 周 · DAY ${todayDay} / ${totalDays}</div>
-      </div>
-      <div class="wt-ps-link" onclick="openContractPlanSheet()">
-        <span>查看完整方案</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-    </div>
+  let html = `
+    <div class="wt-section-title">${totalDays}   天   全   景</div>
+    <div class="wt-overview-grid">
   `;
+
+  for (let i = 1; i <= totalDays; i++) {
+    const dateStr = addDays(cfg.startDate, i - 1);
+    const rec = state.records[dateStr] || {};
+    const isDone = !!rec.completed;
+    const isToday = i === todayDay;
+    const isFuture = i > todayDay;
+    const isMissed = !isDone && !isFuture && !isToday;
+
+    const rawNode = getPlannedNodeForDay(i, rec);
+    const shortName = _nodeIdToShortName(rawNode);
+    const type = _nodeIdToType(rawNode);
+
+    let stateCls = 'pending';
+    if (isToday) stateCls = 'today';
+    else if (isDone) stateCls = 'done';
+    else if (isMissed) stateCls = 'missed';
+    else if (isFuture) stateCls = 'future';
+
+    html += `<div class="wt-ov-cell ${stateCls} type-${type}" title="D${i} · ${shortName}"><span class="wt-ov-letter">${shortName}</span></div>`;
+  }
+  html += '</div>';
+  return html;
 }
 
 // ───── 列表态: 单 routine 概览行 ─────
@@ -21429,6 +22450,8 @@ function _renderRoutineRow(routine) {
     const totalSets = mains.reduce((sum, e) => sum + (e.sets || 1), 0);
     summary = `${mains.length} 个主训 · ${totalSets} 组`;
   }
+
+  // v0.2.19.3: 删除 progress badge (信息已合并到 3 环 fulfillment 视图)
 
   return `
     <div class="routine-row" onclick="_openRoutineDetail(${nodeId})">
@@ -21649,11 +22672,8 @@ function _renderRoutineDetail(nodeId) {
 }
 
 function _renderExerciseRow(ex, sectionType, indented) {
-  const spec = ex.spec || '';
-  let displaySpec = spec;
-  if (sectionType === 'main' && ex.sets && !/\d+\s*组/.test(spec)) {
-    displaySpec = `${ex.sets} 组 × ${spec}`;
-  }
+  // v0.2.19.6: 统一用 _formatExerciseSpec helper, 让暖身/拉伸/燃脂的组数也显示
+  const displaySpec = _formatExerciseSpec(ex);
   // 是否有详情可看 (有任一字段就可点)
   const hasDetail = !!(ex.desc || ex.tips || ex.cautions);
   const clickAttr = hasDetail
@@ -21806,7 +22826,7 @@ function _showExerciseInfo(exKey) {
   }
 
   document.getElementById('detailsModalTitle').textContent = ex.name;
-  document.getElementById('detailsModalSpec').textContent = ex.spec || '';
+  document.getElementById('detailsModalSpec').textContent = _formatExerciseSpec(ex);
   document.getElementById('detailsModalContent').innerHTML = html;
 
   // 改底部按钮文案 (训练 tab 看动作 ≠ 训练中看动作)
@@ -22186,8 +23206,7 @@ function _renderCalendar() {
 
     const isToday = dateStr === todayStr_;
     const inContract = hasActive && dateStr >= contractStart && dateStr <= contractEnd;
-    const isContractStart = inContract && dateStr === contractStart;
-    const isContractEnd = inContract && dateStr === contractEnd;
+    // v0.2.19.5: 删除 isContractStart / isContractEnd 边界标记 (日历是历史维度)
 
     // 如果当前日期就是选中日期, 标记当周有选中
     if (_calSelectedDate === dateStr) {
@@ -22235,8 +23254,9 @@ function _renderCalendar() {
     }
 
     const todayCls = isToday ? ' today' : '';
-    const startCls = isContractStart ? ' contract-start' : '';
-    const endCls = isContractEnd ? ' contract-end' : '';
+    // v0.2.19.5: 删除 contract-start / contract-end 边界标记
+    //   日历 = 历史时间维度沉淀, 不应被契约边界打断
+    //   契约期视图已迁移到训练 Tab (28 天全景 + 履约 3 环)
     const selectedCls = (_calSelectedDate === dateStr) ? ' selected' : '';
 
     // v0.2.16.2: 点格子 → inline 展开详情条 (替代旧 openInfo 弹 sheet)
@@ -22271,7 +23291,7 @@ function _renderCalendar() {
     const hasBot = readiMark || dots;
 
     html += `
-      <div class="cal-cell ${stateCls}${todayCls}${startCls}${endCls}${selectedCls}" ${onclick}>
+      <div class="cal-cell ${stateCls}${todayCls}${selectedCls}" ${onclick}>
         <div class="cal-cell-top">
           <span class="cal-cell-num">${d}</span>
           ${prMark}
@@ -22526,6 +23546,42 @@ function _computeMuscleDistribution(opts) {
     });
   });
 
+  // v0.2.19.12.2: fallback - 如果 exerciseLog 无任何 sets 但有 records.completed=true 的力量日,
+  //   按当日 plan 的 main 动作 muscles 估算 (适用于 dev mock / 快速完成路径)
+  let isFallback = false;
+  if (totalSets === 0 && cfg.startDate) {
+    const totalDaysInContract = (cfg.stageWeeks || 4) * 7;
+    for (let i = 1; i <= totalDaysInContract; i++) {
+      const dateStr = addDays(cfg.startDate, i - 1);
+      if (dateStr < startDate) continue;
+      if (endDate && dateStr > endDate) continue;
+      const rec = state.records[dateStr];
+      if (!rec || !rec.completed) continue;
+      // 只力量日贡献 (cardio / rest 不贡献部位雷达)
+      const planned = getPlannedNodeForDay(i, rec);
+      if (typeof _nodeIdToType !== 'function') break;
+      const type = _nodeIdToType(planned);
+      if (type !== 'strength') continue;
+      const exKeys = (typeof NODE_EXERCISES !== 'undefined' && NODE_EXERCISES[planned]) || [];
+      exKeys.forEach(k => {
+        const ex = EXERCISE_LIBRARY[k];
+        if (!ex || ex.category !== 'main' || !ex.muscles || ex.muscles.length === 0) return;
+        const regions = [];
+        ex.muscles.forEach(m => {
+          const r = MUSCLE_TO_REGION[m];
+          if (r && !regions.includes(r)) regions.push(r);
+        });
+        if (regions.length === 0) return;
+        const weight = 1 / regions.length;
+        const setsCount = ex.sets || 1;
+        regions.forEach(r => {
+          contrib[r] += setsCount * weight;
+        });
+      });
+      isFallback = true;
+    }
+  }
+
   // 归一化: 最大值 = 1.0
   const maxContrib = Math.max(...Object.values(contrib));
   const values = {};
@@ -22540,6 +23596,7 @@ function _computeMuscleDistribution(opts) {
     values,
     totalSets,
     hasData: maxContrib > 0,
+    isFallback,
     rawContrib: contrib  // 调试 / 详细数值用
   };
 }
@@ -22838,7 +23895,7 @@ function _renderRoutineListHtml(routineData, userIssues) {
         <div class="tri-num">${i + 1}</div>
         <div class="tri-main">
           <div class="tri-name">${ex.name}</div>
-          <div class="tri-spec">${ex.spec}</div>
+          <div class="tri-spec">${_formatExerciseSpec(ex)}</div>
         </div>
         ${chipsHtml ? `<div class="tri-chips">${chipsHtml}</div>` : ''}
         <div class="tri-arrow">›</div>
@@ -22847,6 +23904,18 @@ function _renderRoutineListHtml(routineData, userIssues) {
   });
   html += '</div>';
   return html;
+}
+
+// v0.2.19.6: 动作 spec 显示统一 helper (组数 × 单组次数)
+//   - 如 spec 已含 "组" 字 → 直接返回
+//   - sets >= 2 + spec 不含 "组" → 拼为 "N 组 × spec"
+//   - 否则 → 直接返回 spec
+function _formatExerciseSpec(ex) {
+  if (!ex || !ex.spec) return '';
+  const spec = ex.spec;
+  if (/\d+\s*组/.test(spec)) return spec;
+  if (ex.sets && ex.sets >= 2) return `${ex.sets} 组 × ${spec}`;
+  return spec;
 }
 
 // v0.2.18.9: 体态动作详情 modal 触发 (独立函数, 不依赖 workoutState)
@@ -22872,7 +23941,7 @@ function _openPostureExerciseDetails(exKey) {
     </div>`;
 
   document.getElementById('detailsModalTitle').textContent = ex.name;
-  document.getElementById('detailsModalSpec').textContent = ex.spec || '';
+  document.getElementById('detailsModalSpec').textContent = _formatExerciseSpec(ex);
   document.getElementById('detailsModalContent').innerHTML = html;
   document.getElementById('modalDetails').classList.add('active');
 }
@@ -22923,9 +23992,10 @@ function _triggerPostureD28Review() {
 //   「我的」 tab 渲染
 // ═══════════════════════════════════════════
 function renderProfileSummary() {
-  renderProfileActiveCard();
+  // v0.2.19.7: 删除 renderProfileActiveCard / renderProfileMuscle 调用
+  //   当前契约视图 + 雷达图都交给训练 Tab (Tab 各司其职)
   renderProfileWeight();
-  renderProfileMuscle();
+  renderProfileAchievement();
   renderProfileTraining();
   renderProfileHistory();
   renderProfileFeedback();
@@ -23318,6 +24388,51 @@ function renderProfileWeight() {
     `;
   }
 
+  // v0.2.19.7: 跨契约累计 delta (仅在 ≥2 份契约时显示, 单契约时这行无意义因为 weight-summary-row 已有 delta)
+  let lifetimeHtml = '';
+  const allContracts = state.contracts || [];
+  if (allContracts.length >= 2) {
+    // 取最早的契约 startWeight 作为长程起点
+    const sorted = [...allContracts].sort((a, b) => {
+      const ta = (a.config && a.config.startDate) || a.createdAt || '';
+      const tb = (b.config && b.config.startDate) || b.createdAt || '';
+      return ta.localeCompare(tb);
+    });
+    const firstSw = sorted[0].config && parseFloat(sorted[0].config.startWeight);
+    const firstStartDate = sorted[0].config && sorted[0].config.startDate;
+    if (firstSw && firstStartDate) {
+      const lifetimeDelta = latest.weight - firstSw;
+      let lifeCls, lifeText;
+      if (Math.abs(lifetimeDelta) < 0.05) {
+        lifeCls = 'zero';
+        lifeText = `维 持 ${firstSw.toFixed(1)} kg`;
+      } else if (lifetimeDelta < 0) {
+        lifeCls = 'lose';
+        lifeText = `累  计  减  ${Math.abs(lifetimeDelta).toFixed(1)} kg`;
+      } else {
+        lifeCls = 'gain';
+        lifeText = `累  计  增  ${lifetimeDelta.toFixed(1)} kg`;
+      }
+      // 时间跨度
+      const daysSpan = Math.max(1, daysBetween(firstStartDate, todayStr()));
+      let spanText;
+      if (daysSpan < 60) {
+        spanText = `${daysSpan} 天`;
+      } else if (daysSpan < 365) {
+        spanText = `${Math.round(daysSpan / 30)} 个月`;
+      } else {
+        const years = (daysSpan / 365).toFixed(1);
+        spanText = `${years} 年`;
+      }
+      lifetimeHtml = `
+        <div class="weight-lifetime ${lifeCls}">
+          <div class="wl-text">${lifeText}</div>
+          <div class="wl-meta">跨 ${allContracts.length} 份契约 · ${spanText}</div>
+        </div>
+      `;
+    }
+  }
+
   container.innerHTML = `
     <div class="profile-weight-card">
       <div class="weight-summary-row">
@@ -23333,6 +24448,58 @@ function renderProfileWeight() {
       </div>
       ${chartHtml}
       ${progressHtml}
+      ${lifetimeHtml}
+    </div>
+  `;
+}
+
+// ────── 训练成就卡 (v0.2.19.7: Q2=C 简化 3 数字 - 跨契约累计统计) ──────
+function renderProfileAchievement() {
+  const section = document.getElementById('profileAchievementSection');
+  const container = document.getElementById('profileAchievementCard');
+  if (!section || !container) return;
+
+  // 跨契约累计 - 训练次数
+  const allRecords = _collectAllTrainingRecords();
+  const completed = allRecords.filter(r => r.completed);
+  const totalSessions = completed.length;
+
+  // 跨契约累计 - PR 总数
+  let totalPRs = 0;
+  completed.forEach(rec => {
+    totalPRs += _countPRsOnDate(rec.date);
+  });
+
+  // 已完成契约数 (status === 'completed', 不算 abandoned / active)
+  const completedContracts = (state.contracts || []).filter(c => c.status === 'completed').length;
+
+  // 没有任何数据时不显示
+  if (totalSessions === 0 && totalPRs === 0 && completedContracts === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = '';
+
+  container.innerHTML = `
+    <div class="profile-achievement-card">
+      <div class="pa-stat">
+        <div class="pa-stat-num">${totalSessions}</div>
+        <div class="pa-stat-label">累 计 训 练</div>
+        <div class="pa-stat-unit">次</div>
+      </div>
+      <div class="pa-stat-divider"></div>
+      <div class="pa-stat">
+        <div class="pa-stat-num">${totalPRs}</div>
+        <div class="pa-stat-label">个 人 记 录</div>
+        <div class="pa-stat-unit">PR</div>
+      </div>
+      <div class="pa-stat-divider"></div>
+      <div class="pa-stat">
+        <div class="pa-stat-num">${completedContracts}</div>
+        <div class="pa-stat-label">完 成 契 约</div>
+        <div class="pa-stat-unit">份</div>
+      </div>
     </div>
   `;
 }
